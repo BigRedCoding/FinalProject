@@ -1,4 +1,4 @@
-# PROJECT NAME: WEATHER AND MORE!
+# PROJECT NAME: NEWS EXPLORER
 
 ##
 
@@ -27,4 +27,5 @@
 ### For the moment, I will wait on this until the project is complete.
 
 ================================================================================================
+
 # FinalProject

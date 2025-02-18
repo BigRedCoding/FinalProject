@@ -1,0 +1,57 @@
+.clothes__header {
+  display: flex;
+  gap: 20px;
+  align-items: end;
+  padding-bottom: 16px;
+}
+.clothes__text {
+  padding: 0;
+  margin: 0;
+  font: 20px;
+  line-height: 24.8px;
+  font-weight: 700;
+}
+.clothes__button {
+  padding: 0;
+  margin: 0;
+  height: max-content;
+  border: none;
+}
+.clothes__button-text {
+  padding: 0;
+  margin: 0;
+  color: #00000099;
+  font: 20px;
+  line-height: 24.8px;
+  font-weight: 700;
+}
+
+@media screen and (max-width: 990px) {
+  .clothes__list > .card {
+    max-width: 164px;
+    max-height: 164px;
+    width: 164px;
+    height: 164px;
+  }
+}
+
+@media screen and (max-width: 669px) {
+  .clothes__list > .card {
+    max-height: 328px;
+    max-width: 325px;
+    width: 328px;
+    height: 325px;
+  }
+}
+
+@media screen and (max-width: 582px) {
+  .clothes__header {
+    justify-content: space-between;
+  }
+  .clothes__list > .card {
+    max-width: 164px;
+    max-height: 164px;
+    width: 164px;
+    height: 164px;
+  }
+}

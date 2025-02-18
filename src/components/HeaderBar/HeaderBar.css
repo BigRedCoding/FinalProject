@@ -1,0 +1,31 @@
+.header-bar {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  border-top: 1px solid #0000004d;
+  border-bottom: 1px solid #0000004d;
+}
+.header-bar__image {
+  width: 56px;
+  height: 56px;
+}
+
+.header-bar__profile-details {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 8px;
+}
+.header-bar__text {
+  padding: 0 0 4px 0;
+  margin: 0;
+  font-size: 24px;
+  line-height: 29.76px;
+  font-weight: 700;
+}
+.header-bar__button {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+}

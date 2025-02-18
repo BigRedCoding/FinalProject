@@ -1,0 +1,83 @@
+.modal__content {
+  position: relative;
+}
+.modal__content_type-image {
+  padding: 0;
+  margin: 0;
+  height: 610px;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.modal__close-preview {
+  background-size: contain;
+  border: none;
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  width: 20px;
+  height: 20px;
+  background-image: url("../../assets/CloseWhite.png");
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.modal__image {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 498px;
+  max-height: 498px;
+  object-fit: cover;
+}
+
+.modal__footer {
+  position: relative;
+  padding: 20px 32px 0 32px;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 700;
+}
+
+.modal__caption {
+  padding: 0;
+  margin: 0;
+}
+.modal__weather {
+  padding: 0;
+  margin: 0;
+}
+
+.modal__footer-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.modal__delete-item-button {
+  margin: 0;
+  padding: 0;
+  height: fit-content;
+  background-color: transparent;
+  border: none;
+  color: #ff4d00;
+}
+
+.modal__delete-button_hidden {
+  visibility: hidden;
+}
+
+@media screen and (max-width: 627px) {
+  .modal__content_type-image {
+    width: auto;
+    max-width: 343px;
+    max-height: 463px;
+  }
+  .modal__image {
+    width: 100%;
+    height: 100%;
+    max-height: 343px;
+  }
+}
