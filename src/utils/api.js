@@ -3,7 +3,7 @@ const baseUrl =
     ? "https://api.bdwtwr.justlearning.net/"
     : "http://localhost:3001";
 
-import AvatarImage from "../assets/Avatar.svg";
+console.log("Base Server URL:", baseUrl);
 
 export function responseCheck(res) {
   if (res.ok) {
@@ -14,28 +14,45 @@ export function responseCheck(res) {
   });
 }
 
-export async function getItems() {
-  return fetch(`${baseUrl}/items`)
+export async function getArticlesByLikes() {
+  return fetch(`${baseUrl}/articles/get-by-likes`)
+    .then((res) => {
+      return responseCheck(res);
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.error("Error in fetching articles:", error);
+    });
+}
+
+export async function getArticlesByFavorite(token) {
+  return fetch(`${baseUrl}/articles/get-by-favorite`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  })
     .then((res) => {
       return responseCheck(res);
     })
     .catch((error) => {
       console.error(error);
-      return {
-        link: AvatarImage,
-        message: "Network error or invalid URL, using fallback image.",
-      };
     });
 }
-export async function addItems(item) {
-  const token = localStorage.getItem("jwt");
-  return fetch(`${baseUrl}/items`, {
+
+export async function addLike(token, articleData) {
+  return fetch(`${baseUrl}/articles/articles-with-likes`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(item),
+    body: JSON.stringify({
+      ...articleData,
+    }),
   })
     .then((res) => {
       return responseCheck(res);
@@ -46,20 +63,59 @@ export async function addItems(item) {
     });
 }
 
-export async function deleteItem(itemId) {
-  const token = localStorage.getItem("jwt");
-  return fetch(`${baseUrl}/items/${itemId}`, {
+export async function removeLike(token, articleData) {
+  return fetch(`${baseUrl}/articles/articles-with-likes`, {
     method: "DELETE",
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
+    body: JSON.stringify({
+      ...articleData,
+    }),
   })
     .then((res) => {
       return responseCheck(res);
     })
-    .then((data) => {
-      return data;
+    .catch((error) => {
+      console.error(error);
+      return Promise.reject(`Error: ${error.message}`);
+    });
+}
+
+export async function addFavorite(token, articleData) {
+  return fetch(`${baseUrl}/articles/articles-with-favorites`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...articleData,
+    }),
+  })
+    .then((res) => {
+      return responseCheck(res);
+    })
+    .catch((error) => {
+      console.error(error);
+      return Promise.reject(`Error: ${error.message}`);
+    });
+}
+
+export async function removeFavorite(token, articleData) {
+  return fetch(`${baseUrl}/articles/articles-with-favorites`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...articleData,
+    }),
+  })
+    .then((res) => {
+      return responseCheck(res);
     })
     .catch((error) => {
       console.error(error);
@@ -115,7 +171,7 @@ export async function handleSignupUser(userData) {
 export async function handleUpdateProfile(userData) {
   const token = localStorage.getItem("jwt");
 
-  fetch(`${baseUrl}/profile`, {
+  fetch(`${baseUrl}/users/me`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -128,41 +184,6 @@ export async function handleUpdateProfile(userData) {
     })
     .then(() => {
       console.log("Updated profile successfully.");
-    })
-    .catch((error) => {
-      console.error(error);
-      return Promise.reject(`Error: ${error.message}`);
-    });
-}
-export async function addCardLike(id, token) {
-  return fetch(`${baseUrl}/items/${id}/likes`, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => {
-      return responseCheck(res);
-    })
-    .then((data) => {
-      return data;
-    })
-    .catch((error) => {
-      console.error(error);
-      return Promise.reject(`Error: ${error.message}`);
-    });
-}
-
-export async function removeCardLike(id, token) {
-  return fetch(`${baseUrl}/items/${id}/likes`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((res) => {
-      return responseCheck(res);
     })
     .catch((error) => {
       console.error(error);

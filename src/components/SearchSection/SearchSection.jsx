@@ -1,1 +1,0 @@
-import "./SearchSection.css";

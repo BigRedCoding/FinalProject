@@ -1,14 +1,92 @@
 .footer {
-  margin: 85px 2px 0 0px;
+  position: relative;
+  margin: 32px 104px 28px;
   display: flex;
   justify-content: space-between;
   font-weight: 500;
   font-size: 16px;
 }
 
+.footer__text-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.footer__author-container {
+  display: flex;
+  gap: 10px;
+}
+
 .footer__detail {
   margin: 0;
   padding: 0;
+}
+
+.footer__links-button {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  text-decoration: underline;
+  color: blue;
+}
+
+.footer__links-container {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  align-content: center;
+  align-items: end;
+}
+
+.footer__text-links-container {
+  display: flex;
+  gap: 40px;
+  align-items: end;
+  height: 28px;
+}
+
+.footer__home,
+.footer__triple-ten {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background-color: transparent;
+  font-size: 24px;
+}
+
+.footer__detail-copy {
+  margin: 0;
+  padding: 0;
+  color: #b6bcbf;
+}
+
+.footer__icons-container {
+  display: flex;
+  gap: 24px;
+  height: 28px;
+  align-items: center;
+}
+
+.footer__github,
+.footer__linkedin {
+  padding: 0;
+  margin: 0;
+  width: 24px;
+  height: 24px;
+  background-color: transparent;
+  border: none;
+}
+
+.footer__github {
+  background-image: url(../../assets/github.svg);
+  background-size: contain;
+}
+.footer__linkedin {
+  background-image: url(../../assets/linkedin.png);
+  background-size: contain;
 }
 
 @media screen and (max-width: 627px) {

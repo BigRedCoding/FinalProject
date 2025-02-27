@@ -13,10 +13,6 @@
   line-height: 20px;
 }
 
-.modal_opened {
-  visibility: visible;
-}
-
 .modal__content {
   border-radius: 20px;
   padding: 0;

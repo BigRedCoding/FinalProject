@@ -1,0 +1,75 @@
+.stock-card {
+  padding: 5px;
+  margin: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: fit-content;
+  overflow: hidden;
+  width: 150px;
+  min-width: 150px;
+  min-height: 50px;
+  border: 2px solid black;
+  border-radius: 5px;
+  background-color: rgba(129, 129, 129, 0.334);
+}
+
+.stock-card__title-price,
+.stock-card__change-percent {
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.stock-card__title-price {
+  justify-content: space-between;
+}
+
+.stock-card__change-percent {
+  background-color: rgba(255, 143, 7, 0.54);
+  align-items: end;
+  border-radius: 15px;
+  width: fit-content;
+}
+
+.stock-card__title,
+.stock-card__price,
+.stock-card__change,
+.stock-card__percent {
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.stock-card__title {
+  font-size: 26px;
+  line-height: 28px;
+  color: white;
+  font-weight: 700;
+}
+.stock-card__price {
+  font-size: 18px;
+  line-height: 20px;
+  color: white;
+  font-weight: 500;
+}
+.stock-card__change {
+  font-size: 13px;
+  line-height: 14px;
+  color: white;
+  padding: 3px;
+}
+
+.stock-card__percent {
+  font-size: 20px;
+  line-height: 24px;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+}
+
+.arrow {
+  font-size: 1.2em;
+  margin-right: 5px;
+}

@@ -1,0 +1,41 @@
+.liked-by-server {
+  position: relative;
+}
+.liked-by-server__header {
+  padding: 100px 104px 20px;
+}
+
+.liked-by-server__form-container {
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.liked-by-server__news-form {
+  background-color: white;
+  background-size: 550px;
+  display: flex;
+  min-width: 608px;
+  border-radius: 100px;
+  overflow: hidden;
+}
+.liked-by-server__news-input {
+  height: 64px;
+  width: 608px;
+  font-size: 16px;
+  line-height: 22px;
+  color: #1a1b22;
+  text-indent: 24px;
+  border: none;
+  outline: none;
+}
+.liked-by-server__news-submit-button {
+  width: 168px;
+  background-color: #2f71e5;
+  color: white;
+  border-radius: 100px;
+  border: none;
+}
+.liked-by-server__results-list {
+  margin: auto;
+}

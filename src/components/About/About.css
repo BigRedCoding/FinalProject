@@ -1,0 +1,43 @@
+.about {
+  position: relative;
+  height: 624px;
+  width: 100%;
+  width: 100%;
+}
+
+.about__background-image {
+  background-color: blanchedalmond;
+  border: 1px solid black;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.about__container {
+  position: relative;
+  padding: 80px 104px;
+  display: flex;
+  gap: 56px;
+}
+
+.about__image {
+  background-color: grey;
+  width: 464px;
+  height: 464px;
+  outline: 2px black solid;
+}
+
+.about__details {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.about__author {
+  font-size: 46px;
+  font-weight: 600;
+}
+.about__description {
+  font-size: 18px;
+  line-height: 24px;
+}

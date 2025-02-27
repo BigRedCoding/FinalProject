@@ -61,6 +61,54 @@ export const weatherConditions = [
   },
 ];
 
+export const weatherConditions2 = [
+  {
+    code: [0],
+    condition: "Clear",
+    url: new URL("../assets/newSunny.png", import.meta.url).href,
+  },
+  {
+    code: [1, 2, 3],
+    condition: "Overcast",
+    url: new URL("../assets/newPartlyCloudy.png", import.meta.url).href,
+  },
+  {
+    code: [45, 48],
+    condition: "Foggy",
+    url: new URL("../assets/newFoggy.png", import.meta.url).href,
+  },
+  {
+    code: [51, 53, 55],
+    condition: "Drizzle",
+    url: new URL("../assets/newDrizzle.png", import.meta.url).href,
+  },
+  {
+    code: [56, 57],
+    condition: "Freezing drizzle",
+    url: new URL("../assets/newFreezingDrizzle.png", import.meta.url).href,
+  },
+  {
+    code: [61, 63, 65, 80, 81, 82],
+    condition: "Rain",
+    url: new URL("../assets/newRain.png", import.meta.url).href,
+  },
+  {
+    code: [66, 67],
+    condition: "Freezing-rain",
+    url: new URL("../assets/newFreezingRain.png", import.meta.url).href,
+  },
+  {
+    code: [71, 73, 75, 77],
+    condition: "Snow fall",
+    url: new URL("../assets/newSnow.png", import.meta.url).href,
+  },
+  {
+    code: [85, 86],
+    condition: "Snow showers",
+    url: new URL("../assets/newSnowShowers.png", import.meta.url).href,
+  },
+];
+
 export const defaultWeatherOptions = {
   day: {
     day: true,
@@ -74,48 +122,9 @@ export const defaultWeatherOptions = {
   },
 };
 
-export const defaultClothingItems = [
-  {
-    _id: 0,
-    name: "Cap",
-    weather: "hot",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Cap.png?etag=f3dad389b22909cafa73cff9f9a3d591",
-  },
-  {
-    _id: 1,
-    name: "Hoodie",
-    weather: "warm",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Hoodie.png?etag=5f52451d0958ccb1016c78a45603a4e8",
-  },
-  {
-    _id: 2,
-    name: "Jacket",
-    weather: "cold",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Jacket.png?etag=f4bb188deaa25ac84ce2338be2d404ad",
-  },
-  {
-    _id: 3,
-    name: "Sneakers",
-    weather: "cold",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Sneakers.png?etag=3efeec41c1c78b8afe26859ca7fa7b6f",
-  },
-  {
-    _id: 4,
-    name: "T-Shirt",
-    weather: "hot",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/T-Shirt.png?etag=44ed1963c44ab19cd2f5011522c5fc09",
-  },
-  {
-    _id: 5,
-    name: "Coat",
-    weather: "cold",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Coat.png?etag=298717ed89d5e40b1954a1831ae0bdd4",
-  },
-];
-
 export const coordinates = {
   latitude: "38.926575",
   longitude: "-77.083472",
 };
 
-export const APIKey = "92198934837100f1596312e6135fc6c9";
+export const WeatherAPIKey = "92198934837100f1596312e6135fc6c9";

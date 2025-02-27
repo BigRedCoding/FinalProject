@@ -1,0 +1,265 @@
+button:hover {
+  cursor: pointer;
+}
+
+.newscard {
+  background-color: #ffffff;
+  width: 400px;
+  height: 576px;
+  max-width: 400px;
+  max-height: 576px;
+  border: 1px black solid;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.newscard__header-menu {
+  background-color: blueviolet;
+  top: 0;
+}
+
+.newscard__favorite-button,
+.newscard__remove-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+}
+
+.newscard__favorite-button {
+  z-index: 1;
+  background-image: url(../../assets/bookmark.svg);
+  background-color: transparent;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: none;
+}
+
+.newscard__like-container {
+  position: absolute;
+  top: 280px;
+  right: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.newscard__like-count {
+  margin: 0;
+  padding: 0;
+}
+
+.newscard__like-button {
+  z-index: 2;
+  padding: 2px;
+  background-image: url(../../assets/Heart.svg);
+  background-color: transparent;
+  border: none;
+  width: 25px;
+  height: 25px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  top: 280px;
+  right: 10px;
+}
+
+.newscard__keywords-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: fit-content;
+  height: 40px;
+}
+
+.newscard__details-container {
+  z-index: 0;
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.newscard__text-container {
+  max-width: 360px;
+  min-height: 268px;
+  height: 268px;
+  padding: 0 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.newscard__image,
+.newscard__date,
+.newscard__author,
+.newscard__title,
+.newscard__summary,
+.newscard__source {
+  padding: 0;
+  margin: 0;
+}
+
+.newscard__image {
+  background-color: aqua;
+  width: 400px;
+  height: 272px;
+}
+
+.newscard__date {
+  color: #b6bcbf;
+  font-size: 18px;
+  line-height: 24px;
+}
+.newscard__title {
+  color: #1a1b22;
+  font-size: 26px;
+  line-height: 30px;
+  max-height: 60px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.newscard__author {
+  color: #1a1b22;
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.newscard__summary {
+  color: #1a1b22;
+  font-size: 16px;
+  line-height: 22px;
+  width: 100%;
+  height: 120px;
+  max-height: 130px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+}
+
+.newscard__source-container {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  height: fit-content;
+}
+
+.newscard__source {
+  text-wrap: nowrap;
+  color: #b6bcbf;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.newscard__url {
+  border: none;
+  background-color: transparent;
+  color: blue;
+}
+
+@media screen and (min-width: 530px) and (max-width: 850px) {
+  .newscard {
+    width: 224px;
+    height: 420px;
+    border: none;
+    border-radius: 12px;
+  }
+  .newscard__image {
+    height: 150px;
+  }
+
+  .newscard__text-container {
+    padding: 0 15px 16px 16px;
+    max-width: 224px;
+    max-height: 268px;
+  }
+  .newscard__title {
+    font-size: 22px;
+    line-height: 24px;
+    height: 48px;
+  }
+  .newscard__summary {
+    height: 115px;
+  }
+  .newscard__source-container {
+    padding-bottom: 10px;
+    position: relative;
+    max-width: 100%;
+    height: fit-content;
+  }
+  .newscard__url {
+    background-color: #b6bcbf;
+    border-radius: 10px;
+    height: 25px;
+    position: absolute;
+    bottom: 40px;
+    right: 10px;
+  }
+
+  .newscard__url:hover {
+    background-color: #8f8f8f;
+    font-weight: 700;
+  }
+}
+
+@media screen and (max-width: 629px) {
+  .newscard {
+    border: none;
+    border-radius: 12px;
+  }
+}
+
+@media screen and (max-width: 475px) {
+  .newscard {
+    width: 224px;
+    max-width: 224px;
+    height: 420px;
+    border: none;
+    border-radius: 12px;
+  }
+  .newscard__image {
+    height: 150px;
+  }
+
+  .newscard__text-container {
+    padding: 0 15px 16px 16px;
+    max-width: 224px;
+    max-height: 268px;
+  }
+  .newscard__title {
+    font-size: 22px;
+    line-height: 24px;
+    height: 48px;
+  }
+  .newscard__summary {
+    height: 115px;
+  }
+  .newscard__source-container {
+    padding-bottom: 10px;
+    position: relative;
+    max-width: 100%;
+    height: fit-content;
+  }
+  .newscard__url {
+    background-color: #b6bcbf;
+    border-radius: 10px;
+    height: 25px;
+    position: absolute;
+    bottom: 40px;
+    right: 10px;
+  }
+
+  .newscard__url:hover {
+    background-color: #8f8f8f;
+    font-weight: 700;
+  }
+}

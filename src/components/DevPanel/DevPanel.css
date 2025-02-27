@@ -1,0 +1,25 @@
+.devPanel {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 40px;
+  border: 3px black solid;
+  background-color: white;
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  gap: 30px;
+}
+
+.devPanel__button {
+  width: 60px;
+  height: 20px;
+}
+
+.devPanel__exit-button {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 30px;
+  height: 30px;
+}

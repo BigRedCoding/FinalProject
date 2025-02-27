@@ -1,0 +1,35 @@
+.header-bar-card {
+  background-color: gray;
+  border-radius: 5px;
+  padding: 5px 10px;
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  width: fit-content;
+  justify-content: center;
+  align-items: center;
+  height: 20px;
+}
+
+.header-bar-card__title,
+.header-bar-card__author,
+.header-bar-card__link {
+  margin: 0px;
+  padding: 0px;
+  font-size: 14px;
+  text-wrap: nowrap;
+  white-space: nowrap;
+  width: fit-content;
+}
+
+.header-bar-card__title {
+  color: yellow;
+  font-size: 18px;
+}
+
+.news-item .link {
+  color: #00f;
+  text-decoration: underline;
+  text-decoration: none;
+  font-weight: bold;
+}

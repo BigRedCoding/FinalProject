@@ -1,0 +1,31 @@
+.saved-news {
+  position: relative;
+}
+
+.saved-news__header {
+  padding: 120px 106px 56px 104px;
+}
+
+.saved-news__title {
+  color: #1a1b2280;
+  font-size: 24px;
+}
+
+.saved-news__keywords-text {
+  font-size: 18px;
+  line-height: 24px;
+  max-width: 530px;
+}
+.saved-news__saved-container {
+  padding: 62px 106px 62px 102px;
+  background-color: #f5f6f7;
+}
+.saved-news__saved-articles {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.saved-news__no-articles {
+  font-size: 24px;
+  font-weight: 700;
+}
