@@ -23,24 +23,6 @@ const validateEmail = (value, helpers) => {
   return helpers.error("string.email");
 };
 
-const validateClothingItem = celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30).required().messages({
-      "string.min": 'The minimum length of the "name" field is 2',
-      "string.max": 'The maximum length of the "name" field is 30',
-      "string.empty": 'The "name" field must be filled in',
-    }),
-
-    imageUrl: Joi.string().required().custom(urlCheck).messages({
-      "string.empty": 'The "image URL" field must be filled in',
-      "string.uri": 'The "image URL" field must be a valid URL',
-    }),
-    weather: Joi.string().valid("hot", "warm", "cold").required().messages({
-      "string.empty": 'The "weather" field must be filled in',
-    }),
-  }),
-});
-
 const validateUserInfo = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required().messages({
@@ -88,19 +70,8 @@ const validateUpdateUserInfo = celebrate({
   }),
 });
 
-const validateId = celebrate({
-  params: Joi.object().keys({
-    itemId: Joi.string().length(24).hex().required().messages({
-      "string.length": "Item ID must be 24 characters long",
-      "string.hex": "Item ID must be a valid hexadecimal string",
-    }),
-  }),
-});
-
 module.exports = {
-  validateClothingItem,
   validateUserInfo,
   validateAuthentication,
-  validateId,
   validateUpdateUserInfo,
 };
