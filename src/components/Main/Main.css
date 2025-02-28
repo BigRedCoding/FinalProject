@@ -69,10 +69,10 @@
   border: none;
 }
 
-.main__search-results {
-  line-height: 0px;
+.main__saved-container {
   height: fit-content;
   width: 100%;
+  background-color: #f5f6f7;
 }
 
 @media screen and (max-width: 1111.5px) {

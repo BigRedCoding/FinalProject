@@ -1,5 +1,5 @@
 import "./Main.css";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 import About from "../About/About.jsx";
 import NewsSection from "../NewsSection/NewsSection.jsx";
@@ -9,6 +9,7 @@ import Navigation from "../Navigation/Navigation.jsx";
 import { searchArticles } from "../../utils/NewsApis/newsapp.js";
 import { getGnewsNews } from "../../utils/NewsApis/Gnews.js";
 import { getNewsData } from "../../utils/NewsApis/newsdata.js";
+import CurrentUserContext from "../../contexts/CurrentUserContext.js";
 
 export default function Main({
   onLoginClick,
@@ -18,17 +19,79 @@ export default function Main({
   isProfileSelected,
   onArticleLike,
   onArticleFavorite,
+  articlesLiked,
+  articlesFavorited,
+  setTrigger,
+  trigger,
 }) {
+  const { currentSearchDataMain, setCurrentSearchDataMain } =
+    useContext(CurrentUserContext);
+
   const [query, setQuery] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [allArticles, setAllArticles] = useState([]);
+
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const [currentResults, setCurrentResults] = useState([]);
 
   const shuffleArray = (array) => {
     let shuffledArray = [...array];
     shuffledArray.sort((b, a) => new Date(a.date) - new Date(b.date));
     return shuffledArray;
+  };
+
+  const checkItemsForLikesAndFavorites = (searchResults) => {
+    return searchResults.map((searchArticle) => {
+      const matchInLiked = articlesLiked.find(
+        (likedArticle) =>
+          likedArticle.author === searchArticle.author &&
+          likedArticle.title === searchArticle.title &&
+          likedArticle.description === searchArticle.description &&
+          likedArticle.imageUrl === searchArticle.imageUrl &&
+          likedArticle.url === searchArticle.url &&
+          likedArticle.source === searchArticle.source &&
+          likedArticle.date === searchArticle.date
+      );
+
+      const matchInFavorited = articlesFavorited.find(
+        (favoritedArticle) =>
+          favoritedArticle.author === searchArticle.author &&
+          favoritedArticle.title === searchArticle.title &&
+          favoritedArticle.description === searchArticle.description &&
+          favoritedArticle.imageUrl === searchArticle.imageUrl &&
+          favoritedArticle.url === searchArticle.url &&
+          favoritedArticle.source === searchArticle.source &&
+          favoritedArticle.date === searchArticle.date
+      );
+
+      if (matchInLiked || matchInFavorited) {
+        const updatedArticle = { ...searchArticle };
+
+        if (matchInLiked) {
+          if (matchInLiked.likes.includes(userData.userId)) {
+            updatedArticle.likes = [...matchInLiked.likes];
+          } else {
+            updatedArticle.likes = [...matchInLiked.likes, userData.userId];
+          }
+        }
+
+        if (matchInFavorited) {
+          if (matchInFavorited.favorites.includes(userData.userId)) {
+            updatedArticle.favorites = [...matchInFavorited.favorites];
+          } else {
+            updatedArticle.favorites = [
+              ...matchInFavorited.favorites,
+              userData.userId,
+            ];
+          }
+        }
+
+        return updatedArticle;
+      }
+
+      return searchArticle;
+    });
   };
 
   const handleSearch = async (e) => {
@@ -38,12 +101,15 @@ export default function Main({
     const storedResults = localStorage.getItem("randomizedResults");
 
     if (storedResults) {
-      console.log("stored information accessed");
-
       const parsedResults = JSON.parse(storedResults);
-      setAllArticles(parsedResults);
+      const checkAgainstFavoritesAndLikes =
+        checkItemsForLikesAndFavorites(parsedResults);
+
+      setCurrentSearchDataMain(checkAgainstFavoritesAndLikes);
+      setCurrentResults(checkAgainstFavoritesAndLikes);
       setLoading(false);
       setIsSubmitted(true);
+      setTrigger(true);
     } else {
       const resultsArray = [];
       const resultsNewsApp = await searchArticles(query);
@@ -58,10 +124,10 @@ export default function Main({
 
       localStorage.setItem(
         "randomizedResults",
-        JSON.stringify(shuffledResults)
+        JSON.stringify(resultsWithLikesAndFavorites)
       );
 
-      setAllArticles(shuffledResults);
+      setCurrentSearchDataMain(shuffledResults);
       setLoading(false);
       setIsSubmitted(true);
     }
@@ -75,6 +141,8 @@ export default function Main({
         onEditProfileClick={onEditProfileClick}
         onLogoutClick={onLogoutClick}
         isProfileSelected={isProfileSelected}
+        setTrigger={setTrigger}
+        trigger={trigger}
       />
       <section className="main__search">
         <div className="main__search-container">
@@ -97,15 +165,25 @@ export default function Main({
           </div>
         </div>
       </section>
-      <NewsSection
-        loading={loading}
-        query={query}
-        allArticles={allArticles}
-        setLoading={setLoading}
-        isSubmitted={isSubmitted}
-        onArticleLike={onArticleLike}
-        onArticleFavorite={onArticleFavorite}
-      />
+      <div className="main__saved-container">
+        {currentSearchDataMain ? (
+          <NewsSection
+            loading={loading}
+            query={query}
+            allArticles={currentResults}
+            setLoading={setLoading}
+            isSubmitted={isSubmitted}
+            onArticleLike={onArticleLike}
+            onArticleFavorite={onArticleFavorite}
+            setTrigger={setTrigger}
+            trigger={trigger}
+            articlesLiked={articlesLiked}
+            articlesFavorited={articlesFavorited}
+          />
+        ) : (
+          <div></div>
+        )}
+      </div>
       <About />
     </div>
   );

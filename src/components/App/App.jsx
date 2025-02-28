@@ -51,8 +51,6 @@ import { getGnewsNews } from "../../utils/NewsApis/Gnews.js";
 import { fetchAndDisplayData } from "../../utils/NewsApis/finnhub.js";
 import { searchArticles } from "../../utils/NewsApis/newsapp.js";
 
-import fetchWeatherData from "../../utils/NewsApis/otherweatherapi.js";
-
 //Dev
 import DevPanel from "../DevPanel/DevPanel.jsx";
 import { getNewsData } from "../../utils/NewsApis/newsdata.js";
@@ -85,7 +83,11 @@ function App() {
   const [updateDOM, handleUpdateDOM] = useState(false);
   const [isProfileSelected, setIsProfileSelected] = useState("home");
 
-  const [triggerUseEffect, setTriggerUseEffect] = useState(false);
+  const [currentSearchDataMain, setCurrentSearchDataMain] = useState([]);
+
+  const [searchText, setSearchText] = useState("");
+
+  const [trigger, setTrigger] = useState(false);
 
   //Dev Variables
   const [startApiTrigger, setStartApiTrigger] = useState(false);
@@ -155,11 +157,69 @@ function App() {
 
   //Article Functions
 
+  const removeLikeorFavoriteFromArticles = (articleData, removeWhich) => {
+    const articleMatchCriteria = (article) =>
+      article.author === articleData.author &&
+      article.title === articleData.title &&
+      article.imageUrl === articleData.imageUrl &&
+      article.url === articleData.url &&
+      article.source === articleData.source &&
+      article.date === articleData.date;
+
+    const removeUserIdFromLikes = (article, userId) => {
+      const updatedLikes = article.likes.filter((id) => id !== userId);
+      return { ...article, likes: updatedLikes };
+    };
+
+    const removeUserIdFromFavorites = (article, userId) => {
+      const updatedFavorites = article.favorites.filter((id) => id !== userId);
+      return { ...article, favorites: updatedFavorites };
+    };
+
+    const updateArticles = (articles, userId) => {
+      if (!Array.isArray(articles)) return [];
+      return articles
+        .map((article) => {
+          if (removeWhich === "like") {
+            if (articleMatchCriteria(article)) {
+              const updatedArticle = removeUserIdFromLikes(article, userId);
+
+              if (
+                updatedArticle.likes.length === 0 &&
+                updatedArticle.favorites === 0
+              ) {
+                return null;
+              }
+              return updatedArticle;
+            }
+          } else if (removeWhich === "favorite") {
+            const updatedArticle = removeUserIdFromFavorites(article, userId);
+
+            if (updatedArticle.favorites === 0) {
+              return null;
+            }
+            return updatedArticle;
+          }
+          return article;
+        })
+        .filter((article) => article !== null);
+    };
+
+    const updatedArticlesLiked = updateArticles(articlesLiked, userData.userId);
+    setArticlesLiked(updatedArticlesLiked);
+
+    const updatedArticlesFavorited = updateArticles(
+      articlesFavorited,
+      userData.userId
+    );
+    setArticlesFavorited(updatedArticlesFavorited);
+
+    console.log("Like removed from liked and favorited articles.");
+  };
+
   const handleSetLikedArticles = () => {
-    // Only fetch if data hasn't been fetched yet
     getArticlesByLikes()
       .then((data) => {
-        console.log("Fetched data:", data);
         setArticlesLiked(data);
       })
       .catch(console.error);
@@ -179,23 +239,24 @@ function App() {
 
   const handleArticleLike = (isLiked, articleData) => {
     const token = localStorage.getItem("jwt");
+    const removeWhich = "like";
 
     if (!token) {
       console.log("User is not authenticated.");
       return;
     }
+
     if (!isLiked) {
       addLike(token, articleData)
         .then(() => {
           const newArticlesLiked = [...articlesLiked, articleData];
-          setArticlesLiked([]);
           setArticlesLiked(newArticlesLiked);
         })
         .catch((err) => console.log("Error adding like:", err));
     } else {
       removeLike(token, articleData)
         .then(() => {
-          console.log("like removed. need to update list");
+          removeLikeorFavoriteFromArticles(articleData, removeWhich);
         })
         .catch((err) => console.log("Error removing like:", err));
     }
@@ -203,6 +264,7 @@ function App() {
 
   const handleArticleFavorite = (isFavorited, articleData) => {
     const token = localStorage.getItem("jwt");
+    const removeWhich = "favorite";
 
     if (!token) {
       console.log("User is not authenticated.");
@@ -215,11 +277,11 @@ function App() {
           setArticlesFavorited([]);
           setArticlesFavorited(newArticlesFavorite);
         })
-        .catch((err) => console.log("Error adding like:", err));
+        .catch((err) => console.log("Error adding favorite:", err));
     } else {
       removeFavorite(token, articleData)
         .then(() => {
-          console.log("favorite removed. need to update list");
+          removeLikeorFavoriteFromArticles(articleData, removeWhich);
         })
         .catch((err) => console.log("Error removing favorite:", err));
     }
@@ -338,6 +400,15 @@ function App() {
     handleUpdateDOM(!updateDOM);
   }, [weatherData]);
 
+  useEffect(() => {
+    if (articlesLiked.length < 0) {
+      handleSetLikedArticles();
+    }
+    if (articlesFavorited.length < 0) {
+      handleSetFavoriteArticles();
+    }
+  }, [trigger]);
+
   //Dev
   const [devVisible, setDevVisible] = useState("isHidden");
   const setDevPanelVisibility = () => {
@@ -374,9 +445,11 @@ function App() {
           isPasswordValid,
           weatherData,
           updateDOM,
-          articlesLiked,
-          articlesFavorited,
           isProfileSelected,
+          currentSearchDataMain,
+          setCurrentSearchDataMain,
+          searchText,
+          setSearchText,
         }}
       >
         <CurrentTemperatureUnitContext.Provider
@@ -404,6 +477,10 @@ function App() {
                     isProfileSelected={isProfileSelected}
                     onArticleLike={handleArticleLike}
                     onArticleFavorite={handleArticleFavorite}
+                    articlesLiked={articlesLiked}
+                    articlesFavorited={articlesFavorited}
+                    setTrigger={setTrigger}
+                    trigger={trigger}
                   />
                 }
               />
@@ -419,6 +496,10 @@ function App() {
                     onArticleLike={handleArticleLike}
                     onArticleFavorite={handleArticleFavorite}
                     onSetLikedArticles={handleSetLikedArticles}
+                    articlesLiked={articlesLiked}
+                    articlesFavorited={articlesFavorited}
+                    setTrigger={setTrigger}
+                    trigger={trigger}
                   />
                 }
               />
@@ -435,6 +516,10 @@ function App() {
                       onArticleLike={handleArticleLike}
                       onArticleFavorite={handleArticleFavorite}
                       onSetFavoriteArticles={handleSetFavoriteArticles}
+                      articlesLiked={articlesLiked}
+                      articlesFavorited={articlesFavorited}
+                      setTrigger={setTrigger}
+                      trigger={trigger}
                     />
                   </ProtectedRoute>
                 }

@@ -15,13 +15,15 @@ export default function LikedByServer({
   onArticleLike,
   onArticleFavorite,
   onSetLikedArticles,
+  articlesLiked,
+  articlesFavorited,
+  setTrigger,
+  trigger,
 }) {
-  const { articlesLiked } = useContext(CurrentUserContext);
   const [query, setQuery] = useState("");
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isArticlesFetched, setIsArticlesFetched] = useState(false);
-
   const location = useLocation();
 
   const handleSearch = (evt) => {
@@ -45,10 +47,10 @@ export default function LikedByServer({
   }, [location.pathname]);
 
   useEffect(() => {
-    if (articlesLiked.length > 0) {
+    if (articlesLiked) {
       setFilteredArticles(articlesLiked);
     }
-  }, [articlesLiked]);
+  }, [articlesLiked, location.pathname]);
 
   return (
     <section className="liked-by-server">
@@ -58,6 +60,8 @@ export default function LikedByServer({
         onEditProfileClick={onEditProfileClick}
         onLogoutClick={onLogoutClick}
         isProfileSelected={isProfileSelected}
+        setTrigger={setTrigger}
+        trigger={trigger}
       />
       <div className="liked-by-server__header">
         <p className="liked-by-server__title">
@@ -81,7 +85,6 @@ export default function LikedByServer({
           </form>
         </div>
       </div>
-
       <div className="liked-by-server__saved-container">
         {filteredArticles.length > 0 ? (
           <NewsSection
@@ -91,9 +94,13 @@ export default function LikedByServer({
             setLoading={setLoading}
             onArticleLike={onArticleLike}
             onArticleFavorite={onArticleFavorite}
+            setTrigger={setTrigger}
+            trigger={trigger}
+            articlesLiked={articlesLiked}
+            articlesFavorited={articlesFavorited}
           />
         ) : (
-          <li className="liked-by-server__no-articles">No liked articles!</li>
+          <p className="liked-by-server__no-articles">No liked articles!</p>
         )}
       </div>
     </section>

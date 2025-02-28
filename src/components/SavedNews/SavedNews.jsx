@@ -17,8 +17,12 @@ export default function SavedNews({
   onArticleLike,
   onArticleFavorite,
   onSetFavoriteArticles,
+  articlesLiked,
+  articlesFavorited,
+  setTrigger,
+  trigger,
 }) {
-  const { userData, articlesFavorited } = useContext(CurrentUserContext);
+  const { userData } = useContext(CurrentUserContext);
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [isArticlesFetched, setIsArticlesFetched] = useState(false);
   const [query, setQuery] = useState("");
@@ -34,17 +38,18 @@ export default function SavedNews({
   const location = useLocation();
 
   useEffect(() => {
-    if (articlesFavorited?.length > 0) {
-      setFilteredArticles(articlesFavorited);
-    }
-  }, [articlesFavorited]);
-
-  useEffect(() => {
     if (location.pathname === "/saved-news" && isArticlesFetched === false) {
       onSetFavoriteArticles();
     }
     setIsArticlesFetched(true);
+    setIsProfileSelected("profile");
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (articlesFavorited) {
+      setFilteredArticles(articlesFavorited);
+    }
+  }, [trigger, articlesFavorited, location.pathname, userData]);
 
   return (
     <section className="saved-news">
@@ -54,6 +59,8 @@ export default function SavedNews({
         onEditProfileClick={onEditProfileClick}
         isProfileSelected={isProfileSelected}
         onLogoutClick={onLogoutClick}
+        setTrigger={setTrigger}
+        trigger={trigger}
       />
       <div className="saved-news__header">
         <p className="saved-news__title">Saved articles</p>
@@ -62,7 +69,7 @@ export default function SavedNews({
         </h1>
         <p className="saved-news__keywords-text">By keywords: {keywords}</p>
       </div>
-      <div className="liked-by-server__saved-container">
+      <div className="saved-news__saved-container">
         {filteredArticles.length > 0 ? (
           <NewsSection
             loading={loading}
@@ -71,9 +78,13 @@ export default function SavedNews({
             setLoading={setLoading}
             onArticleLike={onArticleLike}
             onArticleFavorite={onArticleFavorite}
+            setTrigger={setTrigger}
+            trigger={trigger}
+            articlesLiked={articlesLiked}
+            articlesFavorited={articlesFavorited}
           />
         ) : (
-          <li className="liked-by-server__no-articles">No saved articles!</li>
+          <p className="liked-by-server__no-articles">No saved articles!</p>
         )}
       </div>
     </section>

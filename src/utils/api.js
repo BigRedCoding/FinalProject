@@ -38,6 +38,9 @@ export async function getArticlesByFavorite(token) {
     .then((res) => {
       return responseCheck(res);
     })
+    .then((response) => {
+      return response.data;
+    })
     .catch((error) => {
       console.error(error);
     });

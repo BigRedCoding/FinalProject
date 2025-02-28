@@ -12,6 +12,8 @@ export default function Navigation({
   setIsProfileSelected,
   onEditProfileClick,
   onLogoutClick,
+  setTrigger,
+  trigger,
 }) {
   const { isLoggedIn, userData, isProfileSelected } =
     useContext(CurrentUserContext);
@@ -41,14 +43,17 @@ export default function Navigation({
 
   const handleHomeClick = () => {
     setIsProfileSelected("home");
+    setTrigger(!trigger);
   };
 
   const handleLikedByServerClick = () => {
     setIsProfileSelected("likedbyserver");
+    setTrigger(!trigger);
   };
 
   const handleSavedNewsClick = () => {
     setIsProfileSelected("profile");
+    setTrigger(!trigger);
   };
 
   useEffect(() => {

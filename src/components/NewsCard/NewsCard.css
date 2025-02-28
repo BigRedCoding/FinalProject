@@ -21,6 +21,7 @@ button:hover {
 
 .newscard__favorite-button,
 .newscard__remove-button {
+  z-index: 2;
   position: absolute;
   top: 0;
   right: 0;
@@ -29,11 +30,18 @@ button:hover {
 }
 
 .newscard__favorite-button {
-  z-index: 1;
   background-image: url(../../assets/bookmark.svg);
   background-color: transparent;
   background-size: cover;
   background-repeat: no-repeat;
+  border: none;
+}
+
+.newscard__remove-button {
+  background-image: url("../../assets/trash.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: transparent;
   border: none;
 }
 
@@ -164,6 +172,22 @@ button:hover {
   border: none;
   background-color: transparent;
   color: blue;
+}
+
+.newscard_button-liked {
+  background-image: url(../../assets/State_Liked.svg);
+}
+
+.newscard_button-liked:hover {
+  background-image: url(../../assets/State_Like_Hovered.svg);
+}
+
+.newscard__remove-button:hover {
+  background-image: url("../../assets/trashhover.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  border: none;
 }
 
 @media screen and (min-width: 530px) and (max-width: 850px) {
