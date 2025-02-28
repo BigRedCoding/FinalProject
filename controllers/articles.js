@@ -235,13 +235,22 @@ const checkAndRemoveArticleByLikes = (req, res, next) => {
             existingArticle.likes.length < 1
           ) {
             return articles.findByIdAndDelete(articleID).then(() => {
-              res.status(200).send({ message: "Article successfully removed" });
+              res.status(200).send({
+                shouldDelete: true,
+                message: "Article successfully removed",
+              });
             });
           }
 
           return existingArticle.save().then((updatedArticle) => {
-            res.status(200).send({ data: updatedArticle });
+            res.status(200).send({
+              shouldDelete: false,
+              data: updatedArticle,
+              message: "Article like removed",
+            });
           });
+        } else {
+          res.status(400).send({ message: "User has not liked this article" });
         }
       } else {
         next(HttpError.NotFoundError("Article not found"));
@@ -267,13 +276,22 @@ const checkAndRemoveArticleByFavorites = (req, res, next) => {
             existingArticle.likes.length < 1
           ) {
             return articles.findByIdAndDelete(articleID).then(() => {
-              res.status(200).send({ message: "Article successfully removed" });
+              res.status(200).send({
+                shouldDelete: true,
+                message: "Article successfully removed",
+              });
             });
           }
 
           return existingArticle.save().then((updatedArticle) => {
-            res.status(200).send({ data: updatedArticle });
+            res.status(200).send({
+              shouldDelete: false,
+              data: updatedArticle,
+              message: "Article like removed",
+            });
           });
+        } else {
+          res.status(400).send({ message: "User has not liked this article" });
         }
       } else {
         next(HttpError.NotFoundError("Article not found"));

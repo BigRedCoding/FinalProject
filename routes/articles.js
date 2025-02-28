@@ -19,7 +19,7 @@ router.get("/get-by-favorite", auth, getArticlesByFavorite);
 
 router.delete("/articles-with-likes", auth, checkAndRemoveArticleByLikes);
 router.delete(
-  "/articles-with-favorite",
+  "/articles-with-favorites",
   auth,
   checkAndRemoveArticleByFavorites
 );
