@@ -4,173 +4,107 @@ import LikeImage from "../../assets/Heart.svg";
 import { useState, useEffect, useContext } from "react";
 import CurrentUserContext from "../../contexts/CurrentUserContext";
 
-export default function NewsCard({
-  data,
-  onArticleLike,
-  onArticleFavorite,
-  setTrigger,
-  trigger,
-  triggerUpdateResults,
-  articlesLiked,
-  articlesFavorited,
-}) {
-  const { isLoggedIn, userData, isProfileSelected } =
-    useContext(CurrentUserContext);
+export default function NewsCard({ data, onArticleLike, onArticleFavorite }) {
+  const { isLoggedIn, userData } = useContext(CurrentUserContext);
 
-  const [initialLoad, setInitialLoad] = useState(false);
-  const [cardData, setCardData] = useState({});
   const [currentLikes, setCurrentLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
 
-  const newAuthor = cardData?.author || "Unknown Author";
-  const newTitle = cardData?.title || "No Title Available";
-  const newDescription = cardData?.description || "No Description Available";
-  const newImageUrl = cardData?.imageUrl || "";
-  const newUrl = cardData?.url || "#";
-  const newDate = new Date(cardData?.date || Date.now()).toLocaleDateString(
+  const newAuthor = data?.author || "Unknown Author";
+  const newTitle = data?.title || "No Title Available";
+  const newDescription = data?.description || "No Description Available";
+  const newImageUrl = data?.imageUrl || "";
+  const newUrl = data?.url || "#";
+  const newDate = new Date(data?.date || Date.now()).toLocaleDateString(
     "en-US",
-    { year: "numeric", month: "long", day: "numeric" }
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
   );
-  const newSource = cardData?.source?.toUpperCase() || "UNKNOWN";
 
-  let newLikesLength = cardData?.likes?.length || 0;
-  let newLikesCheck =
-    Array.isArray(cardData?.likes) && cardData?.likes.includes(userData.userId);
-  let newFavoritesCheck =
-    Array.isArray(cardData?.favorites) &&
-    cardData?.favorites.includes(userData.userId);
+  const newSource = data?.source?.toUpperCase() || "UNKNOWN";
+
+  const likeState = isLiked ? "newscard_button-liked" : "";
+  const favoriteState = isFavorited ? "newscard_button-favorited" : "";
+  const newKeywords = data?.keywords || "";
 
   const openCardLink = () => window.open(newUrl, "_blank");
 
   const handleArticleLike = () => {
-    setCurrentLikes((prevLikes) => (isLiked ? prevLikes - 1 : prevLikes + 1));
-    setIsLiked(!isLiked);
+    const likeCount = isLiked ? currentLikes - 1 : currentLikes + 1;
 
-    onArticleLike(isLiked, cardData);
-    setTrigger(!trigger);
-    triggerUpdateResults();
+    setIsLiked(!isLiked);
+    setCurrentLikes(likeCount);
+    onArticleLike(isLiked, data);
   };
 
   const handleArticleFavorite = () => {
     setIsFavorited(!isFavorited);
-
-    onArticleFavorite(isFavorited, cardData);
-    setTrigger(!trigger);
-    triggerUpdateResults();
-  };
-
-  const updateCardData = () => {
-    if (!Array.isArray(articlesLiked) || !Array.isArray(articlesFavorited))
-      return;
-
-    const articleMatchCriteria = (article) =>
-      article.author === data.author &&
-      article.title === data.title &&
-      article.imageUrl === data.imageUrl &&
-      article.url === data.url &&
-      article.source === data.source &&
-      article.date === data.date;
-
-    const getFilteredArticleData = (articles) => {
-      return articles.find((article) => {
-        if (articleMatchCriteria(article)) {
-          const isLiked = article.likes?.includes(userData.userId);
-          const isFavorited = article.favorites?.includes(userData.userId);
-
-          if (isLiked && isFavorited) {
-            return true; // Both likes and favorites contain the userId
-          } else if (isLiked || isFavorited) {
-            return true; // One of the fields contains the userId
-          }
-        }
-        return false;
-      });
-    };
-
-    const articleData = getFilteredArticleData([
-      ...articlesLiked,
-      ...articlesFavorited,
-    ]);
-    if (articleData) {
-      setCardData(articleData);
-    }
+    onArticleFavorite(isFavorited, data);
   };
 
   useEffect(() => {
-    if (data) {
-      setCardData(data);
-      setInitialLoad(true);
-    }
-  }, [data, trigger]);
-
-  useEffect(() => {
-    if (initialLoad) {
-      updateCardData();
-    }
-  }, [articlesLiked, articlesFavorited, initialLoad]);
-
-  useEffect(() => {
-    setIsLiked(newLikesCheck);
-    setIsFavorited(newFavoritesCheck);
-    setCurrentLikes(newLikesLength);
-  }, [cardData]);
+    setCurrentLikes(data?.likes?.length || 0);
+    setIsLiked(data?.likes?.some((item) => item === userData.userId) || false);
+    setIsFavorited(
+      data?.favorites?.some((item) => item === userData.userId) || false
+    );
+  }, [data]);
 
   return (
     <li className="newscard">
       <div className="newscard__header-menu">
-        {isLoggedIn &&
-          (isProfileSelected === "home" ||
-            isProfileSelected === "likedbyserver") && (
+        {newKeywords.length > 0 && (
+          <button className="newscard__keywords-button">{newKeywords}</button>
+        )}
+        <div className="newscard__favorite-container">
+          {!isLoggedIn && (
+            <>
+              <button alt="Favorite image" className="newscard__favorite-image">
+                <div className="newscard__login-to-save">
+                  <p className="newscard__lts-text">Sign in to save articles</p>
+                </div>
+              </button>
+            </>
+          )}
+          {isLoggedIn && !isFavorited && (
             <>
               <button
                 onClick={handleArticleFavorite}
-                className="newscard__favorite-button"
+                className={`newscard__favorite-button ${favoriteState}`}
               ></button>
-              <div className="newscard__like-container">
-                <p className="newscard__like-count">{currentLikes}</p>
-                <button
-                  onClick={handleArticleLike}
-                  className={`newscard__like-button ${
-                    isLiked ? "newscard_button-liked" : ""
-                  }`}
-                ></button>
-              </div>
             </>
           )}
-        {isLoggedIn && isProfileSelected === "profile" && (
-          <>
-            <button className="newscard__keywords-button">keywords</button>
-            <div className="newscard__like-container">
-              <p className="newscard__like-count">{newLikesLength}</p>
+          {isLoggedIn && isFavorited && (
+            <>
               <button
-                onClick={handleArticleLike}
-                className={`newscard__like-button ${
-                  isLiked ? "newscard_button-liked" : ""
-                }`}
-              ></button>
-            </div>
-            <button
-              onClick={handleArticleFavorite}
-              className="newscard__remove-button"
-            ></button>
-          </>
+                onClick={handleArticleFavorite}
+                className="newscard__remove-button"
+              >
+                <div className="newscard__remove-from-save">
+                  <p className="newscard__rfs-text">Remove from saved</p>
+                </div>
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+      <div className="newscard__like-container">
+        <p className="newscard__like-count">{currentLikes}</p>
+        {isLoggedIn && (
+          <button
+            onClick={handleArticleLike}
+            className={`newscard__like-button ${likeState}`}
+          ></button>
         )}
-        {isLoggedIn === false &&
-        (isProfileSelected === "home" ||
-          isProfileSelected === "likedbyserver") ? (
-          <>
-            <button className="newscard__keywords-button">keywords</button>
-            <div className="newscard__like-container">
-              <p className="newscard__like-count">{newLikesLength}</p>
-              <img
-                src={LikeImage}
-                alt="Like image"
-                className="newscard__like-image"
-              />
-            </div>
-          </>
-        ) : null}
+        <img
+          src={LikeImage}
+          alt="Like image"
+          className="newscard__like-image"
+        />
       </div>
       <div className="newscard__details-container">
         <img

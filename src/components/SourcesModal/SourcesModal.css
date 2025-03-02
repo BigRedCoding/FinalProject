@@ -27,6 +27,10 @@
 }
 
 .sources-modal__close-button {
+  background-image: url("../../assets/CloseGray.svg");
+  background-size: cover;
+  background-color: transparent;
+  border: none;
   z-index: 3;
   position: absolute;
   top: 10px;
@@ -165,4 +169,8 @@
 
 .sources-modal__link-button {
   overflow: visible;
+}
+
+.sources-modal__close-button:hover {
+  background-image: url("../../assets/CloseBlack.svg");
 }

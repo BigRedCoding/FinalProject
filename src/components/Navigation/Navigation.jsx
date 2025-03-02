@@ -12,11 +12,9 @@ export default function Navigation({
   setIsProfileSelected,
   onEditProfileClick,
   onLogoutClick,
-  setTrigger,
-  trigger,
+  isProfileSelected,
 }) {
-  const { isLoggedIn, userData, isProfileSelected } =
-    useContext(CurrentUserContext);
+  const { isLoggedIn, userData } = useContext(CurrentUserContext);
 
   const [activeLine, setActiveLine] = useState("");
 
@@ -43,17 +41,14 @@ export default function Navigation({
 
   const handleHomeClick = () => {
     setIsProfileSelected("home");
-    setTrigger(!trigger);
   };
 
   const handleLikedByServerClick = () => {
     setIsProfileSelected("likedbyserver");
-    setTrigger(!trigger);
   };
 
   const handleSavedNewsClick = () => {
     setIsProfileSelected("profile");
-    setTrigger(!trigger);
   };
 
   useEffect(() => {
@@ -69,7 +64,7 @@ export default function Navigation({
               <button
                 type="button"
                 className={`navigation__home-button ${textClassMod}`}
-                onClick={handleHomeClick} // Handle click for Home
+                onClick={handleHomeClick}
               >
                 Home
               </button>

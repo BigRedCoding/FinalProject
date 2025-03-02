@@ -1,7 +1,6 @@
 import "./SavedNews.css";
 
 import { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 
 import Navigation from "../Navigation/Navigation";
 import NewsSection from "../NewsSection/NewsSection";
@@ -16,16 +15,13 @@ export default function SavedNews({
   isProfileSelected,
   onArticleLike,
   onArticleFavorite,
-  onSetFavoriteArticles,
-  articlesLiked,
-  articlesFavorited,
-  setTrigger,
-  trigger,
+  articlesTotal,
 }) {
+  const [initialTrigger, setInitialTrigger] = useState(false);
+
   const { userData } = useContext(CurrentUserContext);
   const [filteredArticles, setFilteredArticles] = useState([]);
-  const [isArticlesFetched, setIsArticlesFetched] = useState(false);
-  const [query, setQuery] = useState("");
+
   const [loading, setLoading] = useState(false);
 
   const userName = userData?.userName || "";
@@ -35,21 +31,23 @@ export default function SavedNews({
     userData?.savedArticles?.map((article) => article.keywords).join(", ") ||
     "no key words associated";
 
-  const location = useLocation();
+  const filterArticlesByLikes = () => {
+    setFilteredArticles(
+      articlesTotal.filter((article) => article.favorites.length > 0)
+    );
+  };
+
+  const isSubmitted = true;
 
   useEffect(() => {
-    if (location.pathname === "/saved-news" && isArticlesFetched === false) {
-      onSetFavoriteArticles();
+    if (!initialTrigger) {
+      if (articlesTotal?.length > 0) {
+        filterArticlesByLikes();
+        setInitialTrigger(true);
+        setIsProfileSelected("profile");
+      }
     }
-    setIsArticlesFetched(true);
-    setIsProfileSelected("profile");
-  }, [location.pathname]);
-
-  useEffect(() => {
-    if (articlesFavorited) {
-      setFilteredArticles(articlesFavorited);
-    }
-  }, [trigger, articlesFavorited, location.pathname, userData]);
+  }, []);
 
   return (
     <section className="saved-news">
@@ -57,10 +55,8 @@ export default function SavedNews({
         onLoginClick={onLoginClick}
         setIsProfileSelected={setIsProfileSelected}
         onEditProfileClick={onEditProfileClick}
-        isProfileSelected={isProfileSelected}
         onLogoutClick={onLogoutClick}
-        setTrigger={setTrigger}
-        trigger={trigger}
+        isProfileSelected={isProfileSelected}
       />
       <div className="saved-news__header">
         <p className="saved-news__title">Saved articles</p>
@@ -73,15 +69,11 @@ export default function SavedNews({
         {filteredArticles.length > 0 ? (
           <NewsSection
             loading={loading}
-            query={query}
-            allArticles={filteredArticles}
             setLoading={setLoading}
+            allArticles={filteredArticles}
+            isSubmitted={isSubmitted}
             onArticleLike={onArticleLike}
             onArticleFavorite={onArticleFavorite}
-            setTrigger={setTrigger}
-            trigger={trigger}
-            articlesLiked={articlesLiked}
-            articlesFavorited={articlesFavorited}
           />
         ) : (
           <p className="liked-by-server__no-articles">No saved articles!</p>

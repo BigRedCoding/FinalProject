@@ -73,14 +73,19 @@ function App() {
   const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState("F");
 
   //Modal variables
+  const [hasPulledServerArticles, setHasPulledServerArticles] = useState(false);
+
+  const [hasCombinedList, setHasCombinedList] = useState(false);
+
   const [articlesLiked, setArticlesLiked] = useState([]);
   const [articlesFavorited, setArticlesFavorited] = useState([]);
+  const [articlesTotal, setArticlesTotal] = useState([]);
 
   const [activeModal, setActiveModal] = useState("");
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
-  const [updateDOM, handleUpdateDOM] = useState(false);
+
   const [isProfileSelected, setIsProfileSelected] = useState("home");
 
   const [currentSearchDataMain, setCurrentSearchDataMain] = useState([]);
@@ -156,8 +161,24 @@ function App() {
   };
 
   //Article Functions
+  const combineFavoritesAndLikes = (totalArticles) => {
+    const uniqueArticles = new Set();
 
-  const removeLikeorFavoriteFromArticles = (articleData, removeWhich) => {
+    const filteredArticles = totalArticles.filter((article) => {
+      const articleIdentifier = `${article.author}|${article.title}|${article.imageUrl}|${article.url}|${article.source}|${article.date}`;
+
+      if (uniqueArticles.has(articleIdentifier)) {
+        return false;
+      }
+
+      uniqueArticles.add(articleIdentifier);
+      return true;
+    });
+
+    setArticlesTotal(filteredArticles);
+  };
+
+  const addLikedOrFavoriteFromArticles = (articleData, addWhich) => {
     const articleMatchCriteria = (article) =>
       article.author === articleData.author &&
       article.title === articleData.title &&
@@ -166,13 +187,51 @@ function App() {
       article.source === articleData.source &&
       article.date === articleData.date;
 
+    const addUserIdToLikes = (article, userId) => {
+      const updatedLikes = article.likes.includes(userId)
+        ? article.likes
+        : [...article.likes, userId];
+      return { ...article, likes: updatedLikes };
+    };
+
+    const addUserIdToFavorites = (article, userId) => {
+      const updatedFavorites = article.favorites.includes(userId)
+        ? article.favorites
+        : [...article.favorites, userId];
+      return { ...article, favorites: updatedFavorites };
+    };
+
+    const updateArticles = (articles, userId) => {
+      if (!Array.isArray(articles)) return [];
+      return articles.map((article) => {
+        if (addWhich === "like") {
+          if (articleMatchCriteria(article)) {
+            return addUserIdToLikes(article, userId);
+          }
+        } else if (addWhich === "favorite") {
+          return addUserIdToFavorites(article, userId);
+        }
+        return article;
+      });
+    };
+
+    const updatedArticles = updateArticles(articlesTotal, userData.userId);
+
+    console.log("add like function");
+
+    combineFavoritesAndLikes(updatedArticles);
+  };
+
+  const removeLikeorFavoriteFromArticles = (articleData, removeWhich) => {
     const removeUserIdFromLikes = (article, userId) => {
-      const updatedLikes = article.likes.filter((id) => id !== userId);
+      const updatedLikes = article.likes.filter((likes) => likes !== userId);
       return { ...article, likes: updatedLikes };
     };
 
     const removeUserIdFromFavorites = (article, userId) => {
-      const updatedFavorites = article.favorites.filter((id) => id !== userId);
+      const updatedFavorites = article.favorites.filter(
+        (favorites) => favorites !== userId
+      );
       return { ...article, favorites: updatedFavorites };
     };
 
@@ -181,7 +240,7 @@ function App() {
       return articles
         .map((article) => {
           if (removeWhich === "like") {
-            if (articleMatchCriteria(article)) {
+            if (article === articleData) {
               const updatedArticle = removeUserIdFromLikes(article, userId);
 
               if (
@@ -205,22 +264,15 @@ function App() {
         .filter((article) => article !== null);
     };
 
-    const updatedArticlesLiked = updateArticles(articlesLiked, userData.userId);
-    setArticlesLiked(updatedArticlesLiked);
+    const updatedArticles = updateArticles(articlesTotal, userData.userId);
 
-    const updatedArticlesFavorited = updateArticles(
-      articlesFavorited,
-      userData.userId
-    );
-    setArticlesFavorited(updatedArticlesFavorited);
-
-    console.log("Like removed from liked and favorited articles.");
+    combineFavoritesAndLikes(updatedArticles);
   };
 
   const handleSetLikedArticles = () => {
     getArticlesByLikes()
       .then((data) => {
-        setArticlesLiked(data);
+        return setArticlesLiked(data);
       })
       .catch(console.error);
   };
@@ -231,7 +283,7 @@ function App() {
     if (token) {
       getArticlesByFavorite(token)
         .then((data) => {
-          setArticlesFavorited(data);
+          return setArticlesFavorited(data);
         })
         .catch(console.error);
     }
@@ -239,7 +291,7 @@ function App() {
 
   const handleArticleLike = (isLiked, articleData) => {
     const token = localStorage.getItem("jwt");
-    const removeWhich = "like";
+    const functionName = "like";
 
     if (!token) {
       console.log("User is not authenticated.");
@@ -249,14 +301,13 @@ function App() {
     if (!isLiked) {
       addLike(token, articleData)
         .then(() => {
-          const newArticlesLiked = [...articlesLiked, articleData];
-          setArticlesLiked(newArticlesLiked);
+          addLikedOrFavoriteFromArticles(articleData, functionName);
         })
         .catch((err) => console.log("Error adding like:", err));
     } else {
       removeLike(token, articleData)
         .then(() => {
-          removeLikeorFavoriteFromArticles(articleData, removeWhich);
+          removeLikeorFavoriteFromArticles(articleData, functionName);
         })
         .catch((err) => console.log("Error removing like:", err));
     }
@@ -264,7 +315,7 @@ function App() {
 
   const handleArticleFavorite = (isFavorited, articleData) => {
     const token = localStorage.getItem("jwt");
-    const removeWhich = "favorite";
+    const functionName = "favorite";
 
     if (!token) {
       console.log("User is not authenticated.");
@@ -273,15 +324,13 @@ function App() {
     if (!isFavorited) {
       addFavorite(token, articleData)
         .then(() => {
-          const newArticlesFavorite = [...articlesFavorited, articleData];
-          setArticlesFavorited([]);
-          setArticlesFavorited(newArticlesFavorite);
+          addLikedOrFavoriteFromArticles(articleData, functionName);
         })
         .catch((err) => console.log("Error adding favorite:", err));
     } else {
       removeFavorite(token, articleData)
         .then(() => {
-          removeLikeorFavoriteFromArticles(articleData, removeWhich);
+          removeLikeorFavoriteFromArticles(articleData, functionName);
         })
         .catch((err) => console.log("Error removing favorite:", err));
     }
@@ -367,11 +416,6 @@ function App() {
   };
 
   //Use Effects
-  useEffect(() => {
-    handleSetWeather();
-    updateContext();
-    handleUpdateDOM(!updateDOM);
-  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("jwt");
@@ -397,17 +441,37 @@ function App() {
   }, [activeModal]);
 
   useEffect(() => {
-    handleUpdateDOM(!updateDOM);
-  }, [weatherData]);
+    if (!hasCombinedList) {
+      {
+        combineFavoritesAndLikes(articlesTotal);
+        setHasCombinedList(true);
+      }
+    }
+  }, [articlesTotal]);
 
   useEffect(() => {
-    if (articlesLiked.length < 0) {
+    if (articlesLiked?.length > 0 || articlesFavorited?.length > 0) {
+      const updatedList = [...articlesLiked, ...articlesFavorited];
+
+      setArticlesTotal(updatedList);
+
+      setHasCombinedList(false);
+    }
+  }, [articlesLiked, articlesFavorited]);
+
+  useEffect(() => {
+    if (!hasPulledServerArticles) {
       handleSetLikedArticles();
-    }
-    if (articlesFavorited.length < 0) {
+
       handleSetFavoriteArticles();
+
+      handleSetWeather();
+      updateContext();
+      setHasPulledServerArticles(true);
+
+      console.log("pulled articles");
     }
-  }, [trigger]);
+  }, []);
 
   //Dev
   const [devVisible, setDevVisible] = useState("isHidden");
@@ -444,8 +508,7 @@ function App() {
           userData,
           isPasswordValid,
           weatherData,
-          updateDOM,
-          isProfileSelected,
+
           currentSearchDataMain,
           setCurrentSearchDataMain,
           searchText,
@@ -477,10 +540,7 @@ function App() {
                     isProfileSelected={isProfileSelected}
                     onArticleLike={handleArticleLike}
                     onArticleFavorite={handleArticleFavorite}
-                    articlesLiked={articlesLiked}
-                    articlesFavorited={articlesFavorited}
-                    setTrigger={setTrigger}
-                    trigger={trigger}
+                    articlesTotal={articlesTotal}
                   />
                 }
               />
@@ -496,10 +556,7 @@ function App() {
                     onArticleLike={handleArticleLike}
                     onArticleFavorite={handleArticleFavorite}
                     onSetLikedArticles={handleSetLikedArticles}
-                    articlesLiked={articlesLiked}
-                    articlesFavorited={articlesFavorited}
-                    setTrigger={setTrigger}
-                    trigger={trigger}
+                    articlesTotal={articlesTotal}
                   />
                 }
               />
@@ -516,10 +573,7 @@ function App() {
                       onArticleLike={handleArticleLike}
                       onArticleFavorite={handleArticleFavorite}
                       onSetFavoriteArticles={handleSetFavoriteArticles}
-                      articlesLiked={articlesLiked}
-                      articlesFavorited={articlesFavorited}
-                      setTrigger={setTrigger}
-                      trigger={trigger}
+                      articlesTotal={articlesTotal}
                     />
                   </ProtectedRoute>
                 }

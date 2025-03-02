@@ -15,69 +15,131 @@ button:hover {
 }
 
 .newscard__header-menu {
-  background-color: blueviolet;
+  z-index: 1;
+  position: absolute;
   top: 0;
+  width: 100%;
+
+  display: flex;
 }
 
+.newscard__favorite-container {
+  z-index: 2;
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 204px;
+  height: 40px;
+}
+
+.newscard__favorite-image,
 .newscard__favorite-button,
 .newscard__remove-button {
-  z-index: 2;
   position: absolute;
   top: 0;
   right: 0;
   width: 40px;
   height: 40px;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 8px;
+  border-radius: 8px;
 }
 
-.newscard__favorite-button {
-  background-image: url(../../assets/bookmark.svg);
-  background-color: transparent;
-  background-size: cover;
-  background-repeat: no-repeat;
-  border: none;
+.newscard__favorite-button,
+.newscard__favorite-image {
+  background-image: url("../../assets/bookmark.svg");
 }
 
 .newscard__remove-button {
   background-image: url("../../assets/trash.svg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  border: none;
 }
 
 .newscard__like-container {
+  z-index: 1;
   position: absolute;
   top: 280px;
   right: 10px;
-  display: flex;
-  gap: 10px;
 }
 
 .newscard__like-count {
+  position: absolute;
+  right: 30px;
   margin: 0;
   padding: 0;
 }
 
+.newscard__like-image {
+  position: absolute;
+  right: 0;
+  width: 25px;
+  height: 25px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
 .newscard__like-button {
+  position: absolute;
+  right: 0;
   z-index: 2;
   padding: 2px;
-  background-image: url(../../assets/Heart.svg);
+  background-image: url("../../assets/Heart.svg");
   background-color: transparent;
   border: none;
   width: 25px;
   height: 25px;
   background-size: contain;
   background-repeat: no-repeat;
-  top: 280px;
-  right: 10px;
 }
 
 .newscard__keywords-button {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 24px;
+  left: 24px;
   width: fit-content;
   height: 40px;
+  padding: 8px;
+  border-radius: 8px;
+}
+.newscard__login-to-save {
+  width: 182px;
+  height: 40px;
+  position: absolute;
+  visibility: collapse;
+
+  background-color: white;
+  border-radius: 10px;
+  width: 159px;
+  height: 40px;
+
+  top: -3px;
+  right: 42px;
+}
+.newscard__lts-text {
+  padding: 14px 20px;
+  font-weight: 500;
+  text-align: center;
+  font-size: 12px;
+  line-height: 14.06px;
+  text-wrap: nowrap;
+}
+.newscard__remove-from-save {
+  visibility: hidden;
+  background-color: white;
+  border-radius: 10px;
+  width: 159px;
+  height: 40px;
+  position: absolute;
+  top: -3px;
+  right: 42px;
+}
+.newscard__rfs-text {
+  font-weight: 500;
+  padding: 14px 26px;
+  text-align: center;
+  text-justify: center;
+  font-size: 12px;
+  line-height: 14.06px;
 }
 
 .newscard__details-container {
@@ -111,7 +173,7 @@ button:hover {
 
 .newscard__image {
   background-color: aqua;
-  width: 400px;
+  width: 100%;
   height: 272px;
 }
 
@@ -175,21 +237,31 @@ button:hover {
 }
 
 .newscard_button-liked {
-  background-image: url(../../assets/State_Liked.svg);
+  background-image: url("../../assets/State_Liked.svg");
+}
+
+.newscard_button-favorited {
+  background-image: url("../../assets/bookmarkchecked.svg");
 }
 
 .newscard_button-liked:hover {
-  background-image: url(../../assets/State_Like_Hovered.svg);
+  background-image: url("../../assets/State_Like_Hovered.svg");
+}
+
+.newscard__favorite-button:hover {
+  background-image: url("../../assets/bookmarkhover.svg");
 }
 
 .newscard__remove-button:hover {
   background-image: url("../../assets/trashhover.svg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  border: none;
+}
+.newscard__remove-button:hover .newscard__remove-from-save {
+  visibility: visible;
 }
 
+.newscard__favorite-image:hover .newscard__login-to-save {
+  visibility: visible;
+}
 @media screen and (min-width: 530px) and (max-width: 850px) {
   .newscard {
     width: 224px;
@@ -285,5 +357,15 @@ button:hover {
   .newscard__url:hover {
     background-color: #8f8f8f;
     font-weight: 700;
+  }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
   }
 }

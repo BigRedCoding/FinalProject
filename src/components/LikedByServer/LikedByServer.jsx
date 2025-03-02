@@ -1,8 +1,6 @@
 import "./LikedByServer.css";
-import { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-import CurrentUserContext from "../../contexts/CurrentUserContext";
 import Navigation from "../Navigation/Navigation";
 import NewsSection from "../NewsSection/NewsSection";
 
@@ -12,45 +10,42 @@ export default function LikedByServer({
   onEditProfileClick,
   onLogoutClick,
   isProfileSelected,
+  articlesTotal,
   onArticleLike,
   onArticleFavorite,
-  onSetLikedArticles,
-  articlesLiked,
-  articlesFavorited,
-  setTrigger,
-  trigger,
 }) {
+  const [initialTrigger, setInitialTrigger] = useState(false);
+
   const [query, setQuery] = useState("");
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isArticlesFetched, setIsArticlesFetched] = useState(false);
-  const location = useLocation();
+
+  const isSubmitted = true;
+
+  const filterArticlesByLikes = () => {
+    setFilteredArticles(
+      articlesTotal.filter((article) => article.likes.length > 0)
+    );
+  };
 
   const handleSearch = (evt) => {
     evt.preventDefault();
     const searchWords = query.toLowerCase().split(" ");
-    const filteredResults = articlesLiked.filter((article) =>
+    const filteredResults = articlesTotal.filter((article) =>
       searchWords.some((word) => article.title.toLowerCase().includes(word))
     );
     setFilteredArticles(filteredResults);
   };
 
   useEffect(() => {
-    if (
-      location.pathname === "/liked-by-server" &&
-      isArticlesFetched === false
-    ) {
-      onSetLikedArticles();
+    if (!initialTrigger) {
+      if (articlesTotal?.length > 0) {
+        filterArticlesByLikes();
+        setInitialTrigger(true);
+        setIsProfileSelected("likedbyserver");
+      }
     }
-    setIsArticlesFetched(true);
-    setIsProfileSelected("likedbyserver");
-  }, [location.pathname]);
-
-  useEffect(() => {
-    if (articlesLiked) {
-      setFilteredArticles(articlesLiked);
-    }
-  }, [articlesLiked, location.pathname]);
+  }, []);
 
   return (
     <section className="liked-by-server">
@@ -60,8 +55,6 @@ export default function LikedByServer({
         onEditProfileClick={onEditProfileClick}
         onLogoutClick={onLogoutClick}
         isProfileSelected={isProfileSelected}
-        setTrigger={setTrigger}
-        trigger={trigger}
       />
       <div className="liked-by-server__header">
         <p className="liked-by-server__title">
@@ -89,15 +82,12 @@ export default function LikedByServer({
         {filteredArticles.length > 0 ? (
           <NewsSection
             loading={loading}
-            query={query}
-            allArticles={filteredArticles}
             setLoading={setLoading}
+            allArticles={articlesTotal}
+            isSubmitted={isSubmitted}
             onArticleLike={onArticleLike}
             onArticleFavorite={onArticleFavorite}
-            setTrigger={setTrigger}
-            trigger={trigger}
-            articlesLiked={articlesLiked}
-            articlesFavorited={articlesFavorited}
+            query={query}
           />
         ) : (
           <p className="liked-by-server__no-articles">No liked articles!</p>

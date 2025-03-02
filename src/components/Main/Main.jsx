@@ -19,10 +19,7 @@ export default function Main({
   isProfileSelected,
   onArticleLike,
   onArticleFavorite,
-  articlesLiked,
-  articlesFavorited,
-  setTrigger,
-  trigger,
+  articlesTotal,
 }) {
   const { currentSearchDataMain, setCurrentSearchDataMain } =
     useContext(CurrentUserContext);
@@ -41,59 +38,6 @@ export default function Main({
     return shuffledArray;
   };
 
-  const checkItemsForLikesAndFavorites = (searchResults) => {
-    return searchResults.map((searchArticle) => {
-      const matchInLiked = articlesLiked.find(
-        (likedArticle) =>
-          likedArticle.author === searchArticle.author &&
-          likedArticle.title === searchArticle.title &&
-          likedArticle.description === searchArticle.description &&
-          likedArticle.imageUrl === searchArticle.imageUrl &&
-          likedArticle.url === searchArticle.url &&
-          likedArticle.source === searchArticle.source &&
-          likedArticle.date === searchArticle.date
-      );
-
-      const matchInFavorited = articlesFavorited.find(
-        (favoritedArticle) =>
-          favoritedArticle.author === searchArticle.author &&
-          favoritedArticle.title === searchArticle.title &&
-          favoritedArticle.description === searchArticle.description &&
-          favoritedArticle.imageUrl === searchArticle.imageUrl &&
-          favoritedArticle.url === searchArticle.url &&
-          favoritedArticle.source === searchArticle.source &&
-          favoritedArticle.date === searchArticle.date
-      );
-
-      if (matchInLiked || matchInFavorited) {
-        const updatedArticle = { ...searchArticle };
-
-        if (matchInLiked) {
-          if (matchInLiked.likes.includes(userData.userId)) {
-            updatedArticle.likes = [...matchInLiked.likes];
-          } else {
-            updatedArticle.likes = [...matchInLiked.likes, userData.userId];
-          }
-        }
-
-        if (matchInFavorited) {
-          if (matchInFavorited.favorites.includes(userData.userId)) {
-            updatedArticle.favorites = [...matchInFavorited.favorites];
-          } else {
-            updatedArticle.favorites = [
-              ...matchInFavorited.favorites,
-              userData.userId,
-            ];
-          }
-        }
-
-        return updatedArticle;
-      }
-
-      return searchArticle;
-    });
-  };
-
   const handleSearch = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -102,14 +46,10 @@ export default function Main({
 
     if (storedResults) {
       const parsedResults = JSON.parse(storedResults);
-      const checkAgainstFavoritesAndLikes =
-        checkItemsForLikesAndFavorites(parsedResults);
 
-      setCurrentSearchDataMain(checkAgainstFavoritesAndLikes);
-      setCurrentResults(checkAgainstFavoritesAndLikes);
+      setCurrentResults(parsedResults);
       setLoading(false);
       setIsSubmitted(true);
-      setTrigger(true);
     } else {
       const resultsArray = [];
       const resultsNewsApp = await searchArticles(query);
@@ -122,12 +62,13 @@ export default function Main({
 
       const shuffledResults = shuffleArray(resultsArray);
 
+      setCurrentResults(shuffledResults);
+
       localStorage.setItem(
         "randomizedResults",
-        JSON.stringify(resultsWithLikesAndFavorites)
+        JSON.stringify(shuffledResults)
       );
 
-      setCurrentSearchDataMain(shuffledResults);
       setLoading(false);
       setIsSubmitted(true);
     }
@@ -141,8 +82,6 @@ export default function Main({
         onEditProfileClick={onEditProfileClick}
         onLogoutClick={onLogoutClick}
         isProfileSelected={isProfileSelected}
-        setTrigger={setTrigger}
-        trigger={trigger}
       />
       <section className="main__search">
         <div className="main__search-container">
@@ -169,16 +108,12 @@ export default function Main({
         {currentSearchDataMain ? (
           <NewsSection
             loading={loading}
-            query={query}
-            allArticles={currentResults}
             setLoading={setLoading}
+            allArticles={currentResults}
             isSubmitted={isSubmitted}
             onArticleLike={onArticleLike}
             onArticleFavorite={onArticleFavorite}
-            setTrigger={setTrigger}
-            trigger={trigger}
-            articlesLiked={articlesLiked}
-            articlesFavorited={articlesFavorited}
+            query={query}
           />
         ) : (
           <div></div>
