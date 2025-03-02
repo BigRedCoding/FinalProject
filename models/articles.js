@@ -10,12 +10,12 @@ const articles = new mongoose.Schema({
   },
   title: {
     type: String,
-    required: false,
+    required: true,
     default: "",
   },
   description: {
     type: String,
-    required: false,
+    required: true,
     default: "",
   },
   imageUrl: {
@@ -52,6 +52,11 @@ const articles = new mongoose.Schema({
     required: false,
   },
   likes: {
+    type: [String],
+    default: [],
+    required: false,
+  },
+  keywords: {
     type: [String],
     default: [],
     required: false,

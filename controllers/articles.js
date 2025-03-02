@@ -12,6 +12,7 @@ const addArticle = (req, res, next) => {
     date,
     favorites,
     likes,
+    keywords,
   } = req.body;
 
   articles
@@ -25,6 +26,7 @@ const addArticle = (req, res, next) => {
       date,
       favorites,
       likes,
+      keywords,
     })
     .then(() => {
       res.status(201).send({ message: "article added successfully" });
@@ -94,6 +96,7 @@ const checkAndAddArticleWithLikes = (req, res, next) => {
           date,
           favorites = [],
           likes = [],
+          keywords,
         } = req.body;
 
         likes = [req.user._id];
@@ -108,6 +111,7 @@ const checkAndAddArticleWithLikes = (req, res, next) => {
           date,
           favorites,
           likes,
+          keywords,
         };
         return addArticle(req, res, next);
       }
@@ -123,6 +127,7 @@ const checkAndAddArticleWithLikes = (req, res, next) => {
         date,
         favorites = [],
         likes = [],
+        keywords,
       } = req.body;
 
       likes = [req.user._id];
@@ -137,6 +142,7 @@ const checkAndAddArticleWithLikes = (req, res, next) => {
         date,
         favorites,
         likes,
+        keywords,
       };
 
       return addArticle(req, res, next);
@@ -169,6 +175,7 @@ const checkAndAddArticleWithFavorite = (req, res, next) => {
           date,
           favorites = [],
           likes = [],
+          keywords,
         } = req.body;
 
         favorites = [req.user._id];
@@ -183,6 +190,7 @@ const checkAndAddArticleWithFavorite = (req, res, next) => {
           date,
           favorites,
           likes,
+          keywords,
         };
         return addArticle(req, res, next);
       }
@@ -198,6 +206,7 @@ const checkAndAddArticleWithFavorite = (req, res, next) => {
         date,
         favorites = [],
         likes = [],
+        keywords,
       } = req.body;
 
       favorites = [req.user._id];
@@ -212,6 +221,7 @@ const checkAndAddArticleWithFavorite = (req, res, next) => {
         date,
         favorites,
         likes,
+        keywords,
       };
 
       return addArticle(req, res, next);
