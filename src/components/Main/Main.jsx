@@ -1,5 +1,6 @@
 import "./Main.css";
 import React, { useState, useContext } from "react";
+import { useLocation } from "react-router-dom";
 
 import About from "../About/About.jsx";
 import NewsSection from "../NewsSection/NewsSection.jsx";
@@ -9,7 +10,6 @@ import Navigation from "../Navigation/Navigation.jsx";
 import { searchArticles } from "../../utils/NewsApis/newsapp.js";
 import { getGnewsNews } from "../../utils/NewsApis/Gnews.js";
 import { getNewsData } from "../../utils/NewsApis/newsdata.js";
-import CurrentUserContext from "../../contexts/CurrentUserContext.js";
 
 export default function Main({
   onLoginClick,
@@ -21,9 +21,6 @@ export default function Main({
   onArticleFavorite,
   articlesTotal,
 }) {
-  const { currentSearchDataMain, setCurrentSearchDataMain } =
-    useContext(CurrentUserContext);
-
   const [query, setQuery] = useState("");
 
   const [loading, setLoading] = useState(false);
@@ -32,24 +29,49 @@ export default function Main({
 
   const [currentResults, setCurrentResults] = useState([]);
 
-  const shuffleArray = (array) => {
+  const orderByDate = (array) => {
     let shuffledArray = [...array];
     shuffledArray.sort((b, a) => new Date(a.date) - new Date(b.date));
     return shuffledArray;
+  };
+
+  const setLikesAndFavorites = (results) => {
+    const orderedResults = orderByDate(results);
+
+    const updateOrderedResults = () => {
+      return orderedResults.map((orderedItem) => {
+        const matchedItem = articlesTotal.find((article) => {
+          return (
+            article.author === orderedItem.author &&
+            article.title === orderedItem.title &&
+            article.description === orderedItem.description &&
+            article.imageUrl === orderedItem.imageUrl &&
+            article.url === orderedItem.url &&
+            article.source === orderedItem.source
+          );
+        });
+        return matchedItem ? { ...orderedItem, ...matchedItem } : orderedItem;
+      });
+    };
+
+    const updatedResults = updateOrderedResults();
+
+    setCurrentResults(updatedResults);
+
+    setLoading(false);
+    setIsSubmitted(true);
   };
 
   const handleSearch = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    const storedResults = localStorage.getItem("randomizedResults");
+    const storedResults = localStorage.getItem("searchResults");
 
     if (storedResults) {
-      const parsedResults = JSON.parse(storedResults);
+      const results = JSON.parse(storedResults);
 
-      setCurrentResults(parsedResults);
-      setLoading(false);
-      setIsSubmitted(true);
+      setLikesAndFavorites(results);
     } else {
       const resultsArray = [];
       const resultsNewsApp = await searchArticles(query);
@@ -60,17 +82,11 @@ export default function Main({
       resultsArray.push(...resultsGnewsNews);
       resultsArray.push(...resultsNewsData);
 
-      const shuffledResults = shuffleArray(resultsArray);
+      const results = orderByDate(resultsArray);
 
-      setCurrentResults(shuffledResults);
+      setLikesAndFavorites(results);
 
-      localStorage.setItem(
-        "randomizedResults",
-        JSON.stringify(shuffledResults)
-      );
-
-      setLoading(false);
-      setIsSubmitted(true);
+      localStorage.setItem("searchResults", JSON.stringify(results));
     }
   };
 
@@ -89,10 +105,15 @@ export default function Main({
             <p className="main__search-container-title">
               What's going on in the world?
             </p>
+            <p className="main__search-container-sub">
+              Find the latest news on any topic and save them in your personal
+              account.
+            </p>
+            <div className="main__news-search"></div>
             <form className="main__news-form" onSubmit={handleSearch}>
               <input
                 type="text"
-                placeholder="Search for articles"
+                placeholder="Enter topic"
                 value={query}
                 className="main__news-input"
                 onChange={(e) => setQuery(e.target.value)}
@@ -101,11 +122,25 @@ export default function Main({
                 Search
               </button>
             </form>
+            <div className="main__form-container-mobile">
+              <form className="main__news-form-mobile" onSubmit={handleSearch}>
+                <input
+                  type="text"
+                  placeholder="Enter topic"
+                  value={query}
+                  className="main__news-input-mobile"
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+              </form>{" "}
+              <button className="main__submit-button-mobile" type="submit">
+                Search
+              </button>
+            </div>
           </div>
         </div>
       </section>
       <div className="main__saved-container">
-        {currentSearchDataMain ? (
+        {isSubmitted ? (
           <NewsSection
             loading={loading}
             setLoading={setLoading}
@@ -114,6 +149,7 @@ export default function Main({
             onArticleLike={onArticleLike}
             onArticleFavorite={onArticleFavorite}
             query={query}
+            isProfileSelected={isProfileSelected}
           />
         ) : (
           <div></div>

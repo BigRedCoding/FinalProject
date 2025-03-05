@@ -17,8 +17,6 @@ export default function SavedNews({
   onArticleFavorite,
   articlesTotal,
 }) {
-  const [initialTrigger, setInitialTrigger] = useState(false);
-
   const { userData } = useContext(CurrentUserContext);
   const [filteredArticles, setFilteredArticles] = useState([]);
 
@@ -26,27 +24,32 @@ export default function SavedNews({
 
   const userName = userData?.userName || "";
 
-  const numberSaved = userData?.savedArticles?.length || "0";
-  const keywords =
-    userData?.savedArticles?.map((article) => article.keywords).join(", ") ||
-    "no key words associated";
-
-  const filterArticlesByLikes = () => {
-    setFilteredArticles(
-      articlesTotal.filter((article) => article.favorites.length > 0)
-    );
-  };
+  const numberSaved = filteredArticles?.length || "0";
 
   const isSubmitted = true;
 
+  const keywords =
+    userData?.filteredArticles?.map((article) => article.keywords).join(", ") ||
+    "no key words associated";
+
+  const filterArticlesByFavorites = () => {
+    console.log("filter by favorites trigger");
+    setFilteredArticles(
+      articlesTotal.filter((article) =>
+        article.favorites.includes(userData.userId)
+      )
+    );
+  };
+
   useEffect(() => {
-    if (!initialTrigger) {
-      if (articlesTotal?.length > 0) {
-        filterArticlesByLikes();
-        setInitialTrigger(true);
-        setIsProfileSelected("profile");
-      }
+    if (articlesTotal.length >= 0) {
+      filterArticlesByFavorites();
     }
+  }, [articlesTotal]);
+
+  useEffect(() => {
+    filterArticlesByFavorites();
+    setIsProfileSelected("profile");
   }, []);
 
   return (
@@ -74,6 +77,7 @@ export default function SavedNews({
             isSubmitted={isSubmitted}
             onArticleLike={onArticleLike}
             onArticleFavorite={onArticleFavorite}
+            isProfileSelected={isProfileSelected}
           />
         ) : (
           <p className="liked-by-server__no-articles">No saved articles!</p>

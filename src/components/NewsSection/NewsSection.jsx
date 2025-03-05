@@ -12,152 +12,110 @@ export default function NewsSection({
   isSubmitted,
   onArticleLike,
   onArticleFavorite,
+  isProfileSelected,
   query,
 }) {
-  const location = useLocation();
+  const [filteredArticles, setFilteredArticles] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(3);
-  const [articlesList, setArticlesList] = useState([]);
+  const [totalCards, setTotalCards] = useState(1);
+  const [cardsShown, setCardsShown] = useState(3);
+
   const [numberOfResultsShown, setNumberOfResultsShown] = useState(0);
 
-  const [test, setTest] = useState([]);
-  const [articleCards, setArticleCards] = useState([]);
-
-  const seeMoreDisabled = currentPage >= totalPages / pageSize;
-  const seeLessDisabled = currentPage <= totalPages / pageSize;
-
+  const seeMoreDisabled = currentPage >= totalCards / cardsShown;
+  const seeLessDisabled = currentPage === 1;
   const disableButton = seeMoreDisabled ? "isHidden" : "";
   const disableButton1 = seeLessDisabled ? "isHidden" : "";
+
+  const maxPages = allArticles.length / cardsShown;
 
   const printConsole = () => {
     console.log(allArticles);
   };
 
-  const handlePageChange = async (newPage) => {
-    setLoading(true);
+  const handlePageChange = (page) => {
+    if (page > 0 || page < maxPages) {
+      const numberOfResultsToShow = page * cardsShown;
+      const cardsToShow = allArticles.slice(0, numberOfResultsToShow);
 
-    const startIndex = (newPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-
-    let newResults = articlesList?.slice(startIndex, endIndex);
-
-    setCurrentPage(newPage);
-
-    setTest(newResults);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    const updatePageSize = () => {
-      const width = window.innerWidth;
-      if (width >= 1265) {
-        setPageSize(3);
-      } else if (width >= 850) {
-        setPageSize(4);
-      } else if (width >= 730) {
-        setPageSize(3);
-      } else {
-        setPageSize(1);
-      }
-    };
-
-    updatePageSize();
-    window.addEventListener("resize", updatePageSize);
-
-    return () => {
-      window.removeEventListener("resize", updatePageSize);
-    };
-  }, [location.pathname]);
-
-  const initialSetUp = () => {
-    let localArticles = [];
-
-    for (let i = 0; i < test.length; i++) {
-      if (test.length !== localArticles.length) {
-        const item = articlesList[i];
-
-        localArticles.push(
-          <NewsCard
-            key={i}
-            data={item}
-            onArticleLike={onArticleLike}
-            onArticleFavorite={onArticleFavorite}
-          />
-        );
-      }
-      setArticleCards(localArticles);
+      setFilteredArticles(cardsToShow);
+      setCurrentPage(page);
     }
   };
 
-  useEffect(() => {
-    if (test?.length > 0) {
-      const testLength = test.length;
-      setNumberOfResultsShown(testLength);
-      initialSetUp();
-    }
-  }, [test]);
+  const setPages = () => {
+    const pageSize = isProfileSelected === "home" ? 3 : 6;
+    const totalArticles = allArticles.length;
+
+    setCardsShown(pageSize);
+    setTotalCards(totalArticles);
+  };
 
   useEffect(() => {
-    if (articlesList?.length > 0) {
-      handlePageChange(1);
+    if (filteredArticles.length > 0) {
+      setNumberOfResultsShown(filteredArticles.length);
     }
-  }, [articlesList]);
+  }, [filteredArticles]);
+
+  useEffect(() => {
+    if (totalCards > 0) {
+      const cardsToShow = allArticles.slice(0, cardsShown);
+
+      setFilteredArticles(cardsToShow);
+    }
+  }, [totalCards]);
 
   useEffect(() => {
     if (allArticles?.length > 0) {
-      setTotalPages(allArticles.length);
-      setArticlesList(allArticles);
+      setPages();
     }
-  }, [allArticles, isSubmitted]);
-
+  }, [allArticles]);
   return (
     <section className="news-section">
       <div className="news-section__search-results">
         {loading && <Preloader />}
+        {!loading && (
+          <div className="news-section__results-container">
+            <ul className="news-section__results-list">
+              {filteredArticles.map((article, index) => (
+                <NewsCard
+                  key={index}
+                  data={article}
+                  onArticleLike={onArticleLike}
+                  onArticleFavorite={onArticleFavorite}
+                />
+              ))}
+            </ul>
+          </div>
+        )}
+
         {!loading && isSubmitted && (
-          <ul className="news-section__results-list">
-            {articleCards?.length > 0 ? (
-              articleCards
-            ) : (
-              <li>
-                <p>No results found.</p>
-              </li>
-            )}
-          </ul>
+          <div className="news-section__navigation-container">
+            <button
+              className={`news-section__navigation-button ${disableButton1}`}
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
+              See less
+            </button>
+            <span className="news-section__navigation-span">
+              Showing {numberOfResultsShown} of {totalCards}
+            </span>
+            <button
+              className={`news-section__navigation-button ${disableButton}`}
+              onClick={() => handlePageChange(currentPage + 1)}
+            >
+              See more
+            </button>
+            <button
+              className="news-section__navigation-button"
+              onClick={printConsole}
+            >
+              See data
+            </button>
+          </div>
         )}
       </div>
-      {!loading && isSubmitted && (
-        <div className="news-section__navigation-container">
-          <button
-            className={`news-section__navigation-button ${disableButton}`}
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={seeLessDisabled}
-          >
-            See less
-          </button>
-
-          <span className="news-section__navigation-span">
-            Showing {numberOfResultsShown} of {totalPages}
-          </span>
-
-          <button
-            className={`news-section__navigation-button ${disableButton1}`}
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={seeMoreDisabled}
-          >
-            See more
-          </button>
-
-          <button
-            className="news-section__navigation-button"
-            onClick={printConsole}
-          >
-            See data
-          </button>
-        </div>
-      )}
     </section>
   );
 }

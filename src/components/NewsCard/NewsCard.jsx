@@ -1,7 +1,9 @@
 import "./NewsCard.css";
 import LikeImage from "../../assets/Heart.svg";
+import NewsExplorerLogo from "../../assets/newsexplorerlogo.jpg";
 
 import { useState, useEffect, useContext } from "react";
+import { useLocation } from "react-router-dom";
 import CurrentUserContext from "../../contexts/CurrentUserContext";
 
 export default function NewsCard({ data, onArticleLike, onArticleFavorite }) {
@@ -11,20 +13,28 @@ export default function NewsCard({ data, onArticleLike, onArticleFavorite }) {
   const [isLiked, setIsLiked] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
 
+  const location = useLocation();
+
+  const isSavedNews = location.pathname === "/saved-news";
+
   const newAuthor = data?.author || "Unknown Author";
   const newTitle = data?.title || "No Title Available";
   const newDescription = data?.description || "No Description Available";
-  const newImageUrl = data?.imageUrl || "";
+  const newImageUrl = data?.imageUrl || NewsExplorerLogo;
   const newUrl = data?.url || "#";
-  const newDate = new Date(data?.date || Date.now()).toLocaleDateString(
-    "en-US",
-    {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }
-  );
 
+  const dateNow = new Date(Date.now()).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const newDate = new Date(data?.date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  // console.log(newDate);
   const newSource = data?.source?.toUpperCase() || "UNKNOWN";
 
   const likeState = isLiked ? "newscard_button-liked" : "";
@@ -48,9 +58,9 @@ export default function NewsCard({ data, onArticleLike, onArticleFavorite }) {
 
   useEffect(() => {
     setCurrentLikes(data?.likes?.length || 0);
-    setIsLiked(data?.likes?.some((item) => item === userData.userId) || false);
+    setIsLiked(data?.likes?.some((item) => item === userData?.userId) || false);
     setIsFavorited(
-      data?.favorites?.some((item) => item === userData.userId) || false
+      data?.favorites?.some((item) => item === userData?.userId) || false
     );
   }, [data]);
 
@@ -70,15 +80,20 @@ export default function NewsCard({ data, onArticleLike, onArticleFavorite }) {
               </button>
             </>
           )}
-          {isLoggedIn && !isFavorited && (
-            <>
-              <button
-                onClick={handleArticleFavorite}
-                className={`newscard__favorite-button ${favoriteState}`}
-              ></button>
-            </>
+          {isLoggedIn && (
+            <button
+              onClick={handleArticleFavorite}
+              className={`newscard__favorite-button ${favoriteState}`}
+            >
+              {isFavorited && (
+                <div className="newscard__remove-from-save">
+                  <p className="newscard__rfs-text">Remove from saved</p>
+                </div>
+              )}
+            </button>
           )}
-          {isLoggedIn && isFavorited && (
+
+          {isLoggedIn && isFavorited && isSavedNews && (
             <>
               <button
                 onClick={handleArticleFavorite}

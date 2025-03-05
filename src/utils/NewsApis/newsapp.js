@@ -31,7 +31,7 @@ export const searchArticles = async (query, page) => {
 
     const date = new Date(publishedAt).getTime();
 
-    const authorReconfig = author == null ? source.name : author;
+    const authorReconfig = author === null ? source.name : author;
 
     return {
       author: authorReconfig,

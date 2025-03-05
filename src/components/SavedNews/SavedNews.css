@@ -3,7 +3,7 @@
 }
 
 .saved-news__header {
-  padding: 120px 106px 56px 104px;
+  padding: 140px 106px 56px 102px;
 }
 
 .saved-news__title {
@@ -29,4 +29,16 @@
 .saved-news__no-articles {
   font-size: 24px;
   font-weight: 700;
+}
+
+@media screen and (max-width: 768px) {
+  .saved-news__header {
+    padding: 130px 16px 32px 40px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .saved-news__header {
+    padding: 64px 17px 32px 15px;
+  }
 }

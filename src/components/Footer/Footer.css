@@ -89,9 +89,30 @@
   background-size: contain;
 }
 
-@media screen and (max-width: 627px) {
+@media screen and (max-width: 768px) {
   .footer {
-    margin: 85px 0 0;
-    padding-bottom: 4px;
+    padding: 0;
+    margin: 24px 40px 18px;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .footer {
+    margin: 20px 16px 22px;
+    flex-direction: column-reverse;
+    gap: 38px;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .footer__links-container {
+    justify-content: space-between;
+    height: fit-content;
+    align-items: start;
+  }
+  .footer__text-links-container {
+    align-items: start;
+    flex-direction: column;
+    height: fit-content;
   }
 }

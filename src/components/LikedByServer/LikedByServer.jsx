@@ -1,5 +1,6 @@
 import "./LikedByServer.css";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import Navigation from "../Navigation/Navigation";
 import NewsSection from "../NewsSection/NewsSection";
@@ -10,9 +11,9 @@ export default function LikedByServer({
   onEditProfileClick,
   onLogoutClick,
   isProfileSelected,
-  articlesTotal,
   onArticleLike,
   onArticleFavorite,
+  articlesTotal,
 }) {
   const [initialTrigger, setInitialTrigger] = useState(false);
 
@@ -22,7 +23,10 @@ export default function LikedByServer({
 
   const isSubmitted = true;
 
+  const location = useLocation();
+
   const filterArticlesByLikes = () => {
+    console.log("filtered articles by likes");
     setFilteredArticles(
       articlesTotal.filter((article) => article.likes.length > 0)
     );
@@ -36,6 +40,12 @@ export default function LikedByServer({
     );
     setFilteredArticles(filteredResults);
   };
+
+  useEffect(() => {
+    if (articlesTotal?.length >= 0) {
+      filterArticlesByLikes();
+    }
+  }, [articlesTotal]);
 
   useEffect(() => {
     if (!initialTrigger) {
@@ -57,9 +67,7 @@ export default function LikedByServer({
         isProfileSelected={isProfileSelected}
       />
       <div className="liked-by-server__header">
-        <p className="liked-by-server__title">
-          List of items liked by other users
-        </p>
+        <p className="liked-by-server__title">Items liked by other users</p>
         <div className="liked-by-server__form-container">
           <form className="liked-by-server__news-form" onSubmit={handleSearch}>
             <input
@@ -77,17 +85,40 @@ export default function LikedByServer({
             </button>
           </form>
         </div>
+        <div className="liked-by-server__form-container-mobile">
+          <div className="liked-by-server__form-inner">
+            <form
+              className="liked-by-server__news-form-mobile"
+              onSubmit={handleSearch}
+            >
+              <input
+                type="text"
+                placeholder="Search for articles"
+                value={query}
+                className="liked-by-server__news-input-mobile"
+                onChange={(e) => setQuery(e.target.value)}
+              />
+            </form>{" "}
+            <button
+              className="liked-by-server__submit-button-mobile"
+              type="submit"
+            >
+              Search
+            </button>
+          </div>
+        </div>
       </div>
       <div className="liked-by-server__saved-container">
         {filteredArticles.length > 0 ? (
           <NewsSection
             loading={loading}
             setLoading={setLoading}
-            allArticles={articlesTotal}
+            allArticles={filteredArticles}
             isSubmitted={isSubmitted}
             onArticleLike={onArticleLike}
             onArticleFavorite={onArticleFavorite}
             query={query}
+            isProfileSelected={isProfileSelected}
           />
         ) : (
           <p className="liked-by-server__no-articles">No liked articles!</p>

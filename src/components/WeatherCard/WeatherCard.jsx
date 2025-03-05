@@ -11,7 +11,7 @@ export default function ({ day, index }) {
   const temperatureMax = ((day?.temperature_max * 9) / 5 + 32).toFixed(0) || "";
   const temperatureMin = ((day?.temperature_min * 9) / 5 + 32).toFixed(0) || "";
 
-  const weatherCode = day?.weather_code || "";
+  const weatherCode = day?.weather_code || 0;
 
   const filteredOption = weatherConditions2.filter((option) => {
     return option.code.includes(weatherCode);
@@ -21,10 +21,7 @@ export default function ({ day, index }) {
   const optionCondition = filteredOption[0]?.condition || "";
 
   function getDayOfWeek(dateStr) {
-    // Create a new Date object from the string
     const date = new Date(dateStr);
-
-    // Define an array of weekday names
     const weekdays = [
       "Monday",
       "Tuesday",
@@ -34,8 +31,6 @@ export default function ({ day, index }) {
       "Saturday",
       "Sunday",
     ];
-
-    // Get the day of the week (0 = Sunday, 1 = Monday, etc.)
     const dayOfWeek = weekdays[date.getDay()];
 
     return dayOfWeek;

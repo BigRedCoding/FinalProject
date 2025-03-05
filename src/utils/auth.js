@@ -2,7 +2,7 @@ import { attemptGainResponse } from "../utils/api.js";
 
 const baseUrl =
   process.env.NODE_ENV === "production"
-    ? "https://api.bdwtwr.justlearning.net/"
+    ? "api.newsexplorer.justlearning.net"
     : "http://localhost:3001";
 
 export function signup(item) {

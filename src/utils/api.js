@@ -1,6 +1,6 @@
 const baseUrl =
   process.env.NODE_ENV === "production"
-    ? "https://api.bdwtwr.justlearning.net/"
+    ? "api.newsexplorer.justlearning.net"
     : "http://localhost:3001";
 
 console.log("Base Server URL:", baseUrl);
@@ -14,26 +14,9 @@ export function responseCheck(res) {
   });
 }
 
-export async function getArticlesByLikes() {
-  return fetch(`${baseUrl}/articles/get-by-likes`)
-    .then((res) => {
-      return responseCheck(res);
-    })
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error) => {
-      console.error("Error in fetching articles:", error);
-    });
-}
-
-export async function getArticlesByFavorite(token) {
-  return fetch(`${baseUrl}/articles/get-by-favorite`, {
+export async function getAllArticles() {
+  return fetch(`${baseUrl}/articles/get-all-articles`, {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
   })
     .then((res) => {
       return responseCheck(res);

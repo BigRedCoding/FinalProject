@@ -27,8 +27,7 @@ import CurrentTemperatureUnitContext from "../../contexts/CurrentTemperatureUnit
 //Utils
 import { coordinates, WeatherAPIKey } from "../../utils/constants.js";
 import {
-  getArticlesByLikes,
-  getArticlesByFavorite,
+  getAllArticles,
   addLike,
   removeLike,
   addFavorite,
@@ -42,13 +41,8 @@ import {
 import {
   getWeather,
   filterWeatherData,
-  returnCoordinates,
 } from "../../utils/NewsApis/weatherapi.js";
-import { getHackerNews } from "../../utils/NewsApis/hackernewsapi.js";
-import { getTheGuardianNews } from "../../utils/NewsApis/theguardian.js";
 import { getGnewsNews } from "../../utils/NewsApis/Gnews.js";
-
-import { fetchAndDisplayData } from "../../utils/NewsApis/finnhub.js";
 import { searchArticles } from "../../utils/NewsApis/newsapp.js";
 
 //Dev
@@ -75,10 +69,6 @@ function App() {
   //Modal variables
   const [hasPulledServerArticles, setHasPulledServerArticles] = useState(false);
 
-  const [hasCombinedList, setHasCombinedList] = useState(false);
-
-  const [articlesLiked, setArticlesLiked] = useState([]);
-  const [articlesFavorited, setArticlesFavorited] = useState([]);
   const [articlesTotal, setArticlesTotal] = useState([]);
 
   const [activeModal, setActiveModal] = useState("");
@@ -87,12 +77,11 @@ function App() {
   const [isPasswordValid, setIsPasswordValid] = useState(true);
 
   const [isProfileSelected, setIsProfileSelected] = useState("home");
+  console.log(isProfileSelected);
 
   const [currentSearchDataMain, setCurrentSearchDataMain] = useState([]);
 
   const [searchText, setSearchText] = useState("");
-
-  const [trigger, setTrigger] = useState(false);
 
   //Dev Variables
   const [startApiTrigger, setStartApiTrigger] = useState(false);
@@ -101,14 +90,6 @@ function App() {
   const [userData, setUserData] = useState({});
 
   //Basic Functions
-  const handleAddClick = () => {
-    setActiveModal("garment");
-  };
-
-  const handleDeleteClick = () => {
-    setActiveModal("delete");
-  };
-
   const closeActiveModal = () => {
     setActiveModal("");
   };
@@ -161,153 +142,38 @@ function App() {
   };
 
   //Article Functions
-  const combineFavoritesAndLikes = (totalArticles) => {
-    const uniqueArticles = new Set();
-
-    const filteredArticles = totalArticles.filter((article) => {
-      const articleIdentifier = `${article.author}|${article.title}|${article.imageUrl}|${article.url}|${article.source}|${article.date}`;
-
-      if (uniqueArticles.has(articleIdentifier)) {
-        return false;
-      }
-
-      uniqueArticles.add(articleIdentifier);
-      return true;
-    });
-
-    setArticlesTotal(filteredArticles);
-  };
-
-  const addLikedOrFavoriteFromArticles = (articleData, addWhich) => {
-    const articleMatchCriteria = (article) =>
-      article.author === articleData.author &&
-      article.title === articleData.title &&
-      article.imageUrl === articleData.imageUrl &&
-      article.url === articleData.url &&
-      article.source === articleData.source &&
-      article.date === articleData.date;
-
-    const addUserIdToLikes = (article, userId) => {
-      const updatedLikes = article.likes.includes(userId)
-        ? article.likes
-        : [...article.likes, userId];
-      return { ...article, likes: updatedLikes };
-    };
-
-    const addUserIdToFavorites = (article, userId) => {
-      const updatedFavorites = article.favorites.includes(userId)
-        ? article.favorites
-        : [...article.favorites, userId];
-      return { ...article, favorites: updatedFavorites };
-    };
-
-    const updateArticles = (articles, userId) => {
-      if (!Array.isArray(articles)) return [];
-      return articles.map((article) => {
-        if (addWhich === "like") {
-          if (articleMatchCriteria(article)) {
-            return addUserIdToLikes(article, userId);
-          }
-        } else if (addWhich === "favorite") {
-          return addUserIdToFavorites(article, userId);
-        }
-        return article;
-      });
-    };
-
-    const updatedArticles = updateArticles(articlesTotal, userData.userId);
-
-    console.log("add like function");
-
-    combineFavoritesAndLikes(updatedArticles);
-  };
-
-  const removeLikeorFavoriteFromArticles = (articleData, removeWhich) => {
-    const removeUserIdFromLikes = (article, userId) => {
-      const updatedLikes = article.likes.filter((likes) => likes !== userId);
-      return { ...article, likes: updatedLikes };
-    };
-
-    const removeUserIdFromFavorites = (article, userId) => {
-      const updatedFavorites = article.favorites.filter(
-        (favorites) => favorites !== userId
-      );
-      return { ...article, favorites: updatedFavorites };
-    };
-
-    const updateArticles = (articles, userId) => {
-      if (!Array.isArray(articles)) return [];
-      return articles
-        .map((article) => {
-          if (removeWhich === "like") {
-            if (article === articleData) {
-              const updatedArticle = removeUserIdFromLikes(article, userId);
-
-              if (
-                updatedArticle.likes.length === 0 &&
-                updatedArticle.favorites === 0
-              ) {
-                return null;
-              }
-              return updatedArticle;
-            }
-          } else if (removeWhich === "favorite") {
-            const updatedArticle = removeUserIdFromFavorites(article, userId);
-
-            if (updatedArticle.favorites === 0) {
-              return null;
-            }
-            return updatedArticle;
-          }
-          return article;
-        })
-        .filter((article) => article !== null);
-    };
-
-    const updatedArticles = updateArticles(articlesTotal, userData.userId);
-
-    combineFavoritesAndLikes(updatedArticles);
-  };
-
-  const handleSetLikedArticles = () => {
-    getArticlesByLikes()
+  const handleSetAllArticles = () => {
+    getAllArticles()
       .then((data) => {
-        return setArticlesLiked(data);
+        return setArticlesTotal(data);
       })
       .catch(console.error);
   };
 
-  const handleSetFavoriteArticles = () => {
-    const token = localStorage.getItem("jwt");
-
-    if (token) {
-      getArticlesByFavorite(token)
-        .then((data) => {
-          return setArticlesFavorited(data);
-        })
-        .catch(console.error);
-    }
-  };
-
   const handleArticleLike = (isLiked, articleData) => {
     const token = localStorage.getItem("jwt");
-    const functionName = "like";
 
     if (!token) {
-      console.log("User is not authenticated.");
+      alert("User token missing! Refresh the page and login again!");
       return;
     }
 
     if (!isLiked) {
       addLike(token, articleData)
         .then(() => {
-          addLikedOrFavoriteFromArticles(articleData, functionName);
+          setArticlesTotal([]);
+        })
+        .then(() => {
+          handleSetAllArticles();
         })
         .catch((err) => console.log("Error adding like:", err));
     } else {
       removeLike(token, articleData)
         .then(() => {
-          removeLikeorFavoriteFromArticles(articleData, functionName);
+          setArticlesTotal([]);
+        })
+        .then(() => {
+          handleSetAllArticles();
         })
         .catch((err) => console.log("Error removing like:", err));
     }
@@ -315,22 +181,27 @@ function App() {
 
   const handleArticleFavorite = (isFavorited, articleData) => {
     const token = localStorage.getItem("jwt");
-    const functionName = "favorite";
 
     if (!token) {
-      console.log("User is not authenticated.");
+      alert("User token missing! Refresh the page and login again!");
       return;
     }
     if (!isFavorited) {
       addFavorite(token, articleData)
         .then(() => {
-          addLikedOrFavoriteFromArticles(articleData, functionName);
+          setArticlesTotal([]);
+        })
+        .then(() => {
+          handleSetAllArticles();
         })
         .catch((err) => console.log("Error adding favorite:", err));
     } else {
       removeFavorite(token, articleData)
         .then(() => {
-          removeLikeorFavoriteFromArticles(articleData, functionName);
+          setArticlesTotal([]);
+        })
+        .then(() => {
+          handleSetAllArticles();
         })
         .catch((err) => console.log("Error removing favorite:", err));
     }
@@ -385,45 +256,6 @@ function App() {
       });
   };
 
-  //Hacker News Functions
-
-  const handleHackNewsTopStories = () => {
-    getHackerNews();
-  };
-
-  //TheGuardians News Functions
-
-  const handleTheGuardiansNews = () => {
-    getTheGuardianNews(); //needs variable
-  };
-
-  //Gnews News Functions
-
-  const handleGnews = (query) => {
-    getGnewsNews(query);
-  };
-
-  //NewsApp Functions
-
-  const handleNewsApp = () => {
-    searchArticles(query);
-  };
-
-  //Finnhub Functions
-
-  const handleFinnhub = () => {
-    fetchAndDisplayData();
-  };
-
-  //Use Effects
-
-  useEffect(() => {
-    const token = localStorage.getItem("jwt");
-    if (token) {
-      handleSetFavoriteArticles();
-    }
-  }, [isLoggedIn]);
-
   useEffect(() => {
     if (!activeModal) return;
 
@@ -441,35 +273,12 @@ function App() {
   }, [activeModal]);
 
   useEffect(() => {
-    if (!hasCombinedList) {
-      {
-        combineFavoritesAndLikes(articlesTotal);
-        setHasCombinedList(true);
-      }
-    }
-  }, [articlesTotal]);
-
-  useEffect(() => {
-    if (articlesLiked?.length > 0 || articlesFavorited?.length > 0) {
-      const updatedList = [...articlesLiked, ...articlesFavorited];
-
-      setArticlesTotal(updatedList);
-
-      setHasCombinedList(false);
-    }
-  }, [articlesLiked, articlesFavorited]);
-
-  useEffect(() => {
     if (!hasPulledServerArticles) {
-      handleSetLikedArticles();
-
-      handleSetFavoriteArticles();
+      handleSetAllArticles();
 
       handleSetWeather();
       updateContext();
       setHasPulledServerArticles(true);
-
-      console.log("pulled articles");
     }
   }, []);
 
@@ -479,10 +288,7 @@ function App() {
     setDevVisible();
   };
 
-  const setDevButton1 = () => {
-    console.log("Articles liked:", articlesLiked);
-    console.log("Articles Favorited:", articlesFavorited);
-  };
+  const setDevButton1 = () => {};
   const setDevButton2 = () => {
     searchArticles("trump");
   };
@@ -508,7 +314,6 @@ function App() {
           userData,
           isPasswordValid,
           weatherData,
-
           currentSearchDataMain,
           setCurrentSearchDataMain,
           searchText,
@@ -555,7 +360,6 @@ function App() {
                     isProfileSelected={isProfileSelected}
                     onArticleLike={handleArticleLike}
                     onArticleFavorite={handleArticleFavorite}
-                    onSetLikedArticles={handleSetLikedArticles}
                     articlesTotal={articlesTotal}
                   />
                 }
@@ -572,7 +376,6 @@ function App() {
                       isProfileSelected={isProfileSelected}
                       onArticleLike={handleArticleLike}
                       onArticleFavorite={handleArticleFavorite}
-                      onSetFavoriteArticles={handleSetFavoriteArticles}
                       articlesTotal={articlesTotal}
                     />
                   </ProtectedRoute>

@@ -6,7 +6,7 @@ import HeaderBarCard from "../HeaderBarCard/HeaderBarCard";
 
 export default function HeaderBar({ startApiTrigger, setStartApiTrigger }) {
   const [loading, setLoading] = useState(true);
-  const [combinedNewsData, setCombinedNewsData] = useState([]);
+
   const [dataScroll, setDataScroll] = useState([]);
   const scrollContainerRef = useRef(null);
   const translateValue = useRef(0);
@@ -26,14 +26,12 @@ export default function HeaderBar({ startApiTrigger, setStartApiTrigger }) {
   const combineAndRandomizeData = (newsData, newsData2) => {
     const combinedArray = [...newsData, ...newsData2];
     const randomizedArray = shuffleArray(combinedArray);
-    setCombinedNewsData(randomizedArray);
-    addItems(randomizedArray); // Pass the randomizedArray to addItems
+    addItems(randomizedArray);
   };
 
   const addItems = (randomizedArray) => {
     console.log("add items triggered");
     if (randomizedArray.length > 0) {
-      // Add the first 5 items immediately
       const initialData = [];
       for (let i = 0; i < 5; i++) {
         initialData.push(
@@ -44,10 +42,8 @@ export default function HeaderBar({ startApiTrigger, setStartApiTrigger }) {
         );
       }
 
-      // Flatten the array and update state (avoid nested arrays)
       setDataScroll((prevData) => [...prevData, ...initialData]);
 
-      // Set a timer to add one new item every 5 seconds
       let index = 5;
       const timer = setInterval(() => {
         if (index < randomizedArray.length) {
@@ -74,7 +70,7 @@ export default function HeaderBar({ startApiTrigger, setStartApiTrigger }) {
       const data2 = await getTheGuardianNews();
       console.log("fetchData pulled and set");
       setLoading(false);
-      combineAndRandomizeData(data, data2); // Combine and randomize the data here
+      combineAndRandomizeData(data, data2);
       setStartApiTrigger(false);
     }
   };
@@ -84,7 +80,7 @@ export default function HeaderBar({ startApiTrigger, setStartApiTrigger }) {
   }, [startApiTrigger]);
 
   useEffect(() => {
-    let intervalId; // Declare the intervalId outside of the setInterval callback
+    let intervalId;
 
     const startScrolling = () => {
       intervalId = setInterval(() => {
@@ -103,9 +99,9 @@ export default function HeaderBar({ startApiTrigger, setStartApiTrigger }) {
       }, 20);
     };
 
-    startScrolling(); // Start the scroll immediately
+    startScrolling();
 
-    return () => clearInterval(intervalId); // Clean up the interval on component unmount
+    return () => clearInterval(intervalId);
   }, [dataScroll]);
 
   return (

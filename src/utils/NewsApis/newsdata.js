@@ -7,20 +7,19 @@ const fetchNews = async (query) => {
     );
 
     const formattedReturnData = response.data.results.map((article) => {
-      const date = new Date(article.pubDate).getTime();
+      const date = new Date(article?.pubDate).getTime() || "";
 
-      // Handle the 'creator' field to ensure it's a string
-      const author = Array.isArray(article.creator)
+      const author = Array.isArray(article?.creator)
         ? article.creator.join(", ")
         : article.creator || "";
 
       return {
         author: author,
-        title: article.title,
-        description: article.description,
-        imageUrl: article.image_url,
-        url: article.link,
-        source: article.source_name,
+        title: article?.title || "",
+        description: article?.description || "",
+        imageUrl: article?.image_url || "",
+        url: article?.link || "",
+        source: article?.source_name || "",
         date: date,
         apiname: "newsdata",
       };

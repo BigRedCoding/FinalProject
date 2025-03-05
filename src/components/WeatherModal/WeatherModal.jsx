@@ -13,10 +13,6 @@ import CurrentUserContext from "../../contexts/CurrentUserContext.js";
 
 import SunriseImage from "../../assets/sunrisewhite.png";
 import SunsetImage from "../../assets/sunsetwhite.png";
-import CloudsImage from "../../assets/clouds1.png";
-import MistImage from "../../assets/mist1.png";
-import RainImage from "../../assets/rain1.png";
-import NavigationImage from "../../assets/navigation1.png";
 import HumidityImage from "../../assets/humidity1.png";
 import WindImage from "../../assets/wind1.png";
 import PressureImage from "../../assets/pressurewhite.png";
@@ -28,28 +24,20 @@ export default function WeatherModal({
   onCloseClick,
   currentLocation,
 }) {
-  const { isLoggedIn, userData, weatherData } = useContext(CurrentUserContext);
+  const { weatherData } = useContext(CurrentUserContext);
 
-  const [currentData, setCurrentData] = useState(null);
   const [daysData, setDaysData] = useState({});
 
-  const { main, weather, wind, sys, name, timezone, visibility, dt } =
-    totalWeatherData;
+  const { main, weather, wind, sys, name, timezone, dt } = totalWeatherData;
+
+  const scrollContainerRef = useRef(null);
+  const stockContainer = useRef(null);
+  const translateValue = useRef(0);
 
   const [currentTime, setCurrentTime] = useState(
     new Date((dt + timezone) * 1000)
   );
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-
-    // Cleanup the interval on component unmount
-    return () => clearInterval(interval);
-  }, []);
-
-  // Extracting relevant information from the provided data
   const currentDate = new Date();
   const date = currentDate?.toLocaleDateString() || "";
   const time = currentTime?.toLocaleTimeString() || "";
@@ -79,8 +67,6 @@ export default function WeatherModal({
       })
     : "";
 
-  const conditionsImage = "";
-
   const filteredOptions = weatherConditions.filter((option) => {
     return (
       option.day === weatherData.isDay &&
@@ -98,16 +84,67 @@ export default function WeatherModal({
   }
 
   useEffect(() => {
+    let intervalId;
+    let timeoutId;
+
+    const startScrolling = () => {
+      translateValue.current = 0;
+      scrollContainerRef.current.style.transform = `translateX(${translateValue.current}px)`;
+      if (timeoutId) clearTimeout(timeoutId);
+
+      timeoutId = setTimeout(() => {
+        if (intervalId) clearInterval(intervalId);
+
+        intervalId = setInterval(() => {
+          if (scrollContainerRef.current) {
+            const listWidth = stockContainer.current.clientWidth;
+            const containerWidth = scrollContainerRef.current.clientWidth;
+
+            scrollContainerRef.current.style.transform = `translateX(${translateValue.current}px)`;
+
+            translateValue.current -= 1;
+
+            if (translateValue.current <= -1 * (containerWidth - listWidth)) {
+              clearInterval(intervalId);
+              clearTimeout(timeoutId);
+              delay();
+            }
+          }
+        }, 20);
+      }, 2000);
+    };
+
+    const delay = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+
+      timeoutId = setTimeout(() => {
+        startScrolling();
+      }, 2000);
+    };
+
+    startScrolling();
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [daysData]);
+
+  useEffect(() => {
     if (currentLocation.latitude && currentLocation.longitude) {
       fetchWeatherData(currentLocation).then((data) => {
-        const currentData = data.currentData;
         const daysData = data.daysData;
-
-        setCurrentData(currentData);
         setDaysData(daysData);
       });
     }
   }, [isOpened]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className={`weather-modal ${isOpened}`}>
@@ -218,15 +255,23 @@ export default function WeatherModal({
           </div>
           <div className="weather-modal__weather-container">
             <h3 className="weather-modal__forecast-text">Forecast</h3>
-            <ul className="weather-modal__forecast-list">
-              {daysData.length > 0 ? (
-                daysData.map((day, index) => (
-                  <WeatherCard day={day} key={index} index={index} />
-                ))
-              ) : (
-                <div>No forecast data available</div>
-              )}
-            </ul>
+            <div
+              className="weather-modal__weather-list-container"
+              ref={stockContainer}
+            >
+              <ul
+                className="weather-modal__forecast-list"
+                ref={scrollContainerRef}
+              >
+                {daysData.length > 0 ? (
+                  daysData.map((day, index) => (
+                    <WeatherCard day={day} key={index} index={index} />
+                  ))
+                ) : (
+                  <div>No forecast data available</div>
+                )}
+              </ul>
+            </div>
           </div>
         </div>
       </div>

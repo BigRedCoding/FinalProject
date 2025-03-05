@@ -3,7 +3,7 @@ import {
   weatherConditions,
   defaultWeatherOptions,
 } from "../../utils/constants.js";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import CurrentTemperatureUnitContext from "../../contexts/CurrentTemperatureUnitContext.js";
 import CurrentUserContext from "../../contexts/CurrentUserContext.js";
 
@@ -14,6 +14,13 @@ import StockCard from "../StockCard/StockCard.jsx";
 export default function HeaderCard({ onOpenWeatherModal }) {
   const { currentTemperatureUnit } = useContext(CurrentTemperatureUnitContext);
   const { weatherData } = useContext(CurrentUserContext);
+
+  const scrollContainerRef = useRef(null);
+  const stockContainer = useRef(null);
+  const translateValue = useRef(0);
+
+  let stockItems = [];
+  const [stockItemsList, setStockItemsList] = useState(stockItems);
 
   const currentDate = new Date().toLocaleString("default", {
     month: "long",
@@ -36,9 +43,6 @@ export default function HeaderCard({ onOpenWeatherModal }) {
     weatherOption = filteredOptions[0];
   }
 
-  let stockItems = [];
-  const [stockItemsList, setStockItemsList] = useState(stockItems);
-
   const triggerOpenModal = () => {
     onOpenWeatherModal();
   };
@@ -53,6 +57,53 @@ export default function HeaderCard({ onOpenWeatherModal }) {
       setStockItemsList(stockItems);
     });
   };
+
+  useEffect(() => {
+    let intervalId;
+    let timeoutId;
+
+    const startScrolling = () => {
+      translateValue.current = 0;
+      scrollContainerRef.current.style.transform = `translateX(${translateValue.current}px)`;
+      if (timeoutId) clearTimeout(timeoutId);
+
+      timeoutId = setTimeout(() => {
+        if (intervalId) clearInterval(intervalId);
+
+        intervalId = setInterval(() => {
+          if (scrollContainerRef.current) {
+            const listWidth = stockContainer.current.clientWidth;
+            const containerWidth = scrollContainerRef.current.clientWidth;
+
+            scrollContainerRef.current.style.transform = `translateX(${translateValue.current}px)`;
+
+            translateValue.current -= 1;
+
+            if (translateValue.current <= -1 * (containerWidth - listWidth)) {
+              clearInterval(intervalId);
+              clearTimeout(timeoutId);
+              delay();
+            }
+          }
+        }, 20);
+      }, 2000);
+    };
+
+    const delay = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+
+      timeoutId = setTimeout(() => {
+        startScrolling();
+      }, 2000);
+    };
+
+    startScrolling();
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [stockItemsList]);
 
   useEffect(() => {
     callStockData();
@@ -81,7 +132,11 @@ export default function HeaderCard({ onOpenWeatherModal }) {
           className="header-card__weather-image"
         />
       </div>
-      <ul className="header-card__stock">{stockItemsList}</ul>
+      <div className="header-card__stock-container" ref={stockContainer}>
+        <ul className="header-card__stock" ref={scrollContainerRef}>
+          {stockItemsList}
+        </ul>
+      </div>
     </section>
   );
 }
