@@ -2,6 +2,8 @@ require("dotenv").config();
 
 const cors = require("cors");
 
+const path = require("path");
+
 const express = require("express");
 
 process.env = require("dotenv").config();
@@ -22,17 +24,15 @@ const { ServerError } = require("./utils/errors");
 
 const mainRouter = require("./routes/index");
 
-const cors = require("cors");
+// const corsOptions = {
+//   origin: "https://api.newsexplorer.justlearning.net",
+//   methods: ["GET", "POST", "PUT", "DELETE", "OPTION"],
+//   allowedHeaders: ["Content-Type", "Authorization"],
+// };
 
-const corsOptions = {
-  origin: "https://www.newsexplorer.justlearning.net",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTION"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
+// app.use(cors(corsOptions));
 
-app.use(cors(corsOptions));
-
-// app.use(cors());
+app.use(cors());
 app.use(requestLogger);
 
 mongoose.connect("mongodb://127.0.0.1:27017/NewsExplorer_db").catch(() => {
@@ -42,6 +42,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/NewsExplorer_db").catch(() => {
 app.use(express.json());
 
 app.use("/", mainRouter);
+app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
 app.listen(PORT);
 
