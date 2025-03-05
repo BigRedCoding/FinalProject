@@ -22,7 +22,17 @@ const { ServerError } = require("./utils/errors");
 
 const mainRouter = require("./routes/index");
 
-app.use(cors());
+const cors = require("cors");
+
+const corsOptions = {
+  origin: "https://www.newsexplorer.justlearning.net",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTION"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
+
+// app.use(cors());
 app.use(requestLogger);
 
 mongoose.connect("mongodb://127.0.0.1:27017/NewsExplorer_db").catch(() => {
