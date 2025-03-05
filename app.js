@@ -42,7 +42,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/NewsExplorer_db").catch(() => {
 app.use(express.json());
 
 app.use("/", mainRouter);
-app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
 app.listen(PORT);
 
