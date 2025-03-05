@@ -18,7 +18,7 @@ const createUser = (req, res, next) => {
   return User.findOne({ email })
     .then((existingUser) => {
       if (existingUser) {
-        return next(HttpError.ConflictError("Email is already taken"));
+        return next(HttpError.ConflictError("This email is not available"));
       }
 
       return new Promise((resolve, reject) => {
