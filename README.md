@@ -18,7 +18,7 @@
 
 ### **`DEPLOYMENT:`**
 
-### THIS IS NOT COMPLETE
+### THIS IS NOT COMPLETENPM
 
 ### This website is desployed on GitHub at the following link: [here](https://bigredcoding.github.io/se_project_react/)
 
