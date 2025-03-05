@@ -31,6 +31,23 @@ export default function NewsSection({
 
   const maxPages = allArticles.length / cardsShown;
 
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [listChange, triggerListChange] = useState(false);
+
+  const [updateFilter, setUpdateFilter] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const handlePageChange = (page) => {
     if (page > 0 || page < maxPages) {
       const numberOfResultsToShow = page * cardsShown;
@@ -41,27 +58,58 @@ export default function NewsSection({
     }
   };
 
-  const setPages = () => {
-    const pageSize = isProfileSelected === "home" ? 3 : 6;
-    const totalArticles = allArticles.length;
-
-    setCardsShown(pageSize);
-    setTotalCards(totalArticles);
+  const updateFiltered = () => {
+    console.log("update filter trigger:", updateFilter);
+    if (updateFilter === true) {
+      const cardsToShow = allArticles.slice(0, cardsShown);
+      setFilteredArticles(cardsToShow);
+    }
+    setUpdateFilter(false);
   };
+
+  const setPages = () => {
+    console.log("set pages triggered");
+    if (listChange === true) {
+      const pageSize = 4;
+      setCardsShown(pageSize);
+    } else {
+      const pageSize = isProfileSelected === "home" ? 3 : 6;
+      setCardsShown(pageSize);
+    }
+    console.log(listChange);
+    const totalArticles = allArticles.length;
+    setTotalCards(totalArticles);
+    setUpdateFilter(true);
+  };
+
+  useEffect(() => {
+    updateFiltered();
+  }, [updateFilter]);
+
+  useEffect(() => {
+    setPages();
+  }, [windowWidth]);
+
+  useEffect(() => {
+    console.log("window width use effect trigger:", windowWidth);
+    if (windowWidth < 540) {
+      triggerListChange(false);
+    } else if (windowWidth < 720) {
+      triggerListChange(true);
+    } else if (windowWidth < 881) {
+      triggerListChange(false);
+    } else if (windowWidth < 1265) {
+      triggerListChange(true);
+    } else if (windowWidth > 1265) {
+      triggerListChange(false);
+    }
+  }, [windowWidth]);
 
   useEffect(() => {
     if (filteredArticles.length > 0) {
       setNumberOfResultsShown(filteredArticles.length);
     }
   }, [filteredArticles]);
-
-  useEffect(() => {
-    if (totalCards > 0) {
-      const cardsToShow = allArticles.slice(0, cardsShown);
-
-      setFilteredArticles(cardsToShow);
-    }
-  }, [totalCards]);
 
   useEffect(() => {
     if (allArticles?.length > 0) {
@@ -107,7 +155,7 @@ export default function NewsSection({
             </button>
           </div>
         )}
-        <FailedSearch />
+        {failedSearch && isSubmitted && <FailedSearch />}
       </div>
     </section>
   );

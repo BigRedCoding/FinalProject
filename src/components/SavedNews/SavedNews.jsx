@@ -82,7 +82,10 @@ export default function SavedNews({
             onRegistrationClick={onRegistrationClick}
           />
         ) : (
-          <p className="liked-by-server__no-articles">No saved articles!</p>
+          <p className="saved-news__no-articles">
+            No saved articles! Check the "likes" section or go to the home page
+            and search for more!
+          </p>
         )}
       </div>
     </section>

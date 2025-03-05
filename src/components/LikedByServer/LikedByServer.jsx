@@ -66,7 +66,9 @@ export default function LikedByServer({
         isProfileSelected={isProfileSelected}
       />
       <div className="liked-by-server__header">
-        <p className="liked-by-server__title">Items liked by other users</p>
+        <p className="liked-by-server__title">
+          Items liked by users on the server
+        </p>
         <div className="liked-by-server__form-container">
           <form className="liked-by-server__news-form" onSubmit={handleSearch}>
             <input
@@ -121,7 +123,9 @@ export default function LikedByServer({
             onRegistrationClick={onRegistrationClick}
           />
         ) : (
-          <p className="liked-by-server__no-articles">No liked articles!</p>
+          <p className="liked-by-server__no-articles">
+            No liked articles! Be the first to like an article!
+          </p>
         )}
       </div>
     </section>

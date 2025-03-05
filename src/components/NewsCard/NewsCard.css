@@ -270,7 +270,7 @@ button:hover {
 .newscard_button-favorited:hover {
   background-image: url("../../assets/bookmarkchecked.svg");
 }
-@media screen and (min-width: 580px) and (max-width: 880px) {
+@media screen and (min-width: 540px) and (max-width: 880px) {
   .newscard {
     width: 224px;
     max-width: 224px;
@@ -335,7 +335,7 @@ button:hover {
   }
 }
 
-@media screen and (max-width: 518px) {
+@media screen and (max-width: 450px) {
   .newscard {
     width: 224px;
     max-width: 224px;

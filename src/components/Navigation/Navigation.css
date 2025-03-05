@@ -149,6 +149,15 @@
   height: 0;
 }
 
+.liked-by-server__no-articles {
+  padding: 20px;
+  text-align: center;
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: 500;
+  color: #b6bcbf;
+}
+
 .isVisible {
   visibility: visible;
 }
@@ -169,8 +178,11 @@
 @media screen and (max-width: 860px) {
   .navigation__user-name {
     position: absolute;
-    top: 46px;
-    right: 24px;
+    top: 52px;
+    right: -5px;
+    background-color: rgba(199, 199, 199, 0.541);
+    padding: 0px 10px;
+    border-radius: 10px;
   }
 }
 

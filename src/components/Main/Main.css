@@ -92,6 +92,7 @@
 }
 
 .main__saved-container {
+  padding: 32px 0;
   height: fit-content;
   width: 100%;
   background-color: #f5f6f7;

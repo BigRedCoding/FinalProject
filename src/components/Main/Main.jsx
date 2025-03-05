@@ -147,8 +147,8 @@ export default function Main({
           </div>
         </div>
       </section>
-      <div className="main__saved-container">
-        {isSubmitted ? (
+      {isSubmitted ? (
+        <div className="main__saved-container">
           <NewsSection
             loading={loading}
             allArticles={currentResults}
@@ -160,10 +160,11 @@ export default function Main({
             onRegistrationClick={onRegistrationClick}
             failedSearch={failedSearch}
           />
-        ) : (
-          <div></div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div></div>
+      )}
+
       <About />
     </div>
   );

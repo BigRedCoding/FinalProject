@@ -92,7 +92,7 @@
     font-weight: 600;
   }
 }
-@media (max-width: 765px) {
+@media (max-width: 720px) {
   .news-section__results-container {
     width: fit-content;
   }
@@ -101,7 +101,7 @@
   }
 }
 
-@media (max-width: 580px) {
+@media (max-width: 539px) {
   .news-section__results-list {
     grid-template-columns: repeat(1, 1fr);
   }
