@@ -13,6 +13,7 @@ import { getNewsData } from "../../utils/NewsApis/newsdata.js";
 
 export default function Main({
   onLoginClick,
+  onRegistrationClick,
   setIsProfileSelected,
   onEditProfileClick,
   onLogoutClick,
@@ -150,6 +151,7 @@ export default function Main({
             onArticleFavorite={onArticleFavorite}
             query={query}
             isProfileSelected={isProfileSelected}
+            onRegistrationClick={onRegistrationClick}
           />
         ) : (
           <div></div>

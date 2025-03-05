@@ -1,9 +1,7 @@
 const baseUrl =
   process.env.NODE_ENV === "production"
-    ? "api.newsexplorer.justlearning.net"
+    ? "https://api.newsexplorer.justlearning.net"
     : "http://localhost:3001";
-
-console.log("Base Server URL:", baseUrl);
 
 export function responseCheck(res) {
   if (res.ok) {
@@ -17,6 +15,9 @@ export function responseCheck(res) {
 export async function getAllArticles() {
   return fetch(`${baseUrl}/articles/get-all-articles`, {
     method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
   })
     .then((res) => {
       return responseCheck(res);

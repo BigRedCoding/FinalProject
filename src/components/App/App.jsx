@@ -77,7 +77,6 @@ function App() {
   const [isPasswordValid, setIsPasswordValid] = useState(true);
 
   const [isProfileSelected, setIsProfileSelected] = useState("home");
-  console.log(isProfileSelected);
 
   const [currentSearchDataMain, setCurrentSearchDataMain] = useState([]);
 
@@ -354,6 +353,7 @@ function App() {
                 element={
                   <LikedByServer
                     onLoginClick={handleLoginClick}
+                    onRegistrationClick={handleRegistrationClick}
                     setIsProfileSelected={setIsProfileSelected}
                     onEditProfileClick={handleEditProfileClick}
                     onLogoutClick={handleLogoutClick}
@@ -370,6 +370,7 @@ function App() {
                   <ProtectedRoute isLoggedIn={isLoggedIn}>
                     <SavedNews
                       onLoginClick={handleLoginClick}
+                      onRegistrationClick={handleRegistrationClick}
                       setIsProfileSelected={setIsProfileSelected}
                       onEditProfileClick={handleEditProfileClick}
                       onLogoutClick={handleLogoutClick}

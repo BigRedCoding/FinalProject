@@ -16,6 +16,7 @@ export default function SavedNews({
   onArticleLike,
   onArticleFavorite,
   articlesTotal,
+  onRegistrationClick,
 }) {
   const { userData } = useContext(CurrentUserContext);
   const [filteredArticles, setFilteredArticles] = useState([]);
@@ -78,6 +79,7 @@ export default function SavedNews({
             onArticleLike={onArticleLike}
             onArticleFavorite={onArticleFavorite}
             isProfileSelected={isProfileSelected}
+            onRegistrationClick={onRegistrationClick}
           />
         ) : (
           <p className="liked-by-server__no-articles">No saved articles!</p>

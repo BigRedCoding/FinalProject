@@ -14,6 +14,7 @@ export default function LikedByServer({
   onArticleLike,
   onArticleFavorite,
   articlesTotal,
+  onRegistrationClick,
 }) {
   const [initialTrigger, setInitialTrigger] = useState(false);
 
@@ -119,6 +120,7 @@ export default function LikedByServer({
             onArticleFavorite={onArticleFavorite}
             query={query}
             isProfileSelected={isProfileSelected}
+            onRegistrationClick={onRegistrationClick}
           />
         ) : (
           <p className="liked-by-server__no-articles">No liked articles!</p>

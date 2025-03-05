@@ -14,6 +14,7 @@ export default function NewsSection({
   onArticleFavorite,
   isProfileSelected,
   query,
+  onRegistrationClick,
 }) {
   const [filteredArticles, setFilteredArticles] = useState([]);
 
@@ -84,6 +85,7 @@ export default function NewsSection({
                   data={article}
                   onArticleLike={onArticleLike}
                   onArticleFavorite={onArticleFavorite}
+                  onRegistrationClick={onRegistrationClick}
                 />
               ))}
             </ul>

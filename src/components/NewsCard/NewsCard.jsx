@@ -6,7 +6,12 @@ import { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import CurrentUserContext from "../../contexts/CurrentUserContext";
 
-export default function NewsCard({ data, onArticleLike, onArticleFavorite }) {
+export default function NewsCard({
+  data,
+  onArticleLike,
+  onArticleFavorite,
+  onRegistrationClick,
+}) {
   const { isLoggedIn, userData } = useContext(CurrentUserContext);
 
   const [currentLikes, setCurrentLikes] = useState(0);
@@ -23,18 +28,26 @@ export default function NewsCard({ data, onArticleLike, onArticleFavorite }) {
   const newImageUrl = data?.imageUrl || NewsExplorerLogo;
   const newUrl = data?.url || "#";
 
-  const dateNow = new Date(Date.now()).toLocaleDateString("en-US", {
+  const dateNow = Date.now();
+
+  const datePulled = data?.date
+    ? typeof data?.date === "string"
+      ? Number(data?.date)
+      : data?.date
+    : dateNow;
+  // Ensure the timestamp is in milliseconds
+  const timestamp = datePulled.length === 10 ? datePulled * 1000 : datePulled;
+
+  const newDate = new Date(timestamp);
+
+  const formattedDate = newDate.toLocaleDateString("en-US", {
     year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-  const newDate = new Date(data?.date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
 
-  // console.log(newDate);
+  console.log(data?.date, dateNow, datePulled, newDate, formattedDate);
+
   const newSource = data?.source?.toUpperCase() || "UNKNOWN";
 
   const likeState = isLiked ? "newscard_button-liked" : "";
@@ -56,6 +69,10 @@ export default function NewsCard({ data, onArticleLike, onArticleFavorite }) {
     onArticleFavorite(isFavorited, data);
   };
 
+  const openRegistration = () => {
+    onRegistrationClick();
+  };
+
   useEffect(() => {
     setCurrentLikes(data?.likes?.length || 0);
     setIsLiked(data?.likes?.some((item) => item === userData?.userId) || false);
@@ -73,7 +90,11 @@ export default function NewsCard({ data, onArticleLike, onArticleFavorite }) {
         <div className="newscard__favorite-container">
           {!isLoggedIn && (
             <>
-              <button alt="Favorite image" className="newscard__favorite-image">
+              <button
+                onClick={openRegistration}
+                alt="Favorite image"
+                className="newscard__favorite-image"
+              >
                 <div className="newscard__login-to-save">
                   <p className="newscard__lts-text">Sign in to save articles</p>
                 </div>
@@ -128,7 +149,7 @@ export default function NewsCard({ data, onArticleLike, onArticleFavorite }) {
           className="newscard__image"
         />
         <div className="newscard__text-container">
-          <p className="newscard__date">{newDate}</p>
+          <p className="newscard__date">{formattedDate}</p>
           <p className="newscard__title">{newTitle}</p>
           <p className="newscard__author">Author: {newAuthor}</p>
           <p className="newscard__summary">{newDescription}</p>
