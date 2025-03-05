@@ -3,8 +3,7 @@ const router = require("express").Router();
 const auth = require("../middlewares/auth");
 
 const {
-  getArticlesByLikes,
-  getArticlesByFavorite,
+  getAllArticles,
   checkAndAddArticleWithLikes,
   checkAndAddArticleWithFavorite,
   checkAndRemoveArticleByLikes,
@@ -14,8 +13,7 @@ const {
 router.post("/articles-with-likes", auth, checkAndAddArticleWithLikes);
 router.post("/articles-with-favorites", auth, checkAndAddArticleWithFavorite);
 
-router.get("/get-by-likes", getArticlesByLikes);
-router.get("/get-by-favorite", auth, getArticlesByFavorite);
+router.get("/get-all-articles", getAllArticles);
 
 router.delete("/articles-with-likes", auth, checkAndRemoveArticleByLikes);
 router.delete(

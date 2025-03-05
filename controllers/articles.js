@@ -41,40 +41,21 @@ const addArticle = (req, res, next) => {
     });
 };
 
-const getArticlesByLikes = (req, res, next) => {
+const getAllArticles = (req, res, next) => {
   articles
-    .find({ "likes.0": { $exists: true } })
-    .then((foundArticles) => {
-      if (foundArticles.length === 0) {
-        return res.status(200).send({ data: [] });
-      }
-
-      res.status(200).send({ data: foundArticles });
-    })
-    .catch(() => next(HttpError.ServerError()));
-};
-
-const getArticlesByFavorite = (req, res, next) => {
-  articles
-    .find({ favorites: req.user._id })
+    .find()
     .then((articles) => {
       res.status(200).send({ data: articles });
     })
     .catch(() => {
-      if (!articles || articles.length === 0) {
-        return next(HttpError.NotFoundError("No articles found for this user"));
-      }
       return next(
         HttpError.ServerError("An error occurred while retrieving articles")
       );
     });
 };
-
 const checkAndAddArticleWithLikes = (req, res, next) => {
-  const { author, title, imageUrl, url, source, date } = req.body;
-
   articles
-    .findOne({ author, title, imageUrl, url, source, date })
+    .findOne({ _id: req.body._id })
     .then((existingArticle) => {
       if (existingArticle) {
         if (existingArticle.likes.includes(req.user._id)) {
@@ -150,10 +131,8 @@ const checkAndAddArticleWithLikes = (req, res, next) => {
 };
 
 const checkAndAddArticleWithFavorite = (req, res, next) => {
-  const { author, title, imageUrl, url, source, date } = req.body;
-
   articles
-    .findOne({ author, title, imageUrl, url, source, date })
+    .findOne({ _id: req.body._id })
     .then((existingArticle) => {
       if (existingArticle) {
         if (existingArticle.favorites.includes(req.user._id)) {
@@ -227,92 +206,86 @@ const checkAndAddArticleWithFavorite = (req, res, next) => {
       return addArticle(req, res, next);
     });
 };
-
 const checkAndRemoveArticleByLikes = (req, res, next) => {
-  const { author, title, imageUrl, url, source, date } = req.body;
-
   articles
-    .findOne({ author, title, imageUrl, url, source, date })
+    .findOne({ _id: req.body._id })
     .then((existingArticle) => {
-      if (existingArticle) {
-        const articleID = existingArticle._id;
+      if (!existingArticle) {
+        return next(HttpError.NotFoundError("Article not found"));
+      }
 
-        if (existingArticle.likes.includes(req.user._id)) {
-          existingArticle.likes.pull(req.user._id);
+      if (existingArticle.likes.includes(req.user._id)) {
+        existingArticle.likes.pull(req.user._id);
 
-          if (
-            existingArticle.favorites.length < 1 &&
-            existingArticle.likes.length < 1
-          ) {
-            return articles.findByIdAndDelete(articleID).then(() => {
-              res.status(200).send({
-                shouldDelete: true,
-                message: "Article successfully removed",
-              });
-            });
-          }
-
-          return existingArticle.save().then((updatedArticle) => {
+        if (
+          existingArticle.favorites.length < 1 &&
+          existingArticle.likes.length < 1
+        ) {
+          return articles.findByIdAndDelete(req.body._id).then(() => {
             res.status(200).send({
-              shouldDelete: false,
-              data: updatedArticle,
-              message: "Article like removed",
+              shouldDelete: true,
+              message: "Article successfully removed",
             });
           });
-        } else {
-          res.status(400).send({ message: "User has not liked this article" });
         }
+
+        return existingArticle.save().then((updatedArticle) => {
+          res.status(200).send({
+            shouldDelete: false,
+            data: updatedArticle,
+            message: "Article like removed",
+          });
+        });
       } else {
-        next(HttpError.NotFoundError("Article not found"));
+        return next(
+          HttpError.BadRequestError("User has not liked this article")
+        );
       }
     })
     .catch(next);
 };
 
 const checkAndRemoveArticleByFavorites = (req, res, next) => {
-  const { author, title, imageUrl, url, source, date } = req.body;
-
   articles
-    .findOne({ author, title, imageUrl, url, source, date })
+    .findOne({ _id: req.body._id })
     .then((existingArticle) => {
-      if (existingArticle) {
-        const articleID = existingArticle._id;
+      if (!existingArticle) {
+        return next(HttpError.NotFoundError("Article not found"));
+      }
 
-        if (existingArticle.favorites.includes(req.user._id)) {
-          existingArticle.favorites.pull(req.user._id);
+      if (existingArticle.favorites.includes(req.user._id)) {
+        existingArticle.favorites.pull(req.user._id);
 
-          if (
-            existingArticle.favorites.length < 1 &&
-            existingArticle.likes.length < 1
-          ) {
-            return articles.findByIdAndDelete(articleID).then(() => {
-              res.status(200).send({
-                shouldDelete: true,
-                message: "Article successfully removed",
-              });
-            });
-          }
-
-          return existingArticle.save().then((updatedArticle) => {
+        if (
+          existingArticle.favorites.length < 1 &&
+          existingArticle.likes.length < 1
+        ) {
+          return articles.findByIdAndDelete(req.body._id).then(() => {
             res.status(200).send({
-              shouldDelete: false,
-              data: updatedArticle,
-              message: "Article like removed",
+              shouldDelete: true,
+              message: "Article successfully removed",
             });
           });
-        } else {
-          res.status(400).send({ message: "User has not liked this article" });
         }
+
+        return existingArticle.save().then((updatedArticle) => {
+          res.status(200).send({
+            shouldDelete: false,
+            data: updatedArticle,
+            message: "Article like removed",
+          });
+        });
       } else {
-        next(HttpError.NotFoundError("Article not found"));
+        return next(
+          HttpError.BadRequestError("User has not liked this article")
+        );
       }
     })
     .catch(next);
 };
 
 module.exports = {
-  getArticlesByLikes,
-  getArticlesByFavorite,
+  getAllArticles,
   checkAndAddArticleWithLikes,
   checkAndAddArticleWithFavorite,
   checkAndRemoveArticleByLikes,

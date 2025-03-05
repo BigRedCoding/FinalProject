@@ -5,22 +5,19 @@ const validator = require("validator");
 const articles = new mongoose.Schema({
   author: {
     type: String,
-    required: false,
-    default: "",
+    required: true,
   },
   title: {
     type: String,
     required: true,
-    default: "",
   },
   description: {
     type: String,
     required: true,
-    default: "",
   },
   imageUrl: {
     type: String,
-    required: false,
+    required: true,
     default: "",
     validate: {
       validator: (v) => v === "" || validator.isURL(v),
@@ -29,7 +26,7 @@ const articles = new mongoose.Schema({
   },
   url: {
     type: String,
-    required: false,
+    required: true,
     default: "",
     validate: {
       validator: (v) => v === "" || validator.isURL(v),
@@ -38,28 +35,26 @@ const articles = new mongoose.Schema({
   },
   source: {
     type: String,
-    required: false,
-    default: "",
+    required: true,
   },
   date: {
     type: String,
-    required: false,
-    default: "",
+    required: true,
   },
   favorites: {
     type: [String],
     default: [],
-    required: false,
+    required: true,
   },
   likes: {
     type: [String],
     default: [],
-    required: false,
+    required: true,
   },
   keywords: {
     type: [String],
     default: [],
-    required: false,
+    required: true,
   },
 });
 
