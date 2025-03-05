@@ -30,6 +30,8 @@ export default function Main({
 
   const [currentResults, setCurrentResults] = useState([]);
 
+  const [failedSearch, setFailedSearch] = useState(false);
+
   const orderByDate = (array) => {
     let shuffledArray = [...array];
     shuffledArray.sort((b, a) => new Date(a.date) - new Date(b.date));
@@ -84,6 +86,11 @@ export default function Main({
       resultsArray.push(...resultsNewsData);
 
       const results = orderByDate(resultsArray);
+
+      if (resultsArray?.length < 0) {
+        setFailedSearch(true);
+        return;
+      }
 
       setLikesAndFavorites(results);
 
@@ -144,7 +151,6 @@ export default function Main({
         {isSubmitted ? (
           <NewsSection
             loading={loading}
-            setLoading={setLoading}
             allArticles={currentResults}
             isSubmitted={isSubmitted}
             onArticleLike={onArticleLike}
@@ -152,6 +158,7 @@ export default function Main({
             query={query}
             isProfileSelected={isProfileSelected}
             onRegistrationClick={onRegistrationClick}
+            failedSearch={failedSearch}
           />
         ) : (
           <div></div>

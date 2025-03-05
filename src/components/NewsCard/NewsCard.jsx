@@ -46,8 +46,6 @@ export default function NewsCard({
     day: "2-digit",
   });
 
-  console.log(data?.date, dateNow, datePulled, newDate, formattedDate);
-
   const newSource = data?.source?.toUpperCase() || "UNKNOWN";
 
   const likeState = isLiked ? "newscard_button-liked" : "";

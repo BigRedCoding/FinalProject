@@ -24,8 +24,6 @@ export default function LikedByServer({
 
   const isSubmitted = true;
 
-  const location = useLocation();
-
   const filterArticlesByLikes = () => {
     console.log("filtered articles by likes");
     setFilteredArticles(

@@ -50,6 +50,7 @@ import DevPanel from "../DevPanel/DevPanel.jsx";
 import { getNewsData } from "../../utils/NewsApis/newsdata.js";
 import LogoutModal from "../LogoutModal/LogoutModal.jsx";
 import LikedByServer from "../LikedByServer/LikedByServer.jsx";
+import RegistrationCompleteModal from "../RegistrationCompleteModal/RegistrationCompleteModal.jsx";
 
 //App Function
 function App() {
@@ -95,6 +96,10 @@ function App() {
 
   const handleRegistrationClick = () => {
     setActiveModal("registration");
+  };
+
+  const handleRegistrationCompleteClick = () => {
+    setActiveModal("registrationcomplete");
   };
 
   const handleLoginClick = () => {
@@ -394,6 +399,7 @@ function App() {
             onLoginUser={handleLoginUser}
             onLoginResponseInfo={handleLoginResponseInfo}
             onIsPasswordValid={setIsPasswordValid}
+            onRegistrationCompleteClick={handleRegistrationCompleteClick}
           />
           <LoginModal
             onCloseClick={closeActiveModal}
@@ -430,6 +436,11 @@ function App() {
           <LogoutModal
             isOpened={activeModal === "logoutmodal" && "modal_opened"}
             onLogout={handleLogout}
+            onCloseClick={closeActiveModal}
+          />
+          <RegistrationCompleteModal
+            isOpened={activeModal === "registrationcomplete" && "modal_opened"}
+            onLoginClick={handleLoginClick}
             onCloseClick={closeActiveModal}
           />
           <button className="deletetokenbutton" onClick={deleteToken}>

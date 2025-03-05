@@ -143,6 +143,11 @@
   width: 0;
   height: 0;
 }
+.navigation__login-mobile {
+  visibility: collapse;
+  width: 0;
+  height: 0;
+}
 
 .isVisible {
   visibility: visible;
@@ -260,9 +265,9 @@
   }
   .navigation__mobile-container-menu {
     visibility: visible;
+    position: relative;
     z-index: 2;
     width: 100%;
-    top: 56px;
     height: 174px;
   }
   .navigation__loggedin-links {
@@ -297,6 +302,21 @@
     font-size: 18px;
     line-height: 19.8px;
   }
+  .navigation__login-mobile {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .navigation__links-mobile {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 16px 24px;
+  }
+  .navigation_login-container-mobile {
+    padding: 0 16px 24px 16px;
+  }
 }
 
 .navigation_line-mod {
@@ -316,4 +336,11 @@
 
 .mobile-logout_mod {
   background-image: url("../../assets/logout.svg");
+}
+.login-button_mod {
+  width: 100%;
+}
+
+.isVisible {
+  visibility: visible;
 }

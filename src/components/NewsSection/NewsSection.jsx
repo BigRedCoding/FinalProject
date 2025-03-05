@@ -1,20 +1,20 @@
 import "./NewsSection.css";
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 
 import Preloader from "../Preloader/Preloader.jsx";
 import NewsCard from "../NewsCard/NewsCard.jsx";
+import FailedSearch from "../FailedSearch/FailedSearch.jsx";
 
 export default function NewsSection({
   loading,
-  setLoading,
   allArticles,
   isSubmitted,
   onArticleLike,
   onArticleFavorite,
-  isProfileSelected,
   query,
+  isProfileSelected,
   onRegistrationClick,
+  failedSearch,
 }) {
   const [filteredArticles, setFilteredArticles] = useState([]);
 
@@ -30,10 +30,6 @@ export default function NewsSection({
   const disableButton1 = seeLessDisabled ? "isHidden" : "";
 
   const maxPages = allArticles.length / cardsShown;
-
-  const printConsole = () => {
-    console.log(allArticles);
-  };
 
   const handlePageChange = (page) => {
     if (page > 0 || page < maxPages) {
@@ -76,7 +72,7 @@ export default function NewsSection({
     <section className="news-section">
       <div className="news-section__search-results">
         {loading && <Preloader />}
-        {!loading && (
+        {!loading && !failedSearch && (
           <div className="news-section__results-container">
             <ul className="news-section__results-list">
               {filteredArticles.map((article, index) => (
@@ -92,7 +88,7 @@ export default function NewsSection({
           </div>
         )}
 
-        {!loading && isSubmitted && (
+        {!loading && isSubmitted && !failedSearch && (
           <div className="news-section__navigation-container">
             <button
               className={`news-section__navigation-button ${disableButton1}`}
@@ -109,14 +105,9 @@ export default function NewsSection({
             >
               See more
             </button>
-            <button
-              className="news-section__navigation-button"
-              onClick={printConsole}
-            >
-              See data
-            </button>
           </div>
         )}
+        <FailedSearch />
       </div>
     </section>
   );

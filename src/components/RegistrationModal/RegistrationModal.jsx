@@ -3,6 +3,7 @@ import "./RegistrationModal.css";
 import ModalWithForm from "../ModalWithForm/ModalWithForm.jsx";
 
 import { useFormAndValidation } from "../../Hooks/UseFormAndValidation.js";
+import { useState } from "react";
 
 export default function RegistrationModal({
   onSignUpUser,
@@ -12,6 +13,7 @@ export default function RegistrationModal({
   onLoginUser,
   onLoginResponseInfo,
   onIsPasswordValid,
+  onRegistrationCompleteClick,
 }) {
   const initialValues = {
     email: "",
@@ -19,6 +21,9 @@ export default function RegistrationModal({
     name: "",
     avatar: "",
   };
+
+  const [showError, setShowError] = useState(false);
+  const [serverMessage, setServerMessage] = useState("");
 
   const { values, handleChange, errors, isValid, resetForm } =
     useFormAndValidation(initialValues);
@@ -28,22 +33,21 @@ export default function RegistrationModal({
 
     onSignUpUser(values)
       .then(() => {
-        const userEmail = values.email;
-        const userPassword = values.password;
-
-        onLoginUser({ email: userEmail, password: userPassword })
-          .then(() => {
-            onLoginResponseInfo();
-            resetForm();
-            onCloseClick();
-            onIsPasswordValid(true);
-          })
-          .catch((error) => {
-            setErrorMessage("Login failed", error);
-            onIsPasswordValid(false);
-          });
+        onRegistrationCompleteClick();
+        resetForm();
       })
-      .catch((error) => console.error("Registration failed", error));
+      .catch((error) => {
+        console.log(error);
+        if (error === "Error: This email is not available") {
+          let errorMessage = error;
+          let cleanMessage = errorMessage.replace(/^Error: /, "");
+
+          setShowError(true);
+          setServerMessage(cleanMessage);
+        }
+
+        console.error("Registration failed", error);
+      });
   };
 
   const handleOpenSignin = () => {
@@ -63,13 +67,13 @@ export default function RegistrationModal({
       onOpenSignup={handleOpenSignin}
     >
       <label htmlFor="emailRegistration" className="modal__label">
-        Email*
+        Email
         <input
           name="email"
           type="email"
           className="modal__input modal__input_email"
           id="emailRegistration"
-          placeholder="Email"
+          placeholder="Enter email"
           value={values.email || ""}
           onChange={handleChange}
           required
@@ -77,13 +81,13 @@ export default function RegistrationModal({
         <p className={`validation__email-message`}>{errors?.email}</p>
       </label>
       <label htmlFor="passwordRegistration" className="modal__label">
-        Password*
+        Password
         <input
           name="password"
           type="password"
           className="modal__input modal__input_image"
           id="passwordRegistration"
-          placeholder="Password"
+          placeholder="Enter password"
           value={values.password || ""}
           onChange={handleChange}
           required
@@ -91,13 +95,13 @@ export default function RegistrationModal({
         <p className={`validation__password-message`}>{errors?.password}</p>
       </label>
       <label htmlFor="nameRegistration" className="modal__label">
-        Name*
+        Name
         <input
           name="name"
           type="text"
           className="modal__input modal__input_name"
           id="nameRegistration"
-          placeholder="Name"
+          placeholder="Enter name"
           value={values.name || ""}
           onChange={handleChange}
           required
@@ -105,17 +109,20 @@ export default function RegistrationModal({
         <p className={`validation__name-message`}>{errors?.name}</p>
       </label>
       <label htmlFor="imageUrlRegistration" className="modal__label">
-        Avatar URL*
+        Avatar URL
         <input
           name="avatar"
           type="URL"
           className="modal__input modal__input_image"
           id="imageUrlRegistration"
-          placeholder="Avatar URL"
+          placeholder="Avatar URL (Optional)"
           value={values.avatar || ""}
           onChange={handleChange}
         />
         <p className={`validation__url-message`}>{errors?.link}</p>
+        {showError && (
+          <p className="validation__url-message">{serverMessage}</p>
+        )}
       </label>
     </ModalWithForm>
   );

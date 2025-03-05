@@ -225,7 +225,7 @@ export default function Navigation({
             type="button"
             className={`navigation__login-button ${textClassMod}`}
           >
-            Log In
+            Sign in
           </button>
         </div>
       )}
@@ -362,46 +362,58 @@ export default function Navigation({
               </div>
             </div>
           ) : (
-            <div className="navigation__login">
-              <Link to="/" className="navigation__home">
-                <button
-                  type="button"
-                  className={`navigation__home-button `}
-                  onClick={handleHomeClick}
+            <div
+              className={`navigation__login-mobile ${
+                isHidden ? "isVisible" : ""
+              }`}
+            >
+              <div className="navigation__links-mobile">
+                <Link to="/" className="navigation__home">
+                  <button
+                    type="button"
+                    className={`navigation__home-button `}
+                    onClick={handleHomeClick}
+                  >
+                    Home
+                  </button>
+                  {activeLine === "home" && (
+                    <div
+                      className={`navigation__line  ${
+                        activeLine === "home" ? "active" : ""
+                      }`}
+                    ></div>
+                  )}
+                </Link>
+                <Link
+                  to="/liked-by-server"
+                  className="navigation__liked-server"
                 >
-                  Home
-                </button>
-                {activeLine === "home" && (
-                  <div
-                    className={`navigation__line  ${
-                      activeLine === "home" ? "active" : ""
-                    }`}
-                  ></div>
-                )}
-              </Link>
-              <Link to="/liked-by-server" className="navigation__liked-server">
+                  <button
+                    type="button"
+                    className={`navigation__liked-server-button `}
+                    onClick={handleLikedByServerClick}
+                  >
+                    Liked by server
+                  </button>
+                  {activeLine === "likedbyserver" && (
+                    <div
+                      className={`navigation__line  ${
+                        activeLine === "likedbyserver" ? "active" : ""
+                      }`}
+                    ></div>
+                  )}
+                </Link>
+              </div>
+              <div className="navigation_login-container-mobile">
+                {" "}
                 <button
+                  onClick={onLoginClick}
                   type="button"
-                  className={`navigation__liked-server-button `}
-                  onClick={handleLikedByServerClick}
+                  className={`navigation__login-button login-button_mod `}
                 >
-                  Liked by server
+                  Sign in
                 </button>
-                {activeLine === "likedbyserver" && (
-                  <div
-                    className={`navigation__line  ${
-                      activeLine === "likedbyserver" ? "active" : ""
-                    }`}
-                  ></div>
-                )}
-              </Link>
-              <button
-                onClick={onLoginClick}
-                type="button"
-                className={`navigation__login-button `}
-              >
-                Log In
-              </button>
+              </div>
             </div>
           )}
         </div>

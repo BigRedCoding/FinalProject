@@ -30,7 +30,7 @@
 
 .modal__title {
   margin: 0;
-  padding-bottom: 20px;
+  padding-bottom: 22px;
 }
 
 .modal__close {
@@ -52,7 +52,11 @@
 }
 
 .modal__label {
-  font-weight: 700;
+  font-family: "inter", Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  color: #2f71e5;
+  font-size: 12px;
+  line-height: 14.52px;
 }
 
 .modal__input {
@@ -63,6 +67,9 @@
   outline: 0;
   border-width: 0 0 1px;
   border-bottom: 1px solid rgb(0, 0, 0);
+  color: #000000;
+  font-size: 14px;
+  line-height: 16.94px;
 }
 
 .modal__radio-buttons {
@@ -92,7 +99,9 @@
 
 .modal__form-footer {
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
 .modal__form-footer-additional {
   padding: 0;
@@ -103,16 +112,17 @@
 }
 
 .modal__submit {
-  width: fit-content;
-  height: fit-content;
+  width: 358px;
+  height: 64px;
   padding: 8px 16px;
-  background-color: #000000;
+  background-color: #2f71e5;
   border: none;
-  border-radius: 4px;
+  border-radius: 100px;
   color: #ffffff;
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 20px;
+  font-size: 18px;
+  line-height: 24px;
+  font-family: "roboto", Arial, Helvetica, sans-serif;
+  font-weight: 500;
 }
 .login__form-footer-text {
   padding: 0;
@@ -121,6 +131,7 @@
   font-size: 16px;
   line-height: 20px;
   color: #00000080;
+  font-family: "inter", Arial, Helvetica, sans-serif;
 }
 .modal__button {
   padding: 0;
@@ -129,10 +140,11 @@
   height: fit-content;
   background-color: transparent;
   border: none;
+  font-family: "inter", Arial, Helvetica, sans-serif;
   font-weight: 700;
   font-size: 16px;
   line-height: 20px;
-  color: #00000080;
+  color: #2f71e5;
 }
 
 .modal__radio-input:checked + .modal__radio-text {
@@ -144,11 +156,15 @@
 }
 
 .modal__submit:disabled {
-  background-color: #0000004d;
+  background-color: #e6e8eb;
+  color: #b6bcbf;
 }
 
 .modal__submit:disabled:hover {
-  background-color: #0000004d;
+  background-color: #e8e8e8;
+}
+.modal__button:hover {
+  border-bottom: 4px solid #2f71e5;
 }
 
 @media screen and (max-width: 627px) {
@@ -160,5 +176,6 @@
   .modal__content_form {
     position: fixed;
     bottom: 0;
+    height: 80%;
   }
 }

@@ -13,7 +13,6 @@ p {
 .page {
   font-family: "roboto", Arial, Helvetica, sans-serif;
   max-width: 1440px;
-  border: 2px solid black;
 }
 
 .page__content {
@@ -45,6 +44,10 @@ p {
   padding: 0;
   margin: 0;
   color: #ff4d00;
+}
+
+.validation__url-message {
+  padding-top: 15px;
 }
 
 .avatar__alternate {
@@ -117,15 +120,9 @@ input:hover {
   }
 }
 
-@media screen and (max-width: 629px) {
-  .page {
-    margin: 18px 16px 20px 16px;
-  }
-}
-
 @media screen and (max-width: 395px) {
   .page {
-    width: 343px;
-    margin: 18px 16px 20px 16px;
+    min-width: 320px;
+    margin: 0;
   }
 }

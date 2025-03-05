@@ -151,7 +151,7 @@ export async function handleSignupUser(userData) {
     })
     .catch((error) => {
       console.error(error);
-      return Promise.reject(`Error: ${error.message}`);
+      return Promise.reject(error);
     });
 }
 

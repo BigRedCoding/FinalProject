@@ -1,0 +1,36 @@
+.failed-search {
+  height: fit-content;
+  display: flex;
+  align-items: center;
+}
+.failed-search__container {
+  padding: 86px 0 80px;
+  width: 356px;
+  height: 208px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.failed-search__image {
+  width: 82.5px;
+  height: 82.5px;
+}
+.failed-search__title {
+  width: 100%;
+  text-align: center;
+  font-family: "roboto-slab", Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 30px;
+  color: #1a1b22;
+}
+
+.failed-search__text {
+  color: #b6bcbf;
+  font-family: "roboto-slab", Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  width: 220px;
+  text-align: center;
+}
