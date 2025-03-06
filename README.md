@@ -28,9 +28,9 @@
 
 ### **`DEPLOYMENT:`**
 
-### This website can be accessed at the following link: [here](https://www.newsexplorer.justlearning.net/) (https://www.newsexplorer.justlearning.net/). Note, some service provides might block this because justlearning.net is a public domain, which could be used by hackers to create ficticious sites and attack people. On Spectrum, I had to temporarily turn off the Security Shield.
+### This website can be accessed at the following link: (https://www.newsexplorer.justlearning.net/). Note, some service provides might block this because justlearning.net is a public domain, which could be used by hackers to create ficticious sites and attack people. On Spectrum, I had to temporarily turn off the Security Shield.
 
-### Both the frontend and backend files can be accessed [here](https://github.com/BigRedCoding/FinalProject) (https://github.com/BigRedCoding/FinalProject). These can be downloaded and ran locally. When you're in VS Code, using "npm install" for dependecies and "npm run dev" on both should allow local use.
+### Both the frontend and backend files can be accessed here: (https://github.com/BigRedCoding/FinalProject). These can be downloaded and ran locally. When you're in VS Code, using "npm install" for dependecies and "npm run dev" on both should allow local use.
 
 ================================================================================================
 
