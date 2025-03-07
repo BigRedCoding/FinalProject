@@ -94,6 +94,7 @@ const checkAndAddArticleWithLikes = (req, res, next) => {
           likes,
           keywords,
         };
+
         return addArticle(req, res, next);
       }
     })
@@ -223,16 +224,13 @@ const checkAndRemoveArticleByLikes = (req, res, next) => {
         ) {
           return articles.findByIdAndDelete(req.body._id).then(() => {
             res.status(200).send({
-              shouldDelete: true,
               message: "Article successfully removed",
             });
           });
         }
 
-        return existingArticle.save().then((updatedArticle) => {
+        return existingArticle.save().then(() => {
           res.status(200).send({
-            shouldDelete: false,
-            data: updatedArticle,
             message: "Article like removed",
           });
         });
@@ -262,16 +260,13 @@ const checkAndRemoveArticleByFavorites = (req, res, next) => {
         ) {
           return articles.findByIdAndDelete(req.body._id).then(() => {
             res.status(200).send({
-              shouldDelete: true,
               message: "Article successfully removed",
             });
           });
         }
 
-        return existingArticle.save().then((updatedArticle) => {
+        return existingArticle.save().then(() => {
           res.status(200).send({
-            shouldDelete: false,
-            data: updatedArticle,
             message: "Article like removed",
           });
         });
