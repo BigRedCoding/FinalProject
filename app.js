@@ -26,7 +26,7 @@ const mainRouter = require("./routes/index");
 
 const corsOptions = {
   origin: "https://api.newsexplorer.justlearning.net",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTION"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
