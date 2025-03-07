@@ -25,9 +25,18 @@ const { ServerError } = require("./utils/errors");
 const mainRouter = require("./routes/index");
 
 const corsOptions = {
-  origin: "https://api.newsexplorer.justlearning.net",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  origin(origin, callback) {
+    if (
+      origin === "https://www.newsexplorer.justlearning.net" ||
+      origin === "https://api.newsexplorer.justlearning.net"
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed"), false);
+    }
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
