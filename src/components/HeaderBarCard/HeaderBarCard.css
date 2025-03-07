@@ -32,4 +32,19 @@
   text-decoration: underline;
   text-decoration: none;
   font-weight: bold;
+  font-size: 14px;
+}
+
+@media screen and (max-width: 768px) {
+  .header-bar-card {
+    height: 14px;
+  }
+  .header-bar-card__title {
+    font-size: 12px;
+  }
+
+  .header-bar-card__author,
+  .header-bar-card__link {
+    font-size: 10px;
+  }
 }

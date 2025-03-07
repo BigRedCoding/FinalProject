@@ -18,7 +18,11 @@ function Footer({ onSourcesClick, setIsProfileSelected }) {
           </p>
           <p className="footer__detail">
             and Open-Meteo. Links available{" "}
-            <button className="footer__links-button" onClick={onSourcesClick}>
+            <button
+              type="button"
+              className="footer__links-button"
+              onClick={onSourcesClick}
+            >
               here
             </button>
           </p>
@@ -33,11 +37,16 @@ function Footer({ onSourcesClick, setIsProfileSelected }) {
       <div className="footer__links-container">
         <div className="footer__text-links-container">
           <Link to="/" className="footer__home-link">
-            <button onClick={setHomeSelected} className="footer__home">
+            <button
+              type="button"
+              onClick={setHomeSelected}
+              className="footer__home"
+            >
               Home
             </button>
           </Link>
           <button
+            type="button"
             onClick={() => window.open("https://www.tripleten.com", "_blank")}
             className="footer__triple-ten"
           >
@@ -46,6 +55,7 @@ function Footer({ onSourcesClick, setIsProfileSelected }) {
         </div>
         <div className="footer__icons-container">
           <button
+            type="button"
             onClick={() =>
               window.open(
                 "https://github.com/BigRedCoding/FinalProject",
@@ -55,6 +65,7 @@ function Footer({ onSourcesClick, setIsProfileSelected }) {
             className="footer__github"
           ></button>
           <button
+            type="button"
             onClick={() =>
               window.open(
                 "https://www.linkedin.com/in/brandon-roy-dooley/",

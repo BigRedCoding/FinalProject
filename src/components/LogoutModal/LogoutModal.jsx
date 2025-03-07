@@ -10,6 +10,7 @@ export default function LogoutModal({ isOpened, onLogout, onCloseClick }) {
     <div className={`logout-modal ${isOpened}`}>
       <div className="logout-modal__container">
         <button
+          type="button"
           onClick={onCloseClick}
           className="logout-modal__close-button"
         ></button>
@@ -18,10 +19,18 @@ export default function LogoutModal({ isOpened, onLogout, onCloseClick }) {
             Are you sure you would like to log out?
           </p>
           <div className="logout-modal__button-container">
-            <button onClick={triggerLogout} className="logout-modal__button">
+            <button
+              type="button"
+              onClick={triggerLogout}
+              className="logout-modal__button"
+            >
               Logout
             </button>
-            <button onClick={onCloseClick} className="logout-modal__button">
+            <button
+              type="button"
+              onClick={onCloseClick}
+              className="logout-modal__button"
+            >
               Cancel
             </button>
           </div>

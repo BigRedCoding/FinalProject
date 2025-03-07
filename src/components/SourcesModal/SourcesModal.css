@@ -9,8 +9,6 @@
   justify-content: center;
   align-items: center;
   max-width: 1440px;
-  width: 100vw;
-  height: 100vh;
   background-color: #0000004d;
   display: flex;
   flex-direction: column;
@@ -23,7 +21,7 @@
   height: fit-content;
   max-height: 100vh;
   border-radius: 15px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .sources-modal__close-button {
@@ -94,15 +92,8 @@
 }
 
 .sources-modal__image {
-  height: 50px;
+  max-height: 50px;
   max-width: 180px;
-}
-
-.sources-modal__text {
-  padding: 0;
-  margin: 0;
-  text-wrap: nowrap;
-  width: 120px;
 }
 
 .sources-modal__link-button {
@@ -173,4 +164,73 @@
 
 .sources-modal__close-button:hover {
   background-image: url("../../assets/CloseBlack.svg");
+}
+@media screen and (max-width: 625px) {
+  .sources-modal__title {
+    font-size: 30px;
+  }
+  .sources-modal__container {
+    width: 475px;
+  }
+  .sources-modal__list-item {
+    height: 40px;
+  }
+  .sources-modal__text {
+    min-width: 100px;
+  }
+  .sources-modal__source-container {
+    width: 475px;
+    height: 40px;
+    gap: 10px;
+  }
+  .sources-modal__image-container {
+    max-height: 40px;
+    min-width: 150px;
+    max-width: none;
+  }
+  .sources-modal__hn-image {
+    max-height: 40px;
+    max-width: 40px;
+  }
+  .sources-modal__image {
+    max-height: 40px;
+    max-width: 130px;
+    min-width: 0;
+    min-height: auto;
+  }
+}
+
+@media screen and (max-width: 475px) {
+  .sources-modal__title {
+    font-size: 22px;
+  }
+  .sources-modal__container {
+    width: 320px;
+  }
+  .sources-modal__list-item {
+    height: 30px;
+  }
+  .sources-modal__source-container {
+    width: 320px;
+    height: 30px;
+    gap: 5px;
+  }
+  .sources-modal__image-container {
+    width: fit-content;
+    height: fit-content;
+    min-width: 100px;
+    max-width: none;
+  }
+  .sources-modal__hn-image {
+    max-height: 30px;
+    max-width: 30px;
+  }
+  .sources-modal__image {
+    height: 30px;
+    width: fit-content;
+    max-width: 100px;
+  }
+  .sources-modal__link-tooltip {
+    font-size: 10px;
+  }
 }

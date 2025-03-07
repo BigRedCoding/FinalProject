@@ -157,6 +157,7 @@ export default function Navigation({
             </p>
             {userData?.userAvatar ? (
               <button
+                type="button"
                 onClick={onEditProfileClick}
                 className="navigation__avatar-button"
               >
@@ -169,6 +170,7 @@ export default function Navigation({
             ) : (
               <div className="avatar_image avatar__alternate">
                 <button
+                  type="button"
                   onClick={onEditProfileClick}
                   className="navigation__avatar-button"
                 >
@@ -179,6 +181,7 @@ export default function Navigation({
               </div>
             )}
             <button
+              type="button"
               onClick={onLogoutClick}
               className="navigation__logout-button"
             >
@@ -221,8 +224,8 @@ export default function Navigation({
             )}
           </Link>
           <button
-            onClick={onLoginClick}
             type="button"
+            onClick={onLoginClick}
             className={`navigation__login-button ${textClassMod}`}
           >
             Sign in
@@ -243,12 +246,14 @@ export default function Navigation({
             News Explorer
           </p>
           <button
+            type="button"
             onClick={menuToggle}
             className={`navigation__mobile-button ${altMenuImage} ${
               isHidden ? "isHidden" : ""
             }`}
           ></button>
           <button
+            type="button"
             onClick={menuToggle}
             className={`navigation__mobile-close-button ${
               isHidden2 ? "isHidden" : ""
@@ -257,7 +262,7 @@ export default function Navigation({
         </div>
         <div
           className={`navigation__mobile-container-menu ${
-            isHidden2 ? "isHidden" : ""
+            isHidden2 ? "isHidden" : "mobile-container_mod"
           }`}
         >
           {isLoggedIn ? (
@@ -332,6 +337,7 @@ export default function Navigation({
                 </p>
                 {userData?.userAvatar ? (
                   <button
+                    type="button"
                     onClick={onEditProfileClick}
                     className="navigation__avatar-button"
                   >
@@ -344,6 +350,7 @@ export default function Navigation({
                 ) : (
                   <div className="avatar_image avatar__alternate">
                     <button
+                      type="button"
                       onClick={onEditProfileClick}
                       className="navigation__avatar-button"
                     >
@@ -354,6 +361,7 @@ export default function Navigation({
                   </div>
                 )}
                 <button
+                  type="button"
                   onClick={onLogoutClick}
                   className="navigation__logout-button"
                 >
@@ -405,10 +413,9 @@ export default function Navigation({
                 </Link>
               </div>
               <div className="navigation_login-container-mobile">
-                {" "}
                 <button
-                  onClick={onLoginClick}
                   type="button"
+                  onClick={onLoginClick}
                   className={`navigation__login-button login-button_mod `}
                 >
                   Sign in

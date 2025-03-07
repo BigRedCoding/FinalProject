@@ -1,22 +1,31 @@
 const API_KEY = "c749e7cf07be40488b94750db2077fb9";
 
-import axios from "axios";
+const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://nomoreparties.co/news/v2/"
+    : "https://newsapi.org/v2/";
 
-const BASE_URL = "https://newsapi.org/v2";
+const fetchNews = async (endpoint, params) => {
+  const url = new URL(`${BASE_URL}/${endpoint}`);
+  const searchParams = new URLSearchParams(params);
 
-const fetchNews = async (endpoint, params = {}) => {
-  try {
-    const response = await axios.get(`${BASE_URL}/${endpoint}`, {
-      params: {
-        ...params,
-        apiKey: API_KEY,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching news:", error);
-    return { error: "Error fetching news" };
-  }
+  searchParams.append("apiKey", API_KEY);
+  url.search = searchParams.toString();
+
+  return new Promise((resolve, reject) => {
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Error fetching data: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then((data) => resolve(data))
+      .catch((error) => {
+        console.error("Error fetching news:", error);
+        reject({ error: "Error fetching news" });
+      });
+  });
 };
 
 export const searchArticles = async (query, page) => {
@@ -31,7 +40,8 @@ export const searchArticles = async (query, page) => {
 
     const date = new Date(publishedAt).getTime();
 
-    const authorReconfig = author === null ? source.name : author;
+    const authorReconfig =
+      author === null || author === "" ? source.name : author;
 
     return {
       author: authorReconfig,

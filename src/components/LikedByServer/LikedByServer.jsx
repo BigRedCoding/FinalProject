@@ -1,6 +1,5 @@
 import "./LikedByServer.css";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 
 import Navigation from "../Navigation/Navigation";
 import NewsSection from "../NewsSection/NewsSection";
@@ -22,10 +21,30 @@ export default function LikedByServer({
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const [placeholderDefault, setPlaceHolderDefault] = useState("Enter topic");
+
+  const [noResultsText, setNoResultsText] = useState(
+    "No liked articles! Be the first to like an article!"
+  );
+
   const isSubmitted = true;
 
+  const handleChange = (e) => {
+    const inputValue = e.target.value;
+    console.log(inputValue);
+    setQuery(inputValue);
+    if (inputValue.length < 1) {
+      setPlaceHolderDefault("Please enter a keyword");
+    }
+  };
+
+  const keywords =
+    filteredArticles
+      ?.filter((article) => article.keywords.length > 0)
+      .map((article) => article.keywords.join(", "))
+      .join(", ") || "no key words associated";
+
   const filterArticlesByLikes = () => {
-    console.log("filtered articles by likes");
     setFilteredArticles(
       articlesTotal.filter((article) => article.likes.length > 0)
     );
@@ -34,10 +53,24 @@ export default function LikedByServer({
   const handleSearch = (evt) => {
     evt.preventDefault();
     const searchWords = query.toLowerCase().split(" ");
-    const filteredResults = articlesTotal.filter((article) =>
-      searchWords.some((word) => article.title.toLowerCase().includes(word))
-    );
+    const filteredResults = filteredArticles.filter((article) => {
+      return (
+        searchWords.some((word) =>
+          article.title.toLowerCase().includes(word)
+        ) ||
+        searchWords.some((word) =>
+          article.description.toLowerCase().includes(word)
+        ) ||
+        searchWords.some((word) =>
+          article.author.toLowerCase().includes(word)
+        ) ||
+        searchWords.some((word) => article.source.toLowerCase().includes(word))
+      );
+    });
     setFilteredArticles(filteredResults);
+    if (filteredResults.length < 1) {
+      setNoResultsText("No liked articles match your search");
+    }
   };
 
   useEffect(() => {
@@ -69,14 +102,22 @@ export default function LikedByServer({
         <p className="liked-by-server__title">
           Items liked by users on the server
         </p>
+        <p className="liked-by-server__keywords-text">
+          By keywords: <span className="liked-by-server__span">{keywords}</span>
+        </p>
         <div className="liked-by-server__form-container">
-          <form className="liked-by-server__news-form" onSubmit={handleSearch}>
+          <form
+            id="search-primary-like"
+            className="liked-by-server__news-form"
+            onSubmit={handleSearch}
+          >
             <input
+              name="search-primary-like"
               type="text"
-              placeholder="Search for articles"
+              placeholder="Enter topic"
               value={query}
               className="liked-by-server__news-input"
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => handleChange(e)}
             />
             <button
               className="liked-by-server__news-submit-button"
@@ -89,20 +130,22 @@ export default function LikedByServer({
         <div className="liked-by-server__form-container-mobile">
           <div className="liked-by-server__form-inner">
             <form
+              id="search-secondary-like"
               className="liked-by-server__news-form-mobile"
-              onSubmit={handleSearch}
             >
               <input
+                name="search-secondary-like"
                 type="text"
-                placeholder="Search for articles"
+                placeholder="Enter topic"
                 value={query}
                 className="liked-by-server__news-input-mobile"
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => handleChange(e)}
               />
-            </form>{" "}
+            </form>
             <button
+              onClick={handleSearch}
               className="liked-by-server__submit-button-mobile"
-              type="submit"
+              type="button"
             >
               Search
             </button>
@@ -123,9 +166,7 @@ export default function LikedByServer({
             onRegistrationClick={onRegistrationClick}
           />
         ) : (
-          <p className="liked-by-server__no-articles">
-            No liked articles! Be the first to like an article!
-          </p>
+          <p className="liked-by-server__no-articles">{noResultsText}</p>
         )}
       </div>
     </section>

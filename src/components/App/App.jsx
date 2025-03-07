@@ -18,11 +18,15 @@ import WeatherModal from "../WeatherModal/WeatherModal.jsx";
 import SourcesModal from "../SourcesModal/SourcesModal.jsx";
 import SavedNews from "../SavedNews/SavedNews.jsx";
 
+import LogoutModal from "../LogoutModal/LogoutModal.jsx";
+import LikedByServer from "../LikedByServer/LikedByServer.jsx";
+import RegistrationCompleteModal from "../RegistrationCompleteModal/RegistrationCompleteModal.jsx";
+
 import ProtectedRoute from "../ProtectedRoute.jsx";
 
+import { searchArticles } from "../../utils/NewsApis/newsapp.js";
 //Context
 import CurrentUserContext from "../../contexts/CurrentUserContext.js";
-import CurrentTemperatureUnitContext from "../../contexts/CurrentTemperatureUnitContext.js";
 
 //Utils
 import { coordinates, WeatherAPIKey } from "../../utils/constants.js";
@@ -42,15 +46,6 @@ import {
   getWeather,
   filterWeatherData,
 } from "../../utils/NewsApis/weatherapi.js";
-import { getGnewsNews } from "../../utils/NewsApis/Gnews.js";
-import { searchArticles } from "../../utils/NewsApis/newsapp.js";
-
-//Dev
-import DevPanel from "../DevPanel/DevPanel.jsx";
-import { getNewsData } from "../../utils/NewsApis/newsdata.js";
-import LogoutModal from "../LogoutModal/LogoutModal.jsx";
-import LikedByServer from "../LikedByServer/LikedByServer.jsx";
-import RegistrationCompleteModal from "../RegistrationCompleteModal/RegistrationCompleteModal.jsx";
 
 //App Function
 function App() {
@@ -65,7 +60,6 @@ function App() {
   });
   const [currentLocation, setCurrentLocation] = useState({});
   const [totalWeatherData, setTotalWeatherData] = useState({});
-  const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState("F");
 
   //Modal variables
   const [hasPulledServerArticles, setHasPulledServerArticles] = useState(false);
@@ -78,10 +72,6 @@ function App() {
   const [isPasswordValid, setIsPasswordValid] = useState(true);
 
   const [isProfileSelected, setIsProfileSelected] = useState("home");
-
-  const [currentSearchDataMain, setCurrentSearchDataMain] = useState([]);
-
-  const [searchText, setSearchText] = useState("");
 
   //Dev Variables
   const [startApiTrigger, setStartApiTrigger] = useState(false);
@@ -139,10 +129,6 @@ function App() {
         setWeatherData(filteredData);
       })
       .catch(console.error);
-  };
-
-  const handleToggleSwitchChange = () => {
-    setCurrentTemperatureUnit(currentTemperatureUnit === "F" ? "C" : "F");
   };
 
   //Article Functions
@@ -286,28 +272,10 @@ function App() {
     }
   }, []);
 
-  //Dev
-  const [devVisible, setDevVisible] = useState("isHidden");
-  const setDevPanelVisibility = () => {
-    setDevVisible();
-  };
-
-  const setDevButton1 = () => {};
-  const setDevButton2 = () => {
-    searchArticles("trump");
-  };
-  const setDevButton3 = () => {
-    getGnewsNews("trump");
-  };
-  const setDevButton4 = () => {
-    getNewsData("trump");
-  };
-  const setDevButton5 = () => {
-    console.log("starting api's");
-    setStartApiTrigger(true);
-  };
   const deleteToken = () => {
-    localStorage.removeItem("randomizedResults");
+    localStorage.removeItem("searchResults");
+    // setStartApiTrigger(true);
+    searchArticles("trump");
   };
 
   return (
@@ -318,29 +286,52 @@ function App() {
           userData,
           isPasswordValid,
           weatherData,
-          currentSearchDataMain,
-          setCurrentSearchDataMain,
-          searchText,
-          setSearchText,
         }}
       >
-        <CurrentTemperatureUnitContext.Provider
-          value={{ currentTemperatureUnit, handleToggleSwitchChange }}
-        >
-          <div className="page__content">
-            <button className="dev" onClick={setDevPanelVisibility}>
-              DevPanel
-            </button>
-            <Header
-              startApiTrigger={startApiTrigger}
-              setStartApiTrigger={setStartApiTrigger}
-              onOpenWeatherModal={handleOpenWeatherModal}
+        <div className="page__content">
+          <Header
+            startApiTrigger={startApiTrigger}
+            setStartApiTrigger={setStartApiTrigger}
+            onOpenWeatherModal={handleOpenWeatherModal}
+          />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Main
+                  onLoginClick={handleLoginClick}
+                  onRegistrationClick={handleRegistrationClick}
+                  setIsProfileSelected={setIsProfileSelected}
+                  onEditProfileClick={handleEditProfileClick}
+                  onLogoutClick={handleLogoutClick}
+                  isProfileSelected={isProfileSelected}
+                  onArticleLike={handleArticleLike}
+                  onArticleFavorite={handleArticleFavorite}
+                  articlesTotal={articlesTotal}
+                />
+              }
             />
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <Main
+            <Route
+              path="/liked-by-server"
+              element={
+                <LikedByServer
+                  onLoginClick={handleLoginClick}
+                  onRegistrationClick={handleRegistrationClick}
+                  setIsProfileSelected={setIsProfileSelected}
+                  onEditProfileClick={handleEditProfileClick}
+                  onLogoutClick={handleLogoutClick}
+                  isProfileSelected={isProfileSelected}
+                  onArticleLike={handleArticleLike}
+                  onArticleFavorite={handleArticleFavorite}
+                  articlesTotal={articlesTotal}
+                />
+              }
+            />
+            <Route
+              path="/saved-news"
+              element={
+                <ProtectedRoute isLoggedIn={isLoggedIn}>
+                  <SavedNews
                     onLoginClick={handleLoginClick}
                     onRegistrationClick={handleRegistrationClick}
                     setIsProfileSelected={setIsProfileSelected}
@@ -351,102 +342,62 @@ function App() {
                     onArticleFavorite={handleArticleFavorite}
                     articlesTotal={articlesTotal}
                   />
-                }
-              />
-              <Route
-                path="/liked-by-server"
-                element={
-                  <LikedByServer
-                    onLoginClick={handleLoginClick}
-                    onRegistrationClick={handleRegistrationClick}
-                    setIsProfileSelected={setIsProfileSelected}
-                    onEditProfileClick={handleEditProfileClick}
-                    onLogoutClick={handleLogoutClick}
-                    isProfileSelected={isProfileSelected}
-                    onArticleLike={handleArticleLike}
-                    onArticleFavorite={handleArticleFavorite}
-                    articlesTotal={articlesTotal}
-                  />
-                }
-              />
-              <Route
-                path="/saved-news"
-                element={
-                  <ProtectedRoute isLoggedIn={isLoggedIn}>
-                    <SavedNews
-                      onLoginClick={handleLoginClick}
-                      onRegistrationClick={handleRegistrationClick}
-                      setIsProfileSelected={setIsProfileSelected}
-                      onEditProfileClick={handleEditProfileClick}
-                      onLogoutClick={handleLogoutClick}
-                      isProfileSelected={isProfileSelected}
-                      onArticleLike={handleArticleLike}
-                      onArticleFavorite={handleArticleFavorite}
-                      articlesTotal={articlesTotal}
-                    />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-            <Footer onSourcesClick={handleSourcesclick} />
-          </div>
-          <RegistrationModal
-            onSignUpUser={handleSignupUser}
-            onCloseClick={closeActiveModal}
-            isOpened={activeModal === "registration" && "modal_opened"}
-            onLoginClick={handleLoginClick}
-            onLoginUser={handleLoginUser}
-            onLoginResponseInfo={handleLoginResponseInfo}
-            onIsPasswordValid={setIsPasswordValid}
-            onRegistrationCompleteClick={handleRegistrationCompleteClick}
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+          <Footer
+            onSourcesClick={handleSourcesclick}
+            setIsProfileSelected={setIsProfileSelected}
           />
-          <LoginModal
-            onCloseClick={closeActiveModal}
-            onLoginUser={handleLoginUser}
-            isOpened={activeModal === "login" && "modal_opened"}
-            onRegistrationClick={handleRegistrationClick}
-            onLoginResponseInfo={handleLoginResponseInfo}
-            onIsPasswordValid={setIsPasswordValid}
-          />
-          <EditProfileModal
-            onCloseClick={closeActiveModal}
-            isOpened={activeModal === "editprofile" && "modal_opened"}
-            onUpdateProfileInfo={handleUpdateProfileInfo}
-          />
-          <WeatherModal
-            totalWeatherData={totalWeatherData}
-            isOpened={activeModal === "weathermodal" && "modal_opened"}
-            onCloseClick={closeActiveModal}
-            currentLocation={currentLocation}
-          />
-          <SourcesModal
-            isOpened={activeModal === "sourcesmodal" && "modal_opened"}
-            onCloseClick={closeActiveModal}
-          />
-          <DevPanel
-            devVisible={devVisible}
-            setDevVisible={setDevVisible}
-            button1Function={setDevButton1}
-            button2Function={setDevButton2}
-            button3Function={setDevButton3}
-            button4Function={setDevButton4}
-            button5Function={setDevButton5}
-          />
-          <LogoutModal
-            isOpened={activeModal === "logoutmodal" && "modal_opened"}
-            onLogout={handleLogout}
-            onCloseClick={closeActiveModal}
-          />
-          <RegistrationCompleteModal
-            isOpened={activeModal === "registrationcomplete" && "modal_opened"}
-            onLoginClick={handleLoginClick}
-            onCloseClick={closeActiveModal}
-          />
-          <button className="deletetokenbutton" onClick={deleteToken}>
-            Delete Token
-          </button>
-        </CurrentTemperatureUnitContext.Provider>
+        </div>
+        <RegistrationModal
+          onSignUpUser={handleSignupUser}
+          onCloseClick={closeActiveModal}
+          isOpened={activeModal === "registration" && "modal_opened"}
+          onLoginClick={handleLoginClick}
+          onLoginUser={handleLoginUser}
+          onLoginResponseInfo={handleLoginResponseInfo}
+          onIsPasswordValid={setIsPasswordValid}
+          onRegistrationCompleteClick={handleRegistrationCompleteClick}
+        />
+        <LoginModal
+          onCloseClick={closeActiveModal}
+          onLoginUser={handleLoginUser}
+          isOpened={activeModal === "login" && "modal_opened"}
+          onRegistrationClick={handleRegistrationClick}
+          onLoginResponseInfo={handleLoginResponseInfo}
+          onIsPasswordValid={setIsPasswordValid}
+        />
+        <EditProfileModal
+          onCloseClick={closeActiveModal}
+          isOpened={activeModal === "editprofile" && "modal_opened"}
+          onUpdateProfileInfo={handleUpdateProfileInfo}
+        />
+        <WeatherModal
+          totalWeatherData={totalWeatherData}
+          isOpened={activeModal === "weathermodal" && "modal_opened"}
+          onCloseClick={closeActiveModal}
+          currentLocation={currentLocation}
+        />
+        <SourcesModal
+          isOpened={activeModal === "sourcesmodal" && "modal_opened"}
+          onCloseClick={closeActiveModal}
+        />
+        <LogoutModal
+          isOpened={activeModal === "logoutmodal" && "modal_opened"}
+          onLogout={handleLogout}
+          onCloseClick={closeActiveModal}
+        />
+        <RegistrationCompleteModal
+          isOpened={activeModal === "registrationcomplete" && "modal_opened"}
+          onLoginClick={handleLoginClick}
+          onCloseClick={closeActiveModal}
+        />
+        <button className="deletetokenbutton" onClick={deleteToken}>
+          Delete Token
+        </button>
       </CurrentUserContext.Provider>
     </div>
   );

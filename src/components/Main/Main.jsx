@@ -1,12 +1,10 @@
 import "./Main.css";
 import React, { useState, useContext } from "react";
-import { useLocation } from "react-router-dom";
 
 import About from "../About/About.jsx";
 import NewsSection from "../NewsSection/NewsSection.jsx";
 import Navigation from "../Navigation/Navigation.jsx";
 
-//News Api's
 import { searchArticles } from "../../utils/NewsApis/newsapp.js";
 import { getGnewsNews } from "../../utils/NewsApis/Gnews.js";
 import { getNewsData } from "../../utils/NewsApis/newsdata.js";
@@ -32,10 +30,60 @@ export default function Main({
 
   const [failedSearch, setFailedSearch] = useState(false);
 
+  const [placeholderDefault, setPlaceHolderDefault] = useState("Enter topic");
+
+  const handleChange = (e) => {
+    const inputValue = e.target.value;
+    setQuery(inputValue);
+    if (inputValue.length < 1) {
+      setPlaceHolderDefault("Please enter a keyword");
+    }
+  };
+
   const orderByDate = (array) => {
     let shuffledArray = [...array];
     shuffledArray.sort((b, a) => new Date(a.date) - new Date(b.date));
     return shuffledArray;
+  };
+
+  const addKeywordToArticles = (articles, mostFrequentWord) => {
+    return articles.map((article) => {
+      if (article.keywords) {
+        if (!article.keywords.includes(mostFrequentWord)) {
+          article.keywords.push(mostFrequentWord);
+        }
+      } else {
+        article.keywords = [mostFrequentWord];
+      }
+      return article;
+    });
+  };
+
+  const findMostFrequentWord = (articles) => {
+    const searchWords = query.toLowerCase().split(/\s+/);
+    const wordCount = {};
+
+    articles.forEach((article) => {
+      const combinedText =
+        `${article.author} ${article.title} ${article.description} ${article.source}`.toLowerCase();
+      searchWords.forEach((word) => {
+        if (combinedText.includes(word)) {
+          wordCount[word] = (wordCount[word] || 0) + 1;
+        }
+      });
+    });
+
+    let mostFrequentWord = null;
+    let maxCount = 0;
+
+    Object.keys(wordCount).forEach((word) => {
+      if (wordCount[word] > maxCount) {
+        mostFrequentWord = word;
+        maxCount = wordCount[word];
+      }
+    });
+
+    return mostFrequentWord || "No matching words found";
   };
 
   const setLikesAndFavorites = (results) => {
@@ -69,12 +117,12 @@ export default function Main({
     e.preventDefault();
     setLoading(true);
 
+    let results = [];
+
     const storedResults = localStorage.getItem("searchResults");
 
     if (storedResults) {
-      const results = JSON.parse(storedResults);
-
-      setLikesAndFavorites(results);
+      results = JSON.parse("storedResults");
     } else {
       const resultsArray = [];
       const resultsNewsApp = await searchArticles(query);
@@ -85,17 +133,19 @@ export default function Main({
       resultsArray.push(...resultsGnewsNews);
       resultsArray.push(...resultsNewsData);
 
-      const results = orderByDate(resultsArray);
+      results = orderByDate(resultsArray);
 
       if (resultsArray?.length < 0) {
         setFailedSearch(true);
         return;
       }
 
-      setLikesAndFavorites(results);
-
       localStorage.setItem("searchResults", JSON.stringify(results));
     }
+    const mostFrequentWord = findMostFrequentWord(results);
+    const updatedList = addKeywordToArticles(results, mostFrequentWord);
+
+    setLikesAndFavorites(updatedList);
   };
 
   return (
@@ -118,29 +168,39 @@ export default function Main({
               account.
             </p>
             <div className="main__news-search"></div>
-            <form className="main__news-form" onSubmit={handleSearch}>
+            <form
+              id="search-primary"
+              className="main__news-form"
+              onSubmit={handleSearch}
+            >
               <input
+                name="search-primary"
                 type="text"
-                placeholder="Enter topic"
+                placeholder={placeholderDefault}
                 value={query}
                 className="main__news-input"
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => handleChange(e)}
               />
               <button className="main__news-submit-button" type="submit">
                 Search
               </button>
             </form>
             <div className="main__form-container-mobile">
-              <form className="main__news-form-mobile" onSubmit={handleSearch}>
+              <form id="search-secondary" className="main__news-form-mobile">
                 <input
+                  name="search-secondary"
                   type="text"
-                  placeholder="Enter topic"
+                  placeholder={placeholderDefault}
                   value={query}
                   className="main__news-input-mobile"
-                  onChange={(e) => setQuery(e.target.value)}
+                  onChange={(e) => handleChange(e)}
                 />
-              </form>{" "}
-              <button className="main__submit-button-mobile" type="submit">
+              </form>
+              <button
+                type="button"
+                onClick={handleSearch}
+                className="main__submit-button-mobile"
+              >
                 Search
               </button>
             </div>

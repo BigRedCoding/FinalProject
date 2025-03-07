@@ -10,9 +10,6 @@ export default function RegistrationModal({
   onCloseClick,
   isOpened,
   onLoginClick,
-  onLoginUser,
-  onLoginResponseInfo,
-  onIsPasswordValid,
   onRegistrationCompleteClick,
 }) {
   const initialValues = {

@@ -12,6 +12,7 @@
 .header-bar__news-scroll {
   overflow: hidden;
   width: 100%;
+  display: flex;
 }
 
 .header-bar__data-scroll {
@@ -20,7 +21,13 @@
   display: flex;
   gap: 20px;
   list-style: none;
+
   animation: transition 2s linear;
+}
+@media screen and (max-width: 768px) {
+  .header-bar {
+    padding: 4px;
+  }
 }
 
 @keyframes scrollRightToLeft {

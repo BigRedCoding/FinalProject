@@ -22,6 +22,7 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
     <div className={`sources-modal ${isOpened}`}>
       <div className="sources-modal__container">
         <button
+          type="button"
           className="sources-modal__close-button"
           onClick={onCloseClick}
         ></button>
@@ -33,7 +34,6 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                 <p className="sources-modal__number-text">1</p>
               </div>
               <div className="sources-modal__image-container">
-                {" "}
                 <img
                   src={NewsApiLogo}
                   alt="NewsApi Logo"
@@ -41,8 +41,8 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                 />
               </div>
 
-              <p className="sources-modal__text">NewsApi</p>
               <button
+                type="button"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 className="sources-modal__link-button"
@@ -55,14 +55,10 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                         https://newsapi.org/
                       </span>
                     </div>
-                    <p className="sources-modal__link-button-text">
-                      https://newsapi.org/
-                    </p>
+                    <p className="sources-modal__link-button-text">NewsApi</p>
                   </>
                 ) : (
-                  <p className="sources-modal__link-button-text">
-                    https://newsapi.org/
-                  </p>
+                  <p className="sources-modal__link-button-text">NewsApi</p>
                 )}
               </button>
             </div>
@@ -80,8 +76,8 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                 />
               </div>
 
-              <p className="sources-modal__text">NewsData</p>
               <button
+                type="button"
                 onMouseEnter={() => setIsHovered2(true)}
                 onMouseLeave={() => setIsHovered2(false)}
                 className="sources-modal__link-button"
@@ -94,14 +90,10 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                         https://newsdata.io/
                       </span>
                     </div>
-                    <p className="sources-modal__link-button-text">
-                      https://newsdata.io/
-                    </p>
+                    <p className="sources-modal__link-button-text">NewsData</p>
                   </>
                 ) : (
-                  <p className="sources-modal__link-button-text">
-                    https://newsdata.io/
-                  </p>
+                  <p className="sources-modal__link-button-text">NewsData</p>
                 )}
               </button>
             </div>
@@ -119,8 +111,8 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                 />
               </div>
 
-              <p className="sources-modal__text">GNews</p>
               <button
+                type="button"
                 onMouseEnter={() => setIsHovered3(true)}
                 onMouseLeave={() => setIsHovered3(false)}
                 className="sources-modal__link-button"
@@ -133,14 +125,10 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                         https://gnews.io/
                       </span>
                     </div>
-                    <p className="sources-modal__link-button-text">
-                      https://gnews.io/
-                    </p>
+                    <p className="sources-modal__link-button-text">GNews</p>
                   </>
                 ) : (
-                  <p className="sources-modal__link-button-text">
-                    https://gnews.io/
-                  </p>
+                  <p className="sources-modal__link-button-text">GNews</p>
                 )}
               </button>
             </div>
@@ -151,7 +139,6 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                 <p className="sources-modal__number-text">4</p>
               </div>
               <div className="sources-modal__image-container">
-                {" "}
                 <img
                   src={FinnhubLogo}
                   alt="Finnhub Logo"
@@ -159,8 +146,8 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                 />
               </div>
 
-              <p className="sources-modal__text">Finnhub</p>
               <button
+                type="button"
                 onMouseEnter={() => setIsHovered4(true)}
                 onMouseLeave={() => setIsHovered4(false)}
                 className="sources-modal__link-button"
@@ -173,14 +160,10 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                         https://finnhub.io/
                       </span>
                     </div>
-                    <p className="sources-modal__link-button-text">
-                      https://finnhub.io/
-                    </p>
+                    <p className="sources-modal__link-button-text">Finnhub</p>
                   </>
                 ) : (
-                  <p className="sources-modal__link-button-text">
-                    https://finnhub.io/
-                  </p>
+                  <p className="sources-modal__link-button-text">Finnhub</p>
                 )}
               </button>
             </div>
@@ -199,8 +182,8 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                 />
               </div>
 
-              <p className="sources-modal__text">The Guardian</p>
               <button
+                type="button"
                 onMouseEnter={() => setIsHovered5(true)}
                 onMouseLeave={() => setIsHovered5(false)}
                 className="sources-modal__link-button"
@@ -219,12 +202,12 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                       </span>
                     </div>
                     <p className="sources-modal__link-button-text">
-                      https://open-platform.theguardian.com/
+                      The Guardian
                     </p>
                   </>
                 ) : (
                   <p className="sources-modal__link-button-text">
-                    https://open-platform.theguardian.com/
+                    The Guardian
                   </p>
                 )}
               </button>
@@ -241,8 +224,8 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                 </div>
               </div>
 
-              <p className="sources-modal__text">Hacker News</p>
               <button
+                type="button"
                 onMouseEnter={() => setIsHovered6(true)}
                 onMouseLeave={() => setIsHovered6(false)}
                 className="sources-modal__link-button"
@@ -261,13 +244,11 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                       </span>
                     </div>
                     <p className="sources-modal__link-button-text">
-                      https://github.com/HackerNews/API?tab=readme-ov-file
+                      Hacker News
                     </p>
                   </>
                 ) : (
-                  <p className="sources-modal__link-button-text">
-                    https://github.com/HackerNews/API?tab=readme-ov-file
-                  </p>
+                  <p className="sources-modal__link-button-text">Hacker News</p>
                 )}
               </button>
             </div>
@@ -285,8 +266,8 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                 />
               </div>
 
-              <p className="sources-modal__text">Open Weather</p>
               <button
+                type="button"
                 onMouseEnter={() => setIsHovered7(true)}
                 onMouseLeave={() => setIsHovered7(false)}
                 className="sources-modal__link-button"
@@ -302,12 +283,12 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                       </span>
                     </div>
                     <p className="sources-modal__link-button-text">
-                      https://openweathermap.org/
+                      Open Weather
                     </p>
                   </>
                 ) : (
                   <p className="sources-modal__link-button-text">
-                    https://openweathermap.org/
+                    Open Weather
                   </p>
                 )}
               </button>
@@ -319,7 +300,6 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                 <p className="sources-modal__number-text">8</p>
               </div>
               <div className="sources-modal__image-container">
-                {" "}
                 <img
                   src={OpenMeteoLogo}
                   alt="Open-Meteo logo"
@@ -327,8 +307,8 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                 />
               </div>
 
-              <p className="sources-modal__text">Open-Meteo</p>
               <button
+                type="button"
                 onMouseEnter={() => setIsHovered8(true)}
                 onMouseLeave={() => setIsHovered8(false)}
                 className="sources-modal__link-button"
@@ -342,13 +322,11 @@ export default function SourcesModal({ isOpened, onCloseClick }) {
                       </span>
                     </div>
                     <p className="sources-modal__link-button-text">
-                      https://open-meteo.com/
+                      Open-Meteo
                     </p>
                   </>
                 ) : (
-                  <p className="sources-modal__link-button-text">
-                    https://open-meteo.com/
-                  </p>
+                  <p className="sources-modal__link-button-text">Open-Meteo</p>
                 )}
               </button>
             </div>

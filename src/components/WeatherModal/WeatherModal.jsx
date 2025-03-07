@@ -150,6 +150,7 @@ export default function WeatherModal({
     <div className={`weather-modal ${isOpened}`}>
       <div className="weather-modal__weather-breakdown">
         <button
+          type="button"
           className="weather-modal__close-button"
           onClick={onCloseClick}
         ></button>

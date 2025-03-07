@@ -5,10 +5,19 @@
   padding: 140px 104px 20px;
 }
 .liked-by-server__title {
-  line-height: 32px;
+  line-height: 38px;
   font-weight: 700;
   color: #1a1b2280;
   font-size: 24px;
+}
+
+.liked-by-server__keywords-text {
+  font-size: 18px;
+  line-height: 24px;
+  max-width: 712px;
+}
+.liked-by-server__span {
+  font-weight: 700;
 }
 
 .liked-by-server__form-container {
@@ -18,29 +27,41 @@
 }
 
 .liked-by-server__news-form {
+  position: relative;
   background-color: white;
-  background-size: 550px;
-  display: flex;
-  min-width: 608px;
+  width: 608px;
   border-radius: 100px;
   overflow: hidden;
+  color: #b6bcbf;
+  height: 64px;
+  box-sizing: border-box;
 }
 .liked-by-server__news-input {
   height: 64px;
-  width: 608px;
+  min-width: 500px;
+  width: 500px;
+  border: 1px solid #d1d2d6;
   font-size: 16px;
   line-height: 22px;
+  font-weight: 400;
   color: #1a1b22;
   text-indent: 24px;
-  border: none;
   outline: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  border-radius: 100px;
 }
 .liked-by-server__news-submit-button {
+  padding: 0;
+  margin: 0;
+  right: 0;
+  top: 0;
+  position: absolute;
+  height: 64px;
   width: 168px;
   background-color: #2f71e5;
   color: white;
   border-radius: 100px;
-  min-width: 168px;
   border: none;
 }
 .liked-by-server__saved-container {
@@ -66,9 +87,24 @@
   font-weight: 700;
 }
 
+.liked-by-server__news-input:focus,
+.liked-by-server__news-input:hover {
+  border: 2px #4d90fe solid;
+  border-radius: 100px;
+  background-color: #ffffff;
+  box-shadow: 0 0 30px rgba(77, 144, 254, 0.6);
+}
+
 @media screen and (max-width: 820px) {
   .liked-by-server__header {
     padding: 150px 16px 32px 40px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .liked-by-server__title {
+    font-size: 20px;
+    line-height: 24px;
   }
 }
 
@@ -99,9 +135,12 @@
   }
   .liked-by-server__title {
     padding: 16px 0;
+    font-size: 16px;
+    line-height: 20px;
   }
 
   .liked-by-server__form-container-mobile {
+    padding-top: 20px;
     position: relative;
     visibility: visible;
     min-width: 250px;
@@ -119,6 +158,8 @@
   }
 
   .liked-by-server__form-container {
+    width: 0;
+    height: 0;
     visibility: collapse;
     position: absolute;
   }

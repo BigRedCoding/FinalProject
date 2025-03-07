@@ -24,19 +24,22 @@ export default function NewsSection({
 
   const [numberOfResultsShown, setNumberOfResultsShown] = useState(0);
 
+  const [initialTrigger, setInitialTrigger] = useState(false);
+
   const seeMoreDisabled = currentPage >= totalCards / cardsShown;
   const seeLessDisabled = currentPage === 1;
   const disableButton = seeMoreDisabled ? "isHidden" : "";
   const disableButton1 = seeLessDisabled ? "isHidden" : "";
 
   const maxPages = allArticles.length / cardsShown;
+  const widthInital = window.innerWidth;
 
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(widthInital);
   const [listChange, triggerListChange] = useState(false);
 
   const [updateFilter, setUpdateFilter] = useState(false);
 
-  useEffect(() => {
+  const resizer = () => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
@@ -46,7 +49,7 @@ export default function NewsSection({
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  };
 
   const handlePageChange = (page) => {
     if (page > 0 || page < maxPages) {
@@ -59,7 +62,6 @@ export default function NewsSection({
   };
 
   const updateFiltered = () => {
-    console.log("update filter trigger:", updateFilter);
     if (updateFilter === true) {
       const cardsToShow = allArticles.slice(0, cardsShown);
       setFilteredArticles(cardsToShow);
@@ -68,7 +70,6 @@ export default function NewsSection({
   };
 
   const setPages = () => {
-    console.log("set pages triggered");
     if (listChange === true) {
       const pageSize = 4;
       setCardsShown(pageSize);
@@ -76,22 +77,12 @@ export default function NewsSection({
       const pageSize = isProfileSelected === "home" ? 3 : 6;
       setCardsShown(pageSize);
     }
-    console.log(listChange);
+
     const totalArticles = allArticles.length;
     setTotalCards(totalArticles);
     setUpdateFilter(true);
   };
-
-  useEffect(() => {
-    updateFiltered();
-  }, [updateFilter]);
-
-  useEffect(() => {
-    setPages();
-  }, [windowWidth]);
-
-  useEffect(() => {
-    console.log("window width use effect trigger:", windowWidth);
+  const setPageWidth = () => {
     if (windowWidth < 540) {
       triggerListChange(false);
     } else if (windowWidth < 720) {
@@ -103,6 +94,21 @@ export default function NewsSection({
     } else if (windowWidth > 1265) {
       triggerListChange(false);
     }
+  };
+  useEffect(() => {
+    handlePageChange(1);
+  }, [cardsShown]);
+
+  useEffect(() => {
+    updateFiltered();
+  }, [updateFilter]);
+
+  useEffect(() => {
+    setPages();
+  }, [listChange]);
+
+  useEffect(() => {
+    setPageWidth();
   }, [windowWidth]);
 
   useEffect(() => {
@@ -116,6 +122,19 @@ export default function NewsSection({
       setPages();
     }
   }, [allArticles]);
+
+  useEffect(() => {
+    if (initialTrigger === false) {
+      if (isSubmitted === true) {
+        resizer();
+        setInitialTrigger(true);
+      }
+    }
+  }, [isSubmitted]);
+
+  useEffect(() => {
+    resizer();
+  }, []);
   return (
     <section className="news-section">
       <div className="news-section__search-results">
@@ -130,6 +149,7 @@ export default function NewsSection({
                   onArticleLike={onArticleLike}
                   onArticleFavorite={onArticleFavorite}
                   onRegistrationClick={onRegistrationClick}
+                  isProfileSelected={isProfileSelected}
                 />
               ))}
             </ul>

@@ -1,4 +1,4 @@
-async function get7DayForecast(data) {
+function get7DayForecast(data) {
   const url = "https://api.open-meteo.com/v1/forecast";
 
   const currentLatitude = data?.latitude || "";
@@ -36,20 +36,17 @@ async function get7DayForecast(data) {
       "wind_direction_10m_dominant",
       "shortwave_radiation_sum",
     ],
-    wind_speed_unit: "mph", // Unit for wind speed
-    precipitation_unit: "inch", // Unit for precipitation
+    wind_speed_unit: "mph",
+    precipitation_unit: "inch",
     past_days: 1,
-    forecast_days: 7, // Number of days for forecast
+    forecast_days: 7,
   };
   if (data) {
-    try {
-      const response = await fetch(`${url}?${new URLSearchParams(params)}`);
-      const data = await response.json();
-      // Return the 7-day forecast data
-      return data;
-    } catch (error) {
-      console.error("Error fetching 7-day forecast:", error);
-    }
+    return fetch(`${url}?${new URLSearchParams(params)}`)
+      .then((response) => response.json())
+      .catch((error) => {
+        console.error("Error fetching 7-day forecast:", error);
+      });
   }
 }
 
@@ -100,11 +97,10 @@ function generateWeatherData(data) {
   return obtainedData;
 }
 
-const fetchWeatherData = async (data) => {
-  // Fetch 7-day forecast
-  const rawData = await get7DayForecast(data);
-  const reconfiguredData = await generateWeatherData(rawData);
-  return reconfiguredData;
+const fetchWeatherData = (data) => {
+  return get7DayForecast(data)
+    .then((rawData) => generateWeatherData(rawData))
+    .then((reconfiguredData) => reconfiguredData);
 };
 
 export default fetchWeatherData;

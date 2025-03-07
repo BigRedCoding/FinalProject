@@ -30,7 +30,6 @@ export default function HeaderBar({ startApiTrigger, setStartApiTrigger }) {
   };
 
   const addItems = (randomizedArray) => {
-    console.log("add items triggered");
     if (randomizedArray.length > 0) {
       const initialData = [];
       for (let i = 0; i < 5; i++) {
@@ -64,11 +63,10 @@ export default function HeaderBar({ startApiTrigger, setStartApiTrigger }) {
 
   const fetchData = async () => {
     if (startApiTrigger === true) {
-      console.log("fetchData triggered");
       setLoading(true);
       const data = await getHackerNews();
       const data2 = await getTheGuardianNews();
-      console.log("fetchData pulled and set");
+
       setLoading(false);
       combineAndRandomizeData(data, data2);
       setStartApiTrigger(false);
@@ -76,7 +74,9 @@ export default function HeaderBar({ startApiTrigger, setStartApiTrigger }) {
   };
 
   useEffect(() => {
-    fetchData();
+    if (startApiTrigger === true) {
+      fetchData();
+    }
   }, [startApiTrigger]);
 
   useEffect(() => {

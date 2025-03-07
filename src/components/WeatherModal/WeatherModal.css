@@ -128,7 +128,6 @@
 .weather-modal__image-container {
   width: 140px;
   height: 140px;
-  overflow: hidden;
 }
 .weather-modal__conditions-image {
   object-fit: cover;
@@ -146,7 +145,7 @@
   font-weight: 600;
 }
 .weather-modal__time {
-  font-size: 40px;
+  font-size: 32px;
 }
 
 .weather-modal__temperature {
@@ -279,6 +278,36 @@
   .weather-modal__current-container {
     flex-direction: column;
     align-items: center;
+  }
+}
+@media screen and (max-width: 375px) {
+  .weather-modal__weather-breakdown {
+    padding: 5px;
+    min-width: 290px;
+    max-width: 290px;
+    min-height: 500px;
+    max-height: 550px;
+  }
+  .weather-modal__all-container {
+    min-width: 280px;
+    max-width: 290px;
+    padding: 25px 5px 5px;
+  }
+  .weather-modal__current-container {
+    min-width: 270px;
+    max-width: 270px;
+  }
+  .weather-modal__temp-image-container {
+    padding: 0;
+  }
+  .weather-modal__current-conditions {
+    min-width: 270px;
+    max-width: 270px;
+    padding: 0;
+  }
+  .weather-modal__current-conditions {
+    min-width: 270px;
+    max-width: 270px;
   }
 }
 

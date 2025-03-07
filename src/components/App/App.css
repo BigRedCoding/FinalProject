@@ -102,13 +102,6 @@ input:hover {
   color: red;
 }
 
-.dev {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 2;
-}
-
 .deletetokenbutton {
   visibility: collapse;
   position: absolute;

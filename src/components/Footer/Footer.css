@@ -3,8 +3,6 @@
   margin: 32px 104px 28px;
   display: flex;
   justify-content: space-between;
-  font-weight: 500;
-  font-size: 16px;
 }
 
 .footer__text-container {
@@ -16,11 +14,16 @@
 .footer__author-container {
   display: flex;
   gap: 10px;
+  font-size: 16px;
+  line-height: 22px;
 }
 
 .footer__detail {
   margin: 0;
   padding: 0;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 500;
 }
 
 .footer__links-button {
@@ -54,7 +57,9 @@
   margin: 0;
   border: none;
   background-color: transparent;
-  font-size: 24px;
+
+  font-size: 18px;
+  line-height: 24px;
 }
 
 .footer__detail-copy {
@@ -114,5 +119,14 @@
     align-items: start;
     flex-direction: column;
     height: fit-content;
+  }
+  .footer__home,
+  .footer__triple-ten {
+    font-size: 18px;
+    line-height: 24px;
+  }
+  .footer__detail-copy {
+    font-size: 16px;
+    line-height: 22px;
   }
 }

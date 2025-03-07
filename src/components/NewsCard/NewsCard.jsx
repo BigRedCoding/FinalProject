@@ -11,6 +11,7 @@ export default function NewsCard({
   onArticleLike,
   onArticleFavorite,
   onRegistrationClick,
+  isProfileSelected,
 }) {
   const { isLoggedIn, userData } = useContext(CurrentUserContext);
 
@@ -35,7 +36,7 @@ export default function NewsCard({
       ? Number(data?.date)
       : data?.date
     : dateNow;
-  // Ensure the timestamp is in milliseconds
+
   const timestamp = datePulled.length === 10 ? datePulled * 1000 : datePulled;
 
   const newDate = new Date(timestamp);
@@ -51,6 +52,8 @@ export default function NewsCard({
   const likeState = isLiked ? "newscard_button-liked" : "";
   const favoriteState = isFavorited ? "newscard_button-favorited" : "";
   const newKeywords = data?.keywords || "";
+
+  const keywordsMod = isProfileSelected === "home" ? "isHidden" : "";
 
   const openCardLink = () => window.open(newUrl, "_blank");
 
@@ -83,12 +86,18 @@ export default function NewsCard({
     <li className="newscard">
       <div className="newscard__header-menu">
         {newKeywords.length > 0 && (
-          <button className="newscard__keywords-button">{newKeywords}</button>
+          <button
+            type="button"
+            className={`newscard__keywords-button ${keywordsMod}`}
+          >
+            {newKeywords}
+          </button>
         )}
         <div className="newscard__favorite-container">
           {!isLoggedIn && (
             <>
               <button
+                type="button"
                 onClick={openRegistration}
                 alt="Favorite image"
                 className="newscard__favorite-image"
@@ -101,6 +110,7 @@ export default function NewsCard({
           )}
           {isLoggedIn && (
             <button
+              type="button"
               onClick={handleArticleFavorite}
               className={`newscard__favorite-button ${favoriteState}`}
             >
@@ -115,6 +125,7 @@ export default function NewsCard({
           {isLoggedIn && isFavorited && isSavedNews && (
             <>
               <button
+                type="button"
                 onClick={handleArticleFavorite}
                 className="newscard__remove-button"
               >
@@ -130,6 +141,7 @@ export default function NewsCard({
         <p className="newscard__like-count">{currentLikes}</p>
         {isLoggedIn && (
           <button
+            type="button"
             onClick={handleArticleLike}
             className={`newscard__like-button ${likeState}`}
           ></button>
@@ -153,7 +165,11 @@ export default function NewsCard({
           <p className="newscard__summary">{newDescription}</p>
           <div className="newscard__source-container">
             <p className="newscard__source">{newSource}</p>
-            <button className="newscard__url" onClick={openCardLink}>
+            <button
+              type="button"
+              className="newscard__url"
+              onClick={openCardLink}
+            >
               Open Website
             </button>
           </div>

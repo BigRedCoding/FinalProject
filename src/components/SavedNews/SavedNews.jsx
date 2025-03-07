@@ -30,11 +30,12 @@ export default function SavedNews({
   const isSubmitted = true;
 
   const keywords =
-    userData?.filteredArticles?.map((article) => article.keywords).join(", ") ||
-    "no key words associated";
+    filteredArticles
+      ?.filter((article) => article.keywords.length > 0)
+      .map((article) => article.keywords.join(", "))
+      .join(", ") || "no key words associated";
 
   const filterArticlesByFavorites = () => {
-    console.log("filter by favorites trigger");
     setFilteredArticles(
       articlesTotal.filter((article) =>
         article.favorites.includes(userData.userId)
@@ -67,7 +68,9 @@ export default function SavedNews({
         <h1 className="saved-news__saved-text">
           {userName}, you have {numberSaved} saved articles
         </h1>
-        <p className="saved-news__keywords-text">By keywords: {keywords}</p>
+        <p className="saved-news__keywords-text">
+          By keywords: <span className="saved-news__span">{keywords}</span>
+        </p>
       </div>
       <div className="saved-news__saved-container">
         {filteredArticles.length > 0 ? (
