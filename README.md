@@ -4,25 +4,15 @@
 
 ### **`DESCRIPTION:`**
 
-### Welcome! I am proud to present to you my custom enhanced version of News Explorer! This project comes from a design located [here](https://www.figma.com/design/3ottwMEhlBt95Dbn8dw1NH/Your-Final-Project?node-id=0-1). Since we had an option to pursue a custom design, I figured I could take the minimum requirement and enhance it to my own liking! There are quite a few components and additional functionalities not attributed to the requirements of the original News Explorer project, including such details like:
-
-### - a readout of the local weather that can be clicked to open a modal with more details including a 6 day forecast
-
-### - stock prices Bitcoin, Etherium, Apple, Google, Microsoft, and Amazon
-
-### - a news ticker streaming 550 articles pulled when the site opens
-
-### - a search on the main page that calls information from three api's with an emphasis on NewsApp
-
-### - a "Liked by server" section where users can like something, it gets stored to the server, and others can see it was liked
-
-### - and a "Saved articles" section where users can favorite items privately and keep a list associated with their account
+### This is the backend of the custom project called "News Explorer" created by Brandon Dooley.
 
 ================================================================================================
 
 ### **`TECHNIQUES AND TECHNOLOGIES:`**
 
-### This frontend application was created using a variety languages including HTML, CSS, Javascript, and React.JS with an emphasis on React.JS as this project is to highlight its features. Npm and Vite is also utilized to assist development and deployment. The project has 8 different API's and is referenced on the live site. The backend uses Express, Mongoose, CORS, bcrypt, Celebrate, and Node. The server is a Google server with a Ubuntu OS utilizing Nginx, Certbot, Mongo, and Node.
+### The frontend application has quite a bit more features. This side of the project has a variety of functions that base around typical information expected from news articles. There is also the added functions of "likes" and "favorites." The idea of the "likes" is to give people access to filtered results by the community. The api's used call a variety of news sources and present in sometimes terrible fashion. Also, those api's don't always function correctly, so sometimes if a user is looking for something it can be helpful having a centralized database created through the interest of others. Then the "favorited" part gives users even more control over their interests just in case the news api's remove the content they like. This part of the project also has the ability for users to sign in, register, and update their information.
+
+### Schemas are used to force content to be in a certain format before the server will accept it, adding a certain level of security to multiple facets. Mongoose is used as the storage medium.
 
 ================================================================================================
 
@@ -36,7 +26,7 @@
 
 ### **`Video Demonstration:`**
 
-### For the moment, I will wait on this until the project is accepted by reviewers, then I'll create the video.
+### For the moment, I will wait on this until the project is complete.
 
 ================================================================================================
 
