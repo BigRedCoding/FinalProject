@@ -29,14 +29,14 @@ export default function About() {
     const backgroundImagesLength = AboutBackgroundImages.length;
     setTimeout(() => {
       setHidden(true);
-    }, 2300);
+    }, 2500);
 
     setTimeout(() => {
       const nextImageRef =
         (currentIndexRef.current + 1) % backgroundImagesLength;
       setBackgroundImage2(AboutBackgroundImages[nextImageRef]);
       setTransitionState("about-image_reset-position");
-    }, 2600);
+    }, 3000);
 
     setTimeout(() => {
       if (currentIndexRef.current < backgroundImagesLength - 1) {
