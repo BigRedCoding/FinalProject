@@ -24,24 +24,24 @@ const { ServerError } = require("./utils/errors");
 
 const mainRouter = require("./routes/index");
 
-const corsOptions = {
-  origin(origin, callback) {
-    if (
-      origin === "https://www.newsexplorer.justlearning.net" ||
-      origin === "https://api.newsexplorer.justlearning.net"
-    ) {
-      callback(null, true);
-    } else {
-      callback(new Error("CORS not allowed"), false);
-    }
-  },
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  credentials: true,
-};
+// const corsOptions = {
+//   origin(origin, callback) {
+//     if (
+//       origin === "https://www.newsexplorer.justlearning.net" ||
+//       origin === "https://api.newsexplorer.justlearning.net"
+//     ) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("CORS not allowed"), false);
+//     }
+//   },
+//   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+//   credentials: true,
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
-// app.use(cors());
+app.use(cors());
 
 app.use(rateLimiter);
 
