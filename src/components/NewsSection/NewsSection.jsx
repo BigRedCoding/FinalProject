@@ -15,11 +15,12 @@ export default function NewsSection({
   onRegistrationClick,
   failedSearch,
 }) {
+  const [localTotal, setLocalTotal] = useState([]);
   const [filteredArticles, setFilteredArticles] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCards, setTotalCards] = useState(1);
-  const [cardsShown, setCardsShown] = useState(3);
+  const [cardsShown, setCardsShown] = useState(0);
 
   const [numberOfResultsShown, setNumberOfResultsShown] = useState(0);
 
@@ -34,10 +35,8 @@ export default function NewsSection({
   const [windowWidth, setWindowWidth] = useState(widthInital);
   const [listChange, triggerListChange] = useState(false);
 
-  const [updateFilter, setUpdateFilter] = useState(false);
+  const [filterUpdate, triggerFilterUpdate] = useState(false);
   const [navShown, setNavShown] = useState(false);
-
-  console.log(filteredArticles);
 
   const resizer = () => {
     const handleResize = () => {
@@ -52,23 +51,20 @@ export default function NewsSection({
   };
 
   const handlePageChange = (page) => {
-    console.log("handle");
     if (page > 0 || page < maxPages) {
       const numberOfResultsToShow = page * cardsShown;
-      const cardsToShow = allArticles.slice(0, numberOfResultsToShow);
+      const cardsToShow = localTotal.slice(0, numberOfResultsToShow);
 
       setFilteredArticles(cardsToShow);
       setCurrentPage(page);
     }
   };
 
-  const updateFiltered = () => {
-    console.log("filtered");
-    if (updateFilter === true) {
-      const cardsToShow = allArticles.slice(0, cardsShown);
-      setFilteredArticles(cardsToShow);
-    }
-    setUpdateFilter(false);
+  const updateFilter = () => {
+    const cardsToShow = localTotal.slice(0, cardsShown);
+    setFilteredArticles(cardsToShow);
+
+    triggerFilterUpdate(false);
   };
 
   const setPages = () => {
@@ -80,9 +76,9 @@ export default function NewsSection({
       setCardsShown(pageSize);
     }
 
-    const totalArticles = allArticles.length;
+    const totalArticles = localTotal.length;
     setTotalCards(totalArticles);
-    setUpdateFilter(true);
+    triggerFilterUpdate(true);
   };
   const setPageWidth = () => {
     if (windowWidth < 540) {
@@ -98,15 +94,21 @@ export default function NewsSection({
     }
   };
   useEffect(() => {
-    handlePageChange(1);
+    if (cardsShown > 0) {
+      handlePageChange(1);
+    }
   }, [cardsShown]);
 
   useEffect(() => {
-    updateFiltered();
-  }, [updateFilter]);
+    if (filterUpdate === true) {
+      updateFilter();
+    }
+  }, [filterUpdate]);
 
   useEffect(() => {
-    setPages();
+    if (filteredArticles?.length > 0) {
+      setPages();
+    }
   }, [listChange]);
 
   useEffect(() => {
@@ -114,25 +116,27 @@ export default function NewsSection({
   }, [windowWidth]);
 
   useEffect(() => {
-    if (filteredArticles.length > 0) {
+    if (filteredArticles?.length > 0) {
       setNumberOfResultsShown(filteredArticles.length);
     }
   }, [filteredArticles]);
 
   useEffect(() => {
-    if (allArticles.length > 0) {
-      setNavShown(true);
+    if (localTotal && localTotal?.length > 0) {
       setPages();
+      setNavShown(true);
     }
-    if (allArticles.length < 1) {
+    if (localTotal?.length < 1) {
       setNavShown(false);
     }
-  }, [allArticles, loading]);
+  }, [localTotal]);
 
   useEffect(() => {
-    resizer();
-    setPages();
-  }, []);
+    if (allArticles.length > 0) {
+      resizer();
+      setLocalTotal(allArticles);
+    }
+  }, [allArticles]);
 
   return (
     <section className="news-section">
