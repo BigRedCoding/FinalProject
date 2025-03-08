@@ -51,7 +51,7 @@ export default function SavedNews({
   };
 
   useEffect(() => {
-    if (articlesTotal.length > 0) {
+    if (articlesTotal?.length >= 0) {
       filterArticlesByFavorites();
     }
   }, [articlesTotal]);
