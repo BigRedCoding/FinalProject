@@ -12,10 +12,10 @@ import logoutBlackImage from "../../assets/logoutblack.svg";
 
 export default function Navigation({
   onLoginClick,
-  setIsProfileSelected,
+  setNavigationSelection,
   onEditProfileClick,
   onLogoutClick,
-  isProfileSelected,
+  navigationSelection,
 }) {
   const { isLoggedIn, userData } = useContext(CurrentUserContext);
   const [isHidden, setIsHidden] = useState(false);
@@ -28,27 +28,28 @@ export default function Navigation({
   const location = useLocation();
 
   const lineClassMod =
-    isProfileSelected === "home" ? "" : "navigation_line-mod";
+    navigationSelection === "home" ? "" : "navigation_line-mod";
 
   const textClassMod =
-    isProfileSelected === "home" ? "" : "navigation_text-mod";
+    navigationSelection === "home" ? "" : "navigation_text-mod";
 
   const logoutSource =
-    isProfileSelected === "home" || windowWidth < 500
+    navigationSelection === "home" || windowWidth < 500
       ? logoutImage
       : logoutBlackImage;
 
-  const altMenuImage = isProfileSelected === "home" ? "" : "mobile-button_mod";
+  const altMenuImage =
+    navigationSelection === "home" ? "" : "mobile-button_mod";
 
   useEffect(() => {
     if (location.pathname === "/") {
-      setIsProfileSelected("home");
+      setNavigationSelection("home");
     } else if (location.pathname === "/liked-by-server") {
-      setIsProfileSelected("likedbyserver");
+      setNavigationSelection("likedbyserver");
     } else if (location.pathname === "/saved-news") {
-      setIsProfileSelected("profile");
+      setNavigationSelection("profile");
     }
-  }, [location.pathname, setIsProfileSelected]);
+  }, [location.pathname, setNavigationSelection]);
 
   const menuToggle = () => {
     setIsHidden(!isHidden);
@@ -56,15 +57,15 @@ export default function Navigation({
   };
 
   const handleHomeClick = () => {
-    setIsProfileSelected("home");
+    setNavigationSelection("home");
   };
 
   const handleLikedByServerClick = () => {
-    setIsProfileSelected("likedbyserver");
+    setNavigationSelection("likedbyserver");
   };
 
   const handleSavedNewsClick = () => {
-    setIsProfileSelected("profile");
+    setNavigationSelection("profile");
   };
 
   useEffect(() => {
@@ -75,8 +76,8 @@ export default function Navigation({
   }, [windowWidth]);
 
   useEffect(() => {
-    setActiveLine(isProfileSelected);
-  }, [isProfileSelected]);
+    setActiveLine(navigationSelection);
+  }, [navigationSelection]);
 
   useEffect(() => {
     const handleResize = () => {

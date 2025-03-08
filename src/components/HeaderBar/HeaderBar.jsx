@@ -4,8 +4,9 @@ import { getHackerNews } from "../../utils/NewsApis/hackernewsapi";
 import { getTheGuardianNews } from "../../utils/NewsApis/theguardian";
 import HeaderBarCard from "../HeaderBarCard/HeaderBarCard";
 
-export default function HeaderBar({ startApiTrigger, setStartApiTrigger }) {
+export default function HeaderBar() {
   const [loading, setLoading] = useState(true);
+  const [apiTrigger, setApiTrigger] = useState(true);
 
   const [dataScroll, setDataScroll] = useState([]);
   const scrollContainerRef = useRef(null);
@@ -31,53 +32,28 @@ export default function HeaderBar({ startApiTrigger, setStartApiTrigger }) {
 
   const addItems = (randomizedArray) => {
     if (randomizedArray.length > 0) {
-      const initialData = [];
-      for (let i = 0; i < 5; i++) {
-        initialData.push(
-          <HeaderBarCard
-            key={randomizedArray[i].id || i}
-            data={randomizedArray[i]}
-          />
-        );
-      }
-
-      setDataScroll((prevData) => [...prevData, ...initialData]);
-
-      let index = 5;
-      const timer = setInterval(() => {
-        if (index < randomizedArray.length) {
-          const newCard = (
-            <HeaderBarCard
-              key={randomizedArray[index].id || index}
-              data={randomizedArray[index]}
-            />
-          );
-          setDataScroll((prevData) => [...prevData, newCard]);
-          index += 1;
-        } else {
-          clearInterval(timer);
-        }
-      }, 5000);
+      const initialData = randomizedArray.map((item, index) => (
+        <HeaderBarCard key={index} data={item} />
+      ));
+      setDataScroll(initialData);
     }
   };
 
   const fetchData = async () => {
-    if (startApiTrigger === true) {
-      setLoading(true);
-      const data = await getHackerNews();
-      const data2 = await getTheGuardianNews();
+    setLoading(true);
+    const data = await getHackerNews();
+    const data2 = await getTheGuardianNews();
 
-      setLoading(false);
-      combineAndRandomizeData(data, data2);
-      setStartApiTrigger(false);
-    }
+    setLoading(false);
+    combineAndRandomizeData(data, data2);
   };
 
   useEffect(() => {
-    if (startApiTrigger === true) {
+    if (apiTrigger === true) {
       fetchData();
+      setApiTrigger(false);
     }
-  }, [startApiTrigger]);
+  }, []);
 
   useEffect(() => {
     let intervalId;

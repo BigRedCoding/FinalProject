@@ -11,7 +11,7 @@ export default function NewsCard({
   onArticleLike,
   onArticleFavorite,
   onRegistrationClick,
-  isProfileSelected,
+  navigationSelection,
 }) {
   const { isLoggedIn, userData } = useContext(CurrentUserContext);
 
@@ -23,7 +23,12 @@ export default function NewsCard({
 
   const isSavedNews = location.pathname === "/saved-news";
 
-  const newAuthor = data?.author || "Unknown Author";
+  const newAuthor = data.author
+    ? data.author
+    : data.source
+    ? data.source
+    : "Unknown Author";
+
   const newTitle = data?.title || "No Title Available";
   const newDescription = data?.description || "No Description Available";
   const newImageUrl = data?.imageUrl || NewsExplorerLogo;
@@ -51,9 +56,30 @@ export default function NewsCard({
 
   const likeState = isLiked ? "newscard_button-liked" : "";
   const favoriteState = isFavorited ? "newscard_button-favorited" : "";
-  const newKeywords = data?.keywords || "";
 
-  const keywordsMod = isProfileSelected === "home" ? "isHidden" : "";
+  const getRandomKeyword = () => {
+    if (data?.keywords) {
+      const keywords = data.keywords;
+      const randomIndex = Math.floor(Math.random() * keywords.length);
+      return keywords[randomIndex];
+    }
+
+    const blank = "";
+    return blank;
+  };
+
+  const capitalizeFirstLetter = (keyword) => {
+    if (keyword !== "") {
+      return keyword.charAt(0).toUpperCase() + keyword.slice(1);
+    }
+
+    const blank = "";
+    return blank;
+  };
+
+  const newKeywords = capitalizeFirstLetter(getRandomKeyword());
+
+  const keywordsMod = navigationSelection === "home" ? "isHidden" : "";
 
   const openCardLink = () => window.open(newUrl, "_blank");
 
@@ -73,6 +99,13 @@ export default function NewsCard({
   const openRegistration = () => {
     onRegistrationClick();
   };
+  useEffect(() => {
+    setCurrentLikes(data?.likes?.length || 0);
+    setIsLiked(data?.likes?.some((item) => item === userData?.userId) || false);
+    setIsFavorited(
+      data?.favorites?.some((item) => item === userData?.userId) || false
+    );
+  }, [userData]);
 
   useEffect(() => {
     setCurrentLikes(data?.likes?.length || 0);

@@ -1,5 +1,7 @@
 import "./Main.css";
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
+
+import { NewsBackgroundImages } from "../../utils/constants.js";
 
 import About from "../About/About.jsx";
 import NewsSection from "../NewsSection/NewsSection.jsx";
@@ -8,29 +10,39 @@ import Navigation from "../Navigation/Navigation.jsx";
 import { searchArticles } from "../../utils/NewsApis/newsapp.js";
 import { getGnewsNews } from "../../utils/NewsApis/Gnews.js";
 import { getNewsData } from "../../utils/NewsApis/newsdata.js";
+import CurrentUserContext from "../../contexts/CurrentUserContext.js";
 
 export default function Main({
   onLoginClick,
   onRegistrationClick,
-  setIsProfileSelected,
+  setNavigationSelection,
   onEditProfileClick,
   onLogoutClick,
-  isProfileSelected,
+  navigationSelection,
   onArticleLike,
   onArticleFavorite,
   articlesTotal,
+  searchResults,
+  setSearchResults,
+  searchQuery,
+  setSearchQuery,
 }) {
+  const { userData } = useContext(CurrentUserContext);
+  const [initialTrigger, setInitialTrigger] = useState(false);
+
   const [query, setQuery] = useState("");
-
   const [loading, setLoading] = useState(false);
-
   const [isSubmitted, setIsSubmitted] = useState(false);
-
   const [currentResults, setCurrentResults] = useState([]);
-
   const [failedSearch, setFailedSearch] = useState(false);
-
   const [placeholderDefault, setPlaceHolderDefault] = useState("Enter topic");
+
+  const [backgroundImage, setBackgroundImage] = useState(
+    NewsBackgroundImages[0]
+  );
+  const [transitionState, setTransitionState] = useState("fade-in");
+
+  const currentIndexRef = useRef(0);
 
   const handleChange = (e) => {
     const inputValue = e.target.value;
@@ -108,56 +120,112 @@ export default function Main({
     const updatedResults = updateOrderedResults();
 
     setCurrentResults(updatedResults);
-
+    setSearchResults(updatedResults);
+    setSearchQuery(query);
     setLoading(false);
-    setIsSubmitted(true);
   };
 
   const handleSearch = async (e) => {
-    e.preventDefault();
     setLoading(true);
+    setIsSubmitted(true);
+    e.preventDefault();
+
+    if (query.length < 1) {
+      setPlaceHolderDefault("Please enter a keyword");
+      return;
+    }
 
     let results = [];
 
-    const storedResults = localStorage.getItem("searchResults");
+    const resultsArray = [];
+    const resultsNewsApp = await searchArticles(query);
+    const resultsGnewsNews = await getGnewsNews(query);
+    const resultsNewsData = await getNewsData(query);
 
-    if (storedResults) {
-      results = JSON.parse("storedResults");
-    } else {
-      const resultsArray = [];
-      const resultsNewsApp = await searchArticles(query);
-      const resultsGnewsNews = await getGnewsNews(query);
-      const resultsNewsData = await getNewsData(query);
+    resultsArray.push(...resultsNewsApp);
+    resultsArray.push(...resultsGnewsNews);
+    resultsArray.push(...resultsNewsData);
 
-      resultsArray.push(...resultsNewsApp);
-      resultsArray.push(...resultsGnewsNews);
-      resultsArray.push(...resultsNewsData);
+    results = orderByDate(resultsArray);
 
-      results = orderByDate(resultsArray);
-
-      if (resultsArray?.length < 0) {
-        setFailedSearch(true);
-        return;
-      }
-
-      localStorage.setItem("searchResults", JSON.stringify(results));
+    if (
+      resultsNewsApp?.length < 1 &&
+      resultsGnewsNews?.length < 1 &&
+      resultsNewsData?.length < 1
+    ) {
+      setFailedSearch(true);
+      return;
     }
+
     const mostFrequentWord = findMostFrequentWord(results);
     const updatedList = addKeywordToArticles(results, mostFrequentWord);
 
     setLikesAndFavorites(updatedList);
+    setInitialTrigger(false);
   };
+
+  const changeImage = () => {
+    setTransitionState("fade-out");
+    const backgroundImagesLength = NewsBackgroundImages.length;
+
+    setTimeout(() => {
+      if (currentIndexRef.current < backgroundImagesLength - 1) {
+        currentIndexRef.current += 1;
+        setBackgroundImage(NewsBackgroundImages[currentIndexRef.current]);
+        setTransitionState("fade-in");
+      } else {
+        setBackgroundImage(NewsBackgroundImages[0]);
+        currentIndexRef.current = 0;
+        setTransitionState("fade-in");
+      }
+    }, 2000);
+  };
+  useEffect(() => {
+    if (navigationSelection === "home") {
+      if (searchResults.length > 0) {
+        setCurrentResults(searchResults);
+        setQuery(searchQuery);
+        setIsSubmitted(true);
+      }
+      if (searchResults.length < 1) {
+        setIsSubmitted(false);
+      }
+    }
+  }, [navigationSelection]);
+
+  useEffect(() => {
+    if (currentResults.length > 0) {
+      setLikesAndFavorites(currentResults);
+    }
+  }, [userData]);
+
+  useEffect(() => {
+    if (initialTrigger === false) {
+      setBackgroundImage(NewsBackgroundImages[0]);
+      const intervalId = setInterval(changeImage, 7000);
+      setInitialTrigger(true);
+      return () => clearInterval(intervalId);
+    }
+  }, []);
 
   return (
     <div className="main">
       <Navigation
         onLoginClick={onLoginClick}
-        setIsProfileSelected={setIsProfileSelected}
+        setNavigationSelection={setNavigationSelection}
         onEditProfileClick={onEditProfileClick}
         onLogoutClick={onLogoutClick}
-        isProfileSelected={isProfileSelected}
+        navigationSelection={navigationSelection}
       />
       <section className="main__search">
+        <div className="main__search-image-container">
+          <img
+            src={backgroundImage}
+            alt="Assorted news backgrounds"
+            className={`main__search-image ${transitionState}`}
+          />
+        </div>
+
         <div className="main__search-container">
           <div className="main__search-container-inner">
             <p className="main__search-container-title">
@@ -215,8 +283,7 @@ export default function Main({
             isSubmitted={isSubmitted}
             onArticleLike={onArticleLike}
             onArticleFavorite={onArticleFavorite}
-            query={query}
-            isProfileSelected={isProfileSelected}
+            navigationSelection={navigationSelection}
             onRegistrationClick={onRegistrationClick}
             failedSearch={failedSearch}
           />

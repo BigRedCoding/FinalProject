@@ -2,12 +2,32 @@
   width: 100%;
   position: relative;
   min-height: 576px;
+  height: fit-content;
 }
 
 .main__search {
-  background-image: url(../../assets/HeaderBackground.svg);
-  background-size: cover;
+  position: relative;
   height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+
+.main__search-image-container {
+  background-color: black;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.main__search-image {
+  position: absolute;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  transition: opacity 2s ease-in-out;
 }
 
 .main__search-container {
@@ -211,4 +231,21 @@
   .cards__list {
     justify-content: flex-start;
   }
+}
+.fade-out {
+  opacity: 0;
+}
+
+.fade-in {
+  opacity: 1;
+}
+
+.background-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.background-container.black {
+  background-color: black;
 }

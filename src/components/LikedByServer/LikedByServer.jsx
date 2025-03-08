@@ -6,14 +6,16 @@ import NewsSection from "../NewsSection/NewsSection";
 
 export default function LikedByServer({
   onLoginClick,
-  setIsProfileSelected,
+  setNavigationSelection,
   onEditProfileClick,
   onLogoutClick,
-  isProfileSelected,
+  navigationSelection,
   onArticleLike,
   onArticleFavorite,
   articlesTotal,
   onRegistrationClick,
+  likedByQuery,
+  setLikedByQuery,
 }) {
   const [initialTrigger, setInitialTrigger] = useState(false);
 
@@ -26,23 +28,30 @@ export default function LikedByServer({
   const [noResultsText, setNoResultsText] = useState(
     "No liked articles! Be the first to like an article!"
   );
+  const [isSubmitted, setIsSubmitted] = useState(true);
 
-  const isSubmitted = true;
+  const failedSearch = false;
 
   const handleChange = (e) => {
     const inputValue = e.target.value;
-    console.log(inputValue);
+
     setQuery(inputValue);
     if (inputValue.length < 1) {
       setPlaceHolderDefault("Please enter a keyword");
     }
   };
 
-  const keywords =
-    filteredArticles
-      ?.filter((article) => article.keywords.length > 0)
-      .map((article) => article.keywords.join(", "))
-      .join(", ") || "no key words associated";
+  const keywords = filteredArticles
+    ?.filter((article) => article.keywords.length > 0)
+    .map((article) => article.keywords)
+    .flat()
+    .filter((value, index, self) => self.indexOf(value) === index)
+    .map((keyword) => keyword.charAt(0).toUpperCase() + keyword.slice(1));
+
+  const keywordsPhase =
+    keywords.length > 2
+      ? `${keywords.slice(0, 2).join(", ")}, and ${keywords.length - 2} other`
+      : keywords.join(", ") || "no key words associated";
 
   const filterArticlesByLikes = () => {
     setFilteredArticles(
@@ -52,7 +61,11 @@ export default function LikedByServer({
 
   const handleSearch = (evt) => {
     evt.preventDefault();
-    const searchWords = query.toLowerCase().split(" ");
+    if (query.length < 1) {
+      setPlaceHolderDefault("Please enter a keyword");
+      return;
+    }
+    const searchWords = query.toLowerCase().split(" ").filter(Boolean);
     const filteredResults = filteredArticles.filter((article) => {
       return (
         searchWords.some((word) =>
@@ -67,11 +80,25 @@ export default function LikedByServer({
         searchWords.some((word) => article.source.toLowerCase().includes(word))
       );
     });
+
     setFilteredArticles(filteredResults);
     if (filteredResults.length < 1) {
       setNoResultsText("No liked articles match your search");
     }
+    setLikedByQuery(query);
   };
+
+  useEffect(() => {
+    if (query.length < 1) {
+      filterArticlesByLikes();
+    }
+  }, [query]);
+
+  useEffect(() => {
+    if (likedByQuery.length > 0) {
+      setQuery(likedByQuery);
+    }
+  }, [navigationSelection]);
 
   useEffect(() => {
     if (articlesTotal?.length >= 0) {
@@ -84,7 +111,7 @@ export default function LikedByServer({
       if (articlesTotal?.length > 0) {
         filterArticlesByLikes();
         setInitialTrigger(true);
-        setIsProfileSelected("likedbyserver");
+        setNavigationSelection("likedbyserver");
       }
     }
   }, []);
@@ -93,17 +120,18 @@ export default function LikedByServer({
     <section className="liked-by-server">
       <Navigation
         onLoginClick={onLoginClick}
-        setIsProfileSelected={setIsProfileSelected}
+        setNavigationSelection={setNavigationSelection}
         onEditProfileClick={onEditProfileClick}
         onLogoutClick={onLogoutClick}
-        isProfileSelected={isProfileSelected}
+        navigationSelection={navigationSelection}
       />
       <div className="liked-by-server__header">
         <p className="liked-by-server__title">
           Items liked by users on the server
         </p>
         <p className="liked-by-server__keywords-text">
-          By keywords: <span className="liked-by-server__span">{keywords}</span>
+          By keywords:{" "}
+          <span className="liked-by-server__span">{keywordsPhase}</span>
         </p>
         <div className="liked-by-server__form-container">
           <form
@@ -114,7 +142,7 @@ export default function LikedByServer({
             <input
               name="search-primary-like"
               type="text"
-              placeholder="Enter topic"
+              placeholder={placeholderDefault}
               value={query}
               className="liked-by-server__news-input"
               onChange={(e) => handleChange(e)}
@@ -136,7 +164,7 @@ export default function LikedByServer({
               <input
                 name="search-secondary-like"
                 type="text"
-                placeholder="Enter topic"
+                placeholder={placeholderDefault}
                 value={query}
                 className="liked-by-server__news-input-mobile"
                 onChange={(e) => handleChange(e)}
@@ -156,14 +184,13 @@ export default function LikedByServer({
         {filteredArticles.length > 0 ? (
           <NewsSection
             loading={loading}
-            setLoading={setLoading}
             allArticles={filteredArticles}
             isSubmitted={isSubmitted}
             onArticleLike={onArticleLike}
             onArticleFavorite={onArticleFavorite}
-            query={query}
-            isProfileSelected={isProfileSelected}
+            navigationSelection={navigationSelection}
             onRegistrationClick={onRegistrationClick}
+            failedSearch={failedSearch}
           />
         ) : (
           <p className="liked-by-server__no-articles">{noResultsText}</p>

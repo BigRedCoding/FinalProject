@@ -11,8 +11,7 @@ export default function NewsSection({
   isSubmitted,
   onArticleLike,
   onArticleFavorite,
-  query,
-  isProfileSelected,
+  navigationSelection,
   onRegistrationClick,
   failedSearch,
 }) {
@@ -23,8 +22,6 @@ export default function NewsSection({
   const [cardsShown, setCardsShown] = useState(3);
 
   const [numberOfResultsShown, setNumberOfResultsShown] = useState(0);
-
-  const [initialTrigger, setInitialTrigger] = useState(false);
 
   const seeMoreDisabled = currentPage >= totalCards / cardsShown;
   const seeLessDisabled = currentPage === 1;
@@ -38,6 +35,9 @@ export default function NewsSection({
   const [listChange, triggerListChange] = useState(false);
 
   const [updateFilter, setUpdateFilter] = useState(false);
+  const [navShown, setNavShown] = useState(false);
+
+  console.log(filteredArticles);
 
   const resizer = () => {
     const handleResize = () => {
@@ -52,6 +52,7 @@ export default function NewsSection({
   };
 
   const handlePageChange = (page) => {
+    console.log("handle");
     if (page > 0 || page < maxPages) {
       const numberOfResultsToShow = page * cardsShown;
       const cardsToShow = allArticles.slice(0, numberOfResultsToShow);
@@ -62,6 +63,7 @@ export default function NewsSection({
   };
 
   const updateFiltered = () => {
+    console.log("filtered");
     if (updateFilter === true) {
       const cardsToShow = allArticles.slice(0, cardsShown);
       setFilteredArticles(cardsToShow);
@@ -74,7 +76,7 @@ export default function NewsSection({
       const pageSize = 4;
       setCardsShown(pageSize);
     } else {
-      const pageSize = isProfileSelected === "home" ? 3 : 6;
+      const pageSize = navigationSelection === "home" ? 3 : 6;
       setCardsShown(pageSize);
     }
 
@@ -118,28 +120,25 @@ export default function NewsSection({
   }, [filteredArticles]);
 
   useEffect(() => {
-    if (allArticles?.length > 0) {
+    if (allArticles.length > 0) {
+      setNavShown(true);
       setPages();
     }
-  }, [allArticles]);
-
-  useEffect(() => {
-    if (initialTrigger === false) {
-      if (isSubmitted === true) {
-        resizer();
-        setInitialTrigger(true);
-      }
+    if (allArticles.length < 1) {
+      setNavShown(false);
     }
-  }, [isSubmitted]);
+  }, [allArticles, loading]);
 
   useEffect(() => {
     resizer();
+    setPages();
   }, []);
+
   return (
     <section className="news-section">
       <div className="news-section__search-results">
-        {loading && <Preloader />}
-        {!loading && !failedSearch && (
+        {loading && isSubmitted && <Preloader />}
+        {!loading && isSubmitted && !failedSearch && (
           <div className="news-section__results-container">
             <ul className="news-section__results-list">
               {filteredArticles.map((article, index) => (
@@ -149,14 +148,14 @@ export default function NewsSection({
                   onArticleLike={onArticleLike}
                   onArticleFavorite={onArticleFavorite}
                   onRegistrationClick={onRegistrationClick}
-                  isProfileSelected={isProfileSelected}
+                  navigationSelection={navigationSelection}
                 />
               ))}
             </ul>
           </div>
         )}
 
-        {!loading && isSubmitted && !failedSearch && (
+        {!loading && isSubmitted && !failedSearch && navShown && (
           <div className="news-section__navigation-container">
             <button
               className={`news-section__navigation-button ${disableButton1}`}

@@ -1,16 +1,82 @@
 import "./About.css";
 
-import selfImage from "../../assets/selfstand.jpg";
-import cdaImage from "../../assets/cdalake.jpg";
+import { useState, useEffect, useRef } from "react";
+
+import { AboutBackgroundImages, selfImage } from "../../utils/constants.js";
 
 export default function About() {
+  const [initialTrigger, setInitialTrigger] = useState(false);
+
+  const [backgroundImage, setBackgroundImage] = useState(
+    AboutBackgroundImages[0]
+  );
+  const [backgroundImage2, setBackgroundImage2] = useState(
+    AboutBackgroundImages[1]
+  );
+  const [transitionState, setTransitionState] = useState(
+    "about-image_reset-position"
+  );
+
+  const [hidden, setHidden] = useState(true);
+  const [hidden2, setHidden2] = useState(false);
+
+  const currentIndexRef = useRef(0);
+
+  const changeImage = () => {
+    setTransitionState("about-image_slide-left");
+    setHidden(false);
+    setHidden2(false);
+    const backgroundImagesLength = AboutBackgroundImages.length;
+    setTimeout(() => {
+      setHidden(true);
+    }, 2300);
+
+    setTimeout(() => {
+      const nextImageRef =
+        (currentIndexRef.current + 1) % backgroundImagesLength;
+      setBackgroundImage2(AboutBackgroundImages[nextImageRef]);
+      setTransitionState("about-image_reset-position");
+    }, 2600);
+
+    setTimeout(() => {
+      if (currentIndexRef.current < backgroundImagesLength - 1) {
+        currentIndexRef.current += 1;
+
+        setBackgroundImage(AboutBackgroundImages[currentIndexRef.current]);
+      } else {
+        setBackgroundImage(AboutBackgroundImages[0]);
+        currentIndexRef.current = 0;
+      }
+    }, 2000);
+  };
+
+  useEffect(() => {
+    if (initialTrigger === false) {
+      setBackgroundImage(AboutBackgroundImages[0]);
+      const intervalId = setInterval(changeImage, 7000);
+      setInitialTrigger(true);
+      return () => clearInterval(intervalId);
+    }
+  }, []);
   return (
     <section className="about">
-      <img
-        src={cdaImage}
-        alt="Background image"
-        className="about__background-image"
-      />
+      <div className="about__background-image-container">
+        <img
+          src={backgroundImage}
+          alt="Background image"
+          className={`about__background-image current ${
+            hidden2 ? "isHidden" : ""
+          }`}
+        />
+        <img
+          src={backgroundImage2}
+          alt="Next background image"
+          className={`about__background-image next ${transitionState} ${
+            hidden ? "isHidden" : ""
+          }`}
+        />
+      </div>
+
       <div className="about__container">
         <div className="about__image-container">
           <img src={selfImage} alt="Image of author" className="about__image" />

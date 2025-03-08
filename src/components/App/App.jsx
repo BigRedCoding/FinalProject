@@ -23,8 +23,6 @@ import LikedByServer from "../LikedByServer/LikedByServer.jsx";
 import RegistrationCompleteModal from "../RegistrationCompleteModal/RegistrationCompleteModal.jsx";
 
 import ProtectedRoute from "../ProtectedRoute.jsx";
-
-import { searchArticles } from "../../utils/NewsApis/newsapp.js";
 //Context
 import CurrentUserContext from "../../contexts/CurrentUserContext.js";
 
@@ -65,16 +63,16 @@ function App() {
   const [hasPulledServerArticles, setHasPulledServerArticles] = useState(false);
 
   const [articlesTotal, setArticlesTotal] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [likedByQuery, setLikedByQuery] = useState("");
 
   const [activeModal, setActiveModal] = useState("");
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
 
-  const [isProfileSelected, setIsProfileSelected] = useState("home");
-
-  //Dev Variables
-  const [startApiTrigger, setStartApiTrigger] = useState(false);
+  const [navigationSelection, setNavigationSelection] = useState("home");
 
   //Account variables
   const [userData, setUserData] = useState({});
@@ -272,12 +270,6 @@ function App() {
     }
   }, []);
 
-  const deleteToken = () => {
-    localStorage.removeItem("searchResults");
-    // setStartApiTrigger(true);
-    searchArticles("trump");
-  };
-
   return (
     <div className="page">
       <CurrentUserContext.Provider
@@ -289,11 +281,7 @@ function App() {
         }}
       >
         <div className="page__content">
-          <Header
-            startApiTrigger={startApiTrigger}
-            setStartApiTrigger={setStartApiTrigger}
-            onOpenWeatherModal={handleOpenWeatherModal}
-          />
+          <Header onOpenWeatherModal={handleOpenWeatherModal} />
           <Routes>
             <Route
               path="/"
@@ -301,13 +289,17 @@ function App() {
                 <Main
                   onLoginClick={handleLoginClick}
                   onRegistrationClick={handleRegistrationClick}
-                  setIsProfileSelected={setIsProfileSelected}
+                  setNavigationSelection={setNavigationSelection}
                   onEditProfileClick={handleEditProfileClick}
                   onLogoutClick={handleLogoutClick}
-                  isProfileSelected={isProfileSelected}
+                  navigationSelection={navigationSelection}
                   onArticleLike={handleArticleLike}
                   onArticleFavorite={handleArticleFavorite}
                   articlesTotal={articlesTotal}
+                  searchResults={searchResults}
+                  setSearchResults={setSearchResults}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
                 />
               }
             />
@@ -317,13 +309,15 @@ function App() {
                 <LikedByServer
                   onLoginClick={handleLoginClick}
                   onRegistrationClick={handleRegistrationClick}
-                  setIsProfileSelected={setIsProfileSelected}
+                  setNavigationSelection={setNavigationSelection}
                   onEditProfileClick={handleEditProfileClick}
                   onLogoutClick={handleLogoutClick}
-                  isProfileSelected={isProfileSelected}
+                  navigationSelection={navigationSelection}
                   onArticleLike={handleArticleLike}
                   onArticleFavorite={handleArticleFavorite}
                   articlesTotal={articlesTotal}
+                  likedByQuery={likedByQuery}
+                  setLikedByQuery={setLikedByQuery}
                 />
               }
             />
@@ -334,10 +328,10 @@ function App() {
                   <SavedNews
                     onLoginClick={handleLoginClick}
                     onRegistrationClick={handleRegistrationClick}
-                    setIsProfileSelected={setIsProfileSelected}
+                    setNavigationSelection={setNavigationSelection}
                     onEditProfileClick={handleEditProfileClick}
                     onLogoutClick={handleLogoutClick}
-                    isProfileSelected={isProfileSelected}
+                    navigationSelection={navigationSelection}
                     onArticleLike={handleArticleLike}
                     onArticleFavorite={handleArticleFavorite}
                     articlesTotal={articlesTotal}
@@ -349,7 +343,7 @@ function App() {
           </Routes>
           <Footer
             onSourcesClick={handleSourcesclick}
-            setIsProfileSelected={setIsProfileSelected}
+            setNavigationSelection={setNavigationSelection}
           />
         </div>
         <RegistrationModal
@@ -395,9 +389,6 @@ function App() {
           onLoginClick={handleLoginClick}
           onCloseClick={closeActiveModal}
         />
-        <button className="deletetokenbutton" onClick={deleteToken}>
-          Delete Token
-        </button>
       </CurrentUserContext.Provider>
     </div>
   );

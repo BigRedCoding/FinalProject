@@ -1,9 +1,9 @@
 import "./Footer.css";
 import { Link } from "react-router-dom";
 
-function Footer({ onSourcesClick, setIsProfileSelected }) {
+function Footer({ onSourcesClick, setNavigationSelection }) {
   const setHomeSelected = () => {
-    setIsProfileSelected("home");
+    setNavigationSelection("home");
   };
 
   return (

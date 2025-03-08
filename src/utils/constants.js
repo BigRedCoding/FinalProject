@@ -1,3 +1,15 @@
+import NewsBackground from "../assets/MainBackground.svg";
+import NewsBackground2 from "../assets/NewsBackground2.jpg";
+import NewsBackground3 from "../assets/NewsBackground3.jpg";
+import NewsBackground4 from "../assets/NewsBackground4.jpg";
+
+import AboutBackground from "../assets/cdalake.jpg";
+import AboutBackground2 from "../assets/AboutBackground2.jpg";
+import AboutBackground3 from "../assets/AboutBackground3.jpg";
+import AboutBackground4 from "../assets/AboutBackground4.jpeg";
+
+import selfImageStand from "../assets/selfstand.jpg";
+
 export const weatherConditions = [
   {
     day: true,
@@ -128,3 +140,19 @@ export const coordinates = {
 };
 
 export const WeatherAPIKey = "92198934837100f1596312e6135fc6c9";
+
+export const NewsBackgroundImages = [
+  NewsBackground,
+  NewsBackground3,
+  NewsBackground4,
+  NewsBackground2,
+];
+
+export const AboutBackgroundImages = [
+  AboutBackground,
+  AboutBackground2,
+  AboutBackground3,
+  AboutBackground4,
+];
+
+export const selfImage = selfImageStand;

@@ -35,7 +35,9 @@ const fetchNews = (query) => {
 export const getGnewsNews = (query) => {
   console.log("GNews triggered");
 
-  const search = `q=${query}`;
+  const formattedQuery = query?.replace(/\s+/g, "&") || "";
+
+  const search = `q=${formattedQuery}`;
 
   return fetchNews(search);
 };
