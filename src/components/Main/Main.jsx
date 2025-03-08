@@ -172,12 +172,11 @@ export default function Main({
       if (currentIndexRef.current < backgroundImagesLength - 1) {
         currentIndexRef.current += 1;
         setBackgroundImage(NewsBackgroundImages[currentIndexRef.current]);
-        setTransitionState("fade-in");
       } else {
         setBackgroundImage(NewsBackgroundImages[0]);
         currentIndexRef.current = 0;
-        setTransitionState("fade-in");
       }
+      setTransitionState("fade-in");
     }, 2000);
   };
   useEffect(() => {
