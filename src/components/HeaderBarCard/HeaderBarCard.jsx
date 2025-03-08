@@ -3,7 +3,7 @@ import "./HeaderBarCard.css";
 export default function HeaderBarCard({ data }) {
   const title = data?.title || "";
   const author = data?.by || "";
-  const link = data?.link || "";
+  const link = data?.url || "";
 
   return (
     <li>

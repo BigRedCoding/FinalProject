@@ -27,10 +27,6 @@ p {
   visibility: collapse;
 }
 
-.isVisible {
-  visibility: visible;
-}
-
 .modal_opened {
   visibility: visible;
 }

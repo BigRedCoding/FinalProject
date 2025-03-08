@@ -163,7 +163,7 @@
 }
 
 .isVisible {
-  visibility: visible;
+  visibility: collapse;
 }
 @media screen and (max-width: 1040px) {
   .navigation__loggedin-container,
@@ -343,6 +343,9 @@
   .navigation_login-container-mobile {
     padding: 0 16px 24px 16px;
   }
+  .isVisible {
+    visibility: visible;
+  }
 }
 .mobile-container_mod {
   left: 0;
@@ -368,8 +371,4 @@
 }
 .login-button_mod {
   width: 100%;
-}
-
-.isVisible {
-  visibility: visible;
 }
