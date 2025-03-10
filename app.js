@@ -39,8 +39,10 @@ const corsOptions = {
   credentials: true,
 };
 
-app.use(cors(corsOptions));
+const corsPolicy =
+  process.env.NODE_ENV === "production" ? cors(corsOptions) : cors();
 
+app.use(corsPolicy);
 app.use(rateLimiter);
 
 app.use(requestLogger);
