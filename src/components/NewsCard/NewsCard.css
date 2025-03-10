@@ -175,6 +175,7 @@ button:hover {
 
 .newscard__image {
   background-image: url("../../assets/newsexplorerlogo.jpg");
+  background-image: contain;
   width: 100%;
   height: 272px;
 }

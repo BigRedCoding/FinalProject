@@ -108,11 +108,15 @@ export default function NewsCard({
   }, [userData]);
 
   useEffect(() => {
-    setCurrentLikes(data?.likes?.length || 0);
-    setIsLiked(data?.likes?.some((item) => item === userData?.userId) || false);
-    setIsFavorited(
-      data?.favorites?.some((item) => item === userData?.userId) || false
-    );
+    if (data?.length > 0) {
+      setCurrentLikes(data?.likes?.length || 0);
+      setIsLiked(
+        data?.likes?.some((item) => item === userData?.userId) || false
+      );
+      setIsFavorited(
+        data?.favorites?.some((item) => item === userData?.userId) || false
+      );
+    }
   }, [data]);
 
   return (

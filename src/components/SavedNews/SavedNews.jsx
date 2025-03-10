@@ -17,6 +17,12 @@ export default function SavedNews({
   onArticleFavorite,
   articlesTotal,
   onRegistrationClick,
+  mainPageSelection,
+  setMainPageSelection,
+  likedBySelection,
+  setLikedBySelection,
+  profileSelection,
+  setProfileSelection,
 }) {
   const { userData } = useContext(CurrentUserContext);
   const [filteredArticles, setFilteredArticles] = useState([]);
@@ -90,6 +96,12 @@ export default function SavedNews({
             navigationSelection={navigationSelection}
             onRegistrationClick={onRegistrationClick}
             failedSearch={failedSearch}
+            mainPageSelection={mainPageSelection}
+            setMainPageSelection={setMainPageSelection}
+            likedBySelection={likedBySelection}
+            setLikedBySelection={setLikedBySelection}
+            profileSelection={profileSelection}
+            setProfileSelection={setProfileSelection}
           />
         ) : (
           <p className="saved-news__no-articles">

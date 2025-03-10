@@ -16,6 +16,12 @@ export default function LikedByServer({
   onRegistrationClick,
   likedByQuery,
   setLikedByQuery,
+  mainPageSelection,
+  setMainPageSelection,
+  likedBySelection,
+  setLikedBySelection,
+  profileSelection,
+  setProfileSelection,
 }) {
   const [initialTrigger, setInitialTrigger] = useState(false);
 
@@ -191,6 +197,12 @@ export default function LikedByServer({
             navigationSelection={navigationSelection}
             onRegistrationClick={onRegistrationClick}
             failedSearch={failedSearch}
+            mainPageSelection={mainPageSelection}
+            setMainPageSelection={setMainPageSelection}
+            likedBySelection={likedBySelection}
+            setLikedBySelection={setLikedBySelection}
+            profileSelection={profileSelection}
+            setProfileSelection={setProfileSelection}
           />
         ) : (
           <p className="liked-by-server__no-articles">{noResultsText}</p>

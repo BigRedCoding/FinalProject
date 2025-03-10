@@ -22,8 +22,8 @@ export async function getAllArticles() {
     .then((res) => {
       return responseCheck(res);
     })
-    .then((response) => {
-      return response.data;
+    .then((res) => {
+      return res.data;
     })
     .catch((error) => {
       console.error(error);
@@ -43,6 +43,9 @@ export async function addLike(token, articleData) {
   })
     .then((res) => {
       return responseCheck(res);
+    })
+    .then((res) => {
+      return res.data;
     })
     .catch((error) => {
       console.error(error);
@@ -83,6 +86,9 @@ export async function addFavorite(token, articleData) {
   })
     .then((res) => {
       return responseCheck(res);
+    })
+    .then((res) => {
+      return res.data;
     })
     .catch((error) => {
       console.error(error);

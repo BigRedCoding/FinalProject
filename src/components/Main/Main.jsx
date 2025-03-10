@@ -21,19 +21,23 @@ export default function Main({
   navigationSelection,
   onArticleLike,
   onArticleFavorite,
-  articlesTotal,
   searchResults,
   setSearchResults,
   searchQuery,
   setSearchQuery,
+  updateSearchResults,
+  mainPageSelection,
+  setMainPageSelection,
+  likedBySelection,
+  setLikedBySelection,
+  profileSelection,
+  setProfileSelection,
 }) {
   const { userData } = useContext(CurrentUserContext);
   const [initialTrigger, setInitialTrigger] = useState(false);
 
-  const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [currentResults, setCurrentResults] = useState([]);
   const [failedSearch, setFailedSearch] = useState(false);
   const [placeholderDefault, setPlaceHolderDefault] = useState("Enter topic");
 
@@ -46,7 +50,7 @@ export default function Main({
 
   const handleChange = (e) => {
     const inputValue = e.target.value;
-    setQuery(inputValue);
+    setSearchQuery(inputValue);
     if (inputValue.length < 1) {
       setPlaceHolderDefault("Please enter a keyword");
     }
@@ -72,7 +76,7 @@ export default function Main({
   };
 
   const findMostFrequentWord = (articles) => {
-    const searchWords = query.toLowerCase().split(/\s+/);
+    const searchWords = searchQuery.toLowerCase().split(/\s+/);
     const wordCount = {};
 
     articles.forEach((article) => {
@@ -98,39 +102,12 @@ export default function Main({
     return mostFrequentWord || "No matching words found";
   };
 
-  const setLikesAndFavorites = (results) => {
-    const orderedResults = orderByDate(results);
-
-    const updateOrderedResults = () => {
-      return orderedResults.map((orderedItem) => {
-        const matchedItem = articlesTotal.find((article) => {
-          return (
-            article.author === orderedItem.author &&
-            article.title === orderedItem.title &&
-            article.description === orderedItem.description &&
-            article.imageUrl === orderedItem.imageUrl &&
-            article.url === orderedItem.url &&
-            article.source === orderedItem.source
-          );
-        });
-        return matchedItem ? { ...orderedItem, ...matchedItem } : orderedItem;
-      });
-    };
-
-    const updatedResults = updateOrderedResults();
-
-    setCurrentResults(updatedResults);
-    setSearchResults(updatedResults);
-    setSearchQuery(query);
-    setLoading(false);
-  };
-
   const handleSearch = async (e) => {
     setLoading(true);
     setIsSubmitted(true);
     e.preventDefault();
 
-    if (query.length < 1) {
+    if (searchQuery.length < 1) {
       setPlaceHolderDefault("Please enter a keyword");
       return;
     }
@@ -138,9 +115,9 @@ export default function Main({
     let results = [];
 
     const resultsArray = [];
-    const resultsNewsApp = await searchArticles(query);
-    const resultsGnewsNews = await getGnewsNews(query);
-    const resultsNewsData = await getNewsData(query);
+    const resultsNewsApp = await searchArticles(searchQuery);
+    const resultsGnewsNews = await getGnewsNews(searchQuery);
+    const resultsNewsData = await getNewsData(searchQuery);
 
     resultsArray.push(...resultsNewsApp);
     resultsArray.push(...resultsGnewsNews);
@@ -159,9 +136,9 @@ export default function Main({
 
     const mostFrequentWord = findMostFrequentWord(results);
     const updatedList = addKeywordToArticles(results, mostFrequentWord);
-
-    setLikesAndFavorites(updatedList);
-    setInitialTrigger(false);
+    const orderedResults = orderByDate(updatedList);
+    setSearchResults(orderedResults);
+    setLoading(false);
   };
 
   const changeImage = () => {
@@ -182,8 +159,6 @@ export default function Main({
   useEffect(() => {
     if (navigationSelection === "home") {
       if (searchResults.length > 0) {
-        setCurrentResults(searchResults);
-        setQuery(searchQuery);
         setIsSubmitted(true);
       }
       if (searchResults.length < 1) {
@@ -193,8 +168,8 @@ export default function Main({
   }, [navigationSelection]);
 
   useEffect(() => {
-    if (currentResults.length > 0) {
-      setLikesAndFavorites(currentResults);
+    if (searchResults.length > 0) {
+      updateSearchResults();
     }
   }, [userData]);
 
@@ -244,7 +219,7 @@ export default function Main({
                 name="search-primary"
                 type="text"
                 placeholder={placeholderDefault}
-                value={query}
+                value={searchQuery}
                 className="main__news-input"
                 onChange={(e) => handleChange(e)}
               />
@@ -258,7 +233,7 @@ export default function Main({
                   name="search-secondary"
                   type="text"
                   placeholder={placeholderDefault}
-                  value={query}
+                  value={searchQuery}
                   className="main__news-input-mobile"
                   onChange={(e) => handleChange(e)}
                 />
@@ -278,13 +253,19 @@ export default function Main({
         <div className="main__saved-container">
           <NewsSection
             loading={loading}
-            allArticles={currentResults}
+            allArticles={searchResults}
             isSubmitted={isSubmitted}
             onArticleLike={onArticleLike}
             onArticleFavorite={onArticleFavorite}
             navigationSelection={navigationSelection}
             onRegistrationClick={onRegistrationClick}
             failedSearch={failedSearch}
+            mainPageSelection={mainPageSelection}
+            setMainPageSelection={setMainPageSelection}
+            likedBySelection={likedBySelection}
+            setLikedBySelection={setLikedBySelection}
+            profileSelection={profileSelection}
+            setProfileSelection={setProfileSelection}
           />
         </div>
       ) : (

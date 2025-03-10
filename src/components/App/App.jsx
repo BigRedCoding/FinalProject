@@ -73,6 +73,11 @@ function App() {
   const [isPasswordValid, setIsPasswordValid] = useState(true);
 
   const [navigationSelection, setNavigationSelection] = useState("home");
+  const [updateResultsTrigger, setUpdateResultsTrigger] = useState(false);
+
+  const [mainPageSelection, setMainPageSelection] = useState(1);
+  const [likedBySelection, setLikedBySelection] = useState(1);
+  const [profileSelection, setProfileSelection] = useState(1);
 
   //Account variables
   const [userData, setUserData] = useState({});
@@ -137,7 +142,6 @@ function App() {
       })
       .catch(console.error);
   };
-
   const handleArticleLike = (isLiked, articleData) => {
     const token = localStorage.getItem("jwt");
 
@@ -152,13 +156,20 @@ function App() {
           setArticlesTotal([]);
         })
         .then(() => {
+          setUpdateResultsTrigger(true);
+        })
+        .then(() => {
           handleSetAllArticles();
         })
+
         .catch((err) => console.log("Error adding like:", err));
     } else {
       removeLike(token, articleData)
         .then(() => {
           setArticlesTotal([]);
+        })
+        .then(() => {
+          setUpdateResultsTrigger(true);
         })
         .then(() => {
           handleSetAllArticles();
@@ -180,6 +191,9 @@ function App() {
           setArticlesTotal([]);
         })
         .then(() => {
+          setUpdateResultsTrigger(true);
+        })
+        .then(() => {
           handleSetAllArticles();
         })
         .catch((err) => console.log("Error adding favorite:", err));
@@ -189,10 +203,34 @@ function App() {
           setArticlesTotal([]);
         })
         .then(() => {
+          setUpdateResultsTrigger(true);
+        })
+        .then(() => {
           handleSetAllArticles();
         })
         .catch((err) => console.log("Error removing favorite:", err));
     }
+  };
+
+  const updateSearchResults = () => {
+    const updateOrderedResults = () => {
+      return searchResults.map((orderedItem) => {
+        const matchedItem = articlesTotal.find((article) => {
+          return (
+            article.title === orderedItem.title &&
+            article.imageUrl === orderedItem.imageUrl &&
+            article.url === orderedItem.url &&
+            article.source === orderedItem.source
+          );
+        });
+        return matchedItem ? matchedItem : orderedItem;
+      });
+    };
+
+    const updatedResults = updateOrderedResults();
+
+    setSearchResults(updatedResults);
+    setUpdateResultsTrigger(false);
   };
 
   //User functions
@@ -243,6 +281,15 @@ function App() {
         console.error("Profile update failed:", error);
       });
   };
+
+  //UseEffects
+  useEffect(() => {
+    if (updateResultsTrigger === true) {
+      if (searchResults?.length > 0 && articlesTotal?.length > 0) {
+        updateSearchResults();
+      }
+    }
+  }, [articlesTotal, searchResults]);
 
   useEffect(() => {
     if (!activeModal) return;
@@ -295,11 +342,17 @@ function App() {
                   navigationSelection={navigationSelection}
                   onArticleLike={handleArticleLike}
                   onArticleFavorite={handleArticleFavorite}
-                  articlesTotal={articlesTotal}
                   searchResults={searchResults}
                   setSearchResults={setSearchResults}
                   searchQuery={searchQuery}
                   setSearchQuery={setSearchQuery}
+                  updateSearchResults={updateSearchResults}
+                  mainPageSelection={mainPageSelection}
+                  setMainPageSelection={setMainPageSelection}
+                  likedBySelection={likedBySelection}
+                  setLikedBySelection={setLikedBySelection}
+                  profileSelection={profileSelection}
+                  setProfileSelection={setProfileSelection}
                 />
               }
             />
@@ -318,6 +371,12 @@ function App() {
                   articlesTotal={articlesTotal}
                   likedByQuery={likedByQuery}
                   setLikedByQuery={setLikedByQuery}
+                  mainPageSelection={mainPageSelection}
+                  setMainPageSelection={setMainPageSelection}
+                  likedBySelection={likedBySelection}
+                  setLikedBySelection={setLikedBySelection}
+                  profileSelection={profileSelection}
+                  setProfileSelection={setProfileSelection}
                 />
               }
             />
@@ -335,6 +394,12 @@ function App() {
                     onArticleLike={handleArticleLike}
                     onArticleFavorite={handleArticleFavorite}
                     articlesTotal={articlesTotal}
+                    mainPageSelection={mainPageSelection}
+                    setMainPageSelection={setMainPageSelection}
+                    likedBySelection={likedBySelection}
+                    setLikedBySelection={setLikedBySelection}
+                    profileSelection={profileSelection}
+                    setProfileSelection={setProfileSelection}
                   />
                 </ProtectedRoute>
               }
