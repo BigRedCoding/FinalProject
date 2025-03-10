@@ -42,8 +42,13 @@ export default function NewsSection({
   const disableButton = seeMoreDisabled ? "isHidden" : "";
   const disableButton1 = seeLessDisabled ? "isHidden" : "";
 
+  const orderByDate = (array) => {
+    let shuffledArray = [...array];
+    shuffledArray.sort((b, a) => new Date(a.date) - new Date(b.date));
+    return shuffledArray;
+  };
+
   const setSavedVariables = (page) => {
-    console.log("set saved variables function");
     if (navigationSelection === "home") {
       setMainPageSelection(page);
     }
@@ -56,7 +61,6 @@ export default function NewsSection({
   };
 
   const resizer = () => {
-    console.log("resizer function");
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
@@ -69,7 +73,6 @@ export default function NewsSection({
   };
 
   const handlePageChange = (page) => {
-    console.log("handle page change", page);
     const maxPages = Math.ceil(localTotal?.length / cardsShown);
     let pageInput = page;
 
@@ -83,9 +86,9 @@ export default function NewsSection({
       const numberOfResultsToShow = pageInput * cardsShown;
       const cardsToShow = localTotal?.slice(0, numberOfResultsToShow);
 
-      console.log(maxPages, numberOfResultsShown, cardsShown);
+      const cardsOrdered = orderByDate(cardsToShow);
 
-      setFilteredArticles(cardsToShow);
+      setFilteredArticles(cardsOrdered);
       setCurrentPage(pageInput);
     }
     const totalArticles = localTotal.length;
@@ -94,11 +97,10 @@ export default function NewsSection({
 
   const setPages = () => {
     if (listChange === true) {
-      console.log("set page function: true");
       setCardsShown(4);
     } else {
       const pageSize = navigationSelection === "home" ? 3 : 6;
-      console.log("set page function: false");
+
       setCardsShown(pageSize);
     }
     const totalArticles = localTotal.length;
@@ -106,7 +108,6 @@ export default function NewsSection({
   };
 
   const setPageWidth = () => {
-    console.log("set page width function", windowWidth);
     setListChange(!!listChange);
     if (windowWidth < 540) {
       setListChange(false);
@@ -122,7 +123,6 @@ export default function NewsSection({
   };
 
   const setPageByNavigation = () => {
-    console.log("set page by navigation function");
     if (navigationSelection === "home") {
       if (mainPageSelection > 0) {
         handlePageChange(mainPageSelection);
@@ -144,15 +144,12 @@ export default function NewsSection({
   };
   useEffect(() => {
     if (currentPage > 0 && filteredArticlesList.length > 0) {
-      console.log("current page set saved useEffect");
       setSavedVariables(currentPage);
     }
   }, [currentPage]);
 
   useEffect(() => {
-    console.log("filter articles useEffect");
     if (filteredArticles.length > 0) {
-      console.log(filteredArticles);
       const createdList = filteredArticles.map((article, index) => (
         <NewsCard
           key={index}
@@ -164,7 +161,6 @@ export default function NewsSection({
         />
       ));
 
-      console.log(createdList);
       setFilteredArticlesList(createdList);
       setNumberOfResultsShown(filteredArticles.length);
     }
@@ -173,17 +169,13 @@ export default function NewsSection({
     }
   }, [filteredArticles, loading]);
 
-  console.log(currentPage);
-
   useEffect(() => {
-    console.log("cards shown useEffect");
     if (cardsShown > 0) {
       setPageByNavigation();
     }
   }, [cardsShown]);
 
   useEffect(() => {
-    console.log("local total useEffect");
     if (localTotal.length > 0) {
       setNavShown(true);
       setPageByNavigation();
@@ -194,26 +186,22 @@ export default function NewsSection({
   }, [localTotal]);
 
   useEffect(() => {
-    console.log("set total articles useEffected");
     if (allArticles.length > 0) {
       setLocalTotal(allArticles);
     }
   }, [allArticles, loading]);
 
   useEffect(() => {
-    console.log("list change use effect");
     setPages();
   }, [listChange]);
 
   useEffect(() => {
-    console.log("window width useEffect");
     resizer();
     setPageWidth();
     setPageByNavigation();
   }, [windowWidth, navigationSelection]);
 
   useEffect(() => {
-    console.log("initial set page useEffect");
     setPageWidth();
     setWindowWidth(widthInital);
   }, []);

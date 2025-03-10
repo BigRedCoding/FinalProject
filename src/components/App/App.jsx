@@ -142,6 +142,40 @@ function App() {
       })
       .catch(console.error);
   };
+
+  const updateSearchResults = () => {
+    const updateOrderedResults = () => {
+      return searchResults.map((orderedItem) => {
+        const matchedItem = articlesTotal.find((article) => {
+          return (
+            article.title === orderedItem.title &&
+            article.imageUrl === orderedItem.imageUrl &&
+            article.url === orderedItem.url &&
+            article.source === orderedItem.source
+          );
+        });
+
+        if (
+          (orderedItem.likes ||
+            orderedItem.favorites ||
+            orderedItem.keywords) &&
+          !matchedItem
+        ) {
+          orderedItem.likes = [];
+          orderedItem.favorites = [];
+          orderedItem.keywords = [];
+        }
+
+        return matchedItem ? matchedItem : orderedItem;
+      });
+    };
+
+    const updatedResults = updateOrderedResults();
+
+    setSearchResults(updatedResults);
+    setUpdateResultsTrigger(false);
+  };
+
   const handleArticleLike = (isLiked, articleData) => {
     const token = localStorage.getItem("jwt");
 
@@ -210,27 +244,6 @@ function App() {
         })
         .catch((err) => console.log("Error removing favorite:", err));
     }
-  };
-
-  const updateSearchResults = () => {
-    const updateOrderedResults = () => {
-      return searchResults.map((orderedItem) => {
-        const matchedItem = articlesTotal.find((article) => {
-          return (
-            article.title === orderedItem.title &&
-            article.imageUrl === orderedItem.imageUrl &&
-            article.url === orderedItem.url &&
-            article.source === orderedItem.source
-          );
-        });
-        return matchedItem ? matchedItem : orderedItem;
-      });
-    };
-
-    const updatedResults = updateOrderedResults();
-
-    setSearchResults(updatedResults);
-    setUpdateResultsTrigger(false);
   };
 
   //User functions

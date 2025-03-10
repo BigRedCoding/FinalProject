@@ -111,7 +111,6 @@ export default function Main({
       setPlaceHolderDefault("Please enter a keyword");
       return;
     }
-
     let results = [];
 
     const resultsArray = [];
@@ -124,7 +123,6 @@ export default function Main({
     resultsArray.push(...resultsNewsData);
 
     results = orderByDate(resultsArray);
-
     if (
       resultsNewsApp?.length < 1 &&
       resultsGnewsNews?.length < 1 &&
@@ -136,8 +134,7 @@ export default function Main({
 
     const mostFrequentWord = findMostFrequentWord(results);
     const updatedList = addKeywordToArticles(results, mostFrequentWord);
-    const orderedResults = orderByDate(updatedList);
-    setSearchResults(orderedResults);
+    setSearchResults(updatedList);
     setLoading(false);
   };
 

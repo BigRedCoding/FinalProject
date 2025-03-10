@@ -70,7 +70,7 @@ export default function NewsCard({
 
   const capitalizeFirstLetter = (keyword) => {
     if (keyword !== "") {
-      return keyword.charAt(0).toUpperCase() + keyword.slice(1);
+      return keyword?.charAt(0).toUpperCase() + keyword?.slice(1);
     }
 
     const blank = "";
