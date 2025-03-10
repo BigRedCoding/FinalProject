@@ -29,8 +29,11 @@ const addArticle = (req, res, next) => {
       keywords,
     })
     .then(() => {
-      res.status(201).send({ message: "article added successfully" });
+      res.status(201).send({
+        message: "Article added successfully",
+      });
     })
+
     .catch((err) => {
       if (err.name === "ValidationError") {
         return next(

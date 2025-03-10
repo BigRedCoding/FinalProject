@@ -18,11 +18,9 @@
 
 ### **`DEPLOYMENT:`**
 
-### THIS IS NOT COMPLETENPM
+### This website can be accessed at the following link: (https://www.newsexplorer.justlearning.net/). Note, some service providers might block this because justlearning.net is a public domain, which could be used by hackers to create ficticious sites and attack people. On Spectrum, I had to temporarily turn off the Security Shield.
 
-### This website is desployed on GitHub at the following link: [here](https://bigredcoding.github.io/se_project_react/)
-
-### I have recently updated this site to be reliant on a custom backend server I've created. In this project's "api.js", there is a variable called "baseUrl" and it is set to a local address that is targeted when the server is ran with the command "npm run dev." You can find this custom server at the following link: [here](https://github.com/BigRedCoding/se_project_express)
+### Both the frontend and backend files can be accessed here (https://github.com/BigRedCoding/FinalProject). These can be downloaded and ran locally. When you're in VS Code, using "npm install" for dependecies and "npm run dev" on both should allow local use.
 
 ================================================================================================
 
