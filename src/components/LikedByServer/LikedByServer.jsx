@@ -136,7 +136,7 @@ export default function LikedByServer({
           Items liked by users on the server
         </p>
         <p className="liked-by-server__keywords-text">
-          By keywords:{" "}
+          By keywords:
           <span className="liked-by-server__span">{keywordsPhase}</span>
         </p>
         <div className="liked-by-server__form-container">
